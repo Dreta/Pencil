@@ -72,7 +72,7 @@ class Profile {
                       Navigator.of(context).pop();
                     }),
                 TextButton(
-                    child: const Text('Continue'),
+                    child: const Text('Continue Anyways'),
                     onPressed: () {
                       play(context, true);
                     })

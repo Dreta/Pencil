@@ -239,7 +239,7 @@ class ProfileWidget extends StatelessWidget {
     return Card(
         elevation: selected ? 1 : 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: Color.alphaBlend(theme.colorScheme.inversePrimary.withAlpha(selected ? 60 : 50), Colors.white),
+        color: Color.alphaBlend(theme.colorScheme.inversePrimary.withAlpha(selected ? 60 : 50), theme.scaffoldBackgroundColor),
         child: InkWell(
             customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             onTap: select,
