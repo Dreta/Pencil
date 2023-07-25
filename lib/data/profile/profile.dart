@@ -10,7 +10,7 @@ class Profile {
   String uuid;
   String name;
   String version;
-  @JsonKey(defaultValue: 'asset:assets/images/profiles/1.png')
+  @JsonKey(defaultValue: 'asset:assets/images/profiles/23.png')
   String img;
   DateTime lastUsed;
 

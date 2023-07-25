@@ -10,7 +10,7 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
       json['uuid'] as String,
       json['name'] as String,
       json['version'] as String,
-      json['img'] as String? ?? 'asset:assets/images/profiles/1.png',
+      json['img'] as String? ?? 'asset:assets/images/profiles/23.png',
       DateTime.parse(json['lastUsed'] as String),
       $enumDecodeNullable(_$QuickPlayModeEnumMap, json['quickPlayMode']) ??
           QuickPlayMode.disabled,

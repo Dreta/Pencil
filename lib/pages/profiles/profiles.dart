@@ -106,7 +106,7 @@ class Profiles extends StatefulWidget {
                                 const Uuid().v4(),
                                 name.text,
                                 version.text,
-                                'asset:assets/images/profiles/1.png',
+                                'asset:assets/images/profiles/23.png',
                                 DateTime.now(),
                                 QuickPlayMode.disabled,
                                 null,
