@@ -32,6 +32,7 @@ dependencies:
   uuid: ^3.0.7
   crypto: ^3.0.3
   archive: ^3.3.7
+  contextmenu: ^3.0.0
 
 dev_dependencies:
   flutter_test:

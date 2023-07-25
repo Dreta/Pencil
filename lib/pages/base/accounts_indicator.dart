@@ -43,7 +43,22 @@ class AccountsIndicator extends StatelessWidget {
               },
               itemBuilder: (context) => [
                 for (Account account in accounts.accounts.accounts.values)
-                  PopupMenuItem<String>(value: account.uuid, child: Text(account.characterName))
+                  PopupMenuItem<String>(
+                      value: account.uuid,
+                      child: ListTile(
+                          leading: (account.type == AccountType.microsoft
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: FadeInImage(
+                                      placeholder: MemoryImage(kTransparentImage),
+                                      width: 32,
+                                      height: 32,
+                                      image: NetworkImage('https://api.mineatar.io/face/${account.uuid}?overlay=true')))
+                              : CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: theme.colorScheme.inversePrimary,
+                                  child: Text(account.characterName.characters.first.toUpperCase()))),
+                          title: Text(account.characterName)))
               ],
             )));
   }

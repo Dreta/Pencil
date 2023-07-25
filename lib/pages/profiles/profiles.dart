@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/data/profile/profiles_provider.dart';
@@ -39,7 +41,9 @@ class Profiles extends StatefulWidget {
     }
 
     List<ManifestVersion> toShow = [];
+    List<String> available = [];
     for (ManifestVersion mfVersion in manifest.manifest!.versions) {
+      available.add(mfVersion.id);
       if (mfVersion.type == VersionType.release && settings.data.launcher!.showReleases!) {
         toShow.add(mfVersion);
       }
@@ -58,6 +62,7 @@ class Profiles extends StatefulWidget {
           TextEditingController name = TextEditingController();
           TextEditingController version = TextEditingController();
           String? nameError;
+          String? versionError;
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       title: const Text('Create Profile'),
@@ -76,6 +81,7 @@ class Profiles extends StatefulWidget {
                                 menuHeight: 256,
                                 label: const Text('Version'),
                                 enableFilter: true,
+                                errorText: versionError,
                                 inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
                                 dropdownMenuEntries: [
                                   for (ManifestVersion mfVersion in toShow)
@@ -94,10 +100,17 @@ class Profiles extends StatefulWidget {
                           onPressed: () async {
                             setState(() {
                               nameError = null;
+                              versionError = null;
                             });
                             if (name.text.length > 20 || name.text.isEmpty) {
                               setState(() {
                                 nameError = 'Must be between 1 to 20 characters';
+                              });
+                              return;
+                            }
+                            if (!available.contains(version.text)) {
+                              setState(() {
+                                versionError = 'Version does not exist';
                               });
                               return;
                             }
@@ -182,6 +195,36 @@ class ProfileWidget extends StatelessWidget {
   final bool selected;
   final void Function() select;
 
+  void deleteProfile(context) {
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
+    SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                title: const Text('Are you sure?'),
+                content: const Text('All data (including worlds) stored on this profile will be permanently deleted.'),
+                actions: [
+                  TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  TextButton(
+                      child: const Text('Confirm'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        await profiles.removeProfile(profile.uuid);
+                        Directory directory = Directory(path.join(settings.data.launcher!.profilesDirectory!, profile.uuid));
+                        if (await directory.exists()) {
+                          await directory.delete(recursive: true);
+                        }
+                        ScaffoldMessenger.of(kBaseKey.currentContext!)
+                            .showSnackBar(SnackBar(content: Text('Deleted profile ${profile.name}')));
+                      })
+                ]));
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -193,6 +236,29 @@ class ProfileWidget extends StatelessWidget {
         child: InkWell(
             customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             onTap: select,
+            onSecondaryTapUp: (details) {
+              showContextMenu(
+                  details.globalPosition,
+                  context,
+                  (context) => [
+                        ListTile(
+                            title: Text('Edit', style: theme.textTheme.titleMedium),
+                            leading: const Icon(Icons.edit),
+                            onTap: () {}),
+                        ListTile(
+                            title: Text('Delete', style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
+                            leading: Icon(Icons.delete, color: theme.colorScheme.error),
+                            hoverColor: theme.colorScheme.error.withAlpha(20),
+                            focusColor: theme.colorScheme.error.withAlpha(30),
+                            splashColor: theme.colorScheme.error.withAlpha(30),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              deleteProfile(context);
+                            })
+                      ],
+                  10.0,
+                  150.0);
+            },
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
               SizedBox(
                   height: 130,
