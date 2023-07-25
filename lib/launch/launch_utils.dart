@@ -429,7 +429,22 @@ abstract class LaunchUtils {
       }
 
       tasks.removeTask(task);
-      await process.exitCode;
+      int exitCode = await process.exitCode;
+      if (exitCode != 0) {
+        showDialog(
+            context: kBaseNavigatorKey.currentContext!,
+            builder: (context) => AlertDialog(
+                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                title: const Text('Game Crashed'),
+                content: Text('The game exited with exit code $exitCode.'),
+                actions: [
+                  TextButton(
+                      child: const Text('Confirm'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })
+                ]));
+      }
 
       if (settings.data.launcher!.hideLauncherAfterStart!) {
         appWindow.show();
