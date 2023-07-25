@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/account.dart';
-import 'package:pencil/data/profile/download_utils.dart';
+import 'package:pencil/launch/download_utils.dart';
 import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/data/task/task.dart';

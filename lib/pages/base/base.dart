@@ -4,19 +4,14 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/account/account.dart';
-import 'package:pencil/data/account/accounts_provider.dart';
-import 'package:pencil/data/profile/download_utils.dart';
-import 'package:pencil/data/profile/launch_utils.dart';
-import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/pages/accounts/accounts.dart' as accountsPage;
 import 'package:pencil/pages/base/accounts_indicator.dart';
 import 'package:pencil/pages/base/startup_tasks.dart';
 import 'package:pencil/pages/base/tasks_indicator.dart';
 import 'package:pencil/pages/home/home.dart';
+import 'package:pencil/pages/profiles/profiles.dart';
 import 'package:pencil/pages/settings/settings.dart';
 import 'package:pencil/pages/tasks/tasks.dart';
-import 'package:provider/provider.dart';
 
 class PencilBase extends StatefulWidget {
   const PencilBase({super.key});
@@ -100,7 +95,7 @@ class _PencilBaseState extends State<PencilBase> {
                           _showingTasks = false;
                         });
                       })
-                    : const [Home(), Placeholder(), Placeholder(), accountsPage.Accounts(), Settings()][_selectedPage])
+                    : const [Home(), Profiles(), Placeholder(), accountsPage.Accounts(), Settings()][_selectedPage])
           ])),
           Positioned(top: 0, child: SizedBox(height: 32, width: MediaQuery.of(context).size.width, child: MoveWindow())),
           Positioned(
