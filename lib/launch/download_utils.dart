@@ -31,7 +31,7 @@ abstract class DownloadUtils {
     VersionManifestProvider manifest = Provider.of<VersionManifestProvider>(context, listen: false);
 
     if (manifest.manifest == null && context.mounted) {
-      ScaffoldMessenger.of(kBaseKey.currentContext!)
+      ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
           .showSnackBar(const SnackBar(content: Text('Can\'t download game because the version manifest is unavailable.')));
       return;
     }
@@ -50,7 +50,7 @@ abstract class DownloadUtils {
       await _downloadGame(context, client, version, host, task, tasks);
     } catch (e) {
       showDialog(
-          context: context,
+          context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                   title: Text('Failed to download ${profile.version}'),

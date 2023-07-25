@@ -2,6 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/accounts_provider.dart';
 import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
@@ -62,6 +63,7 @@ class PencilBaseApp extends StatelessWidget {
                   return MaterialApp(
                     title: 'Pencil',
                     debugShowCheckedModeBanner: false,
+                    navigatorKey: kBaseNavigatorKey,
                     theme: ThemeData(
                         colorScheme: light ?? ColorScheme.fromSeed(seedColor: Colors.lightBlue),
                         useMaterial3: true,

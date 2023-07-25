@@ -41,7 +41,7 @@ class VersionManifestProvider extends ChangeNotifier {
       } catch (e2) {
         if (context.mounted) {
           showDialog(
-              context: context,
+              context: kBaseNavigatorKey.currentContext!,
               builder: (context) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                       title: const Text('Failed to download version manifest'),

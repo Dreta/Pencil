@@ -4,6 +4,8 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pencil/constants.dart';
+import 'package:pencil/data/account/accounts_provider.dart';
+import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/pages/accounts/accounts.dart' as accountsPage;
 import 'package:pencil/pages/base/accounts_indicator.dart';
 import 'package:pencil/pages/base/startup_tasks.dart';
@@ -12,6 +14,7 @@ import 'package:pencil/pages/home/home.dart';
 import 'package:pencil/pages/profiles/profiles.dart';
 import 'package:pencil/pages/settings/settings.dart';
 import 'package:pencil/pages/tasks/tasks.dart';
+import 'package:provider/provider.dart';
 
 class PencilBase extends StatefulWidget {
   const PencilBase({super.key});
@@ -38,12 +41,30 @@ class _PencilBaseState extends State<PencilBase> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context);
+    AccountsProvider accounts = Provider.of<AccountsProvider>(context);
 
     return Scaffold(
-        key: kBaseKey,
+        key: kBaseScaffoldKey,
         floatingActionButton: _selectedPage == 1
-            ? FloatingActionButton.extended(icon: const Icon(Icons.add), label: const Text('Create Profile'), onPressed: () { Profiles.createProfile(context); },)
-            : FloatingActionButton.extended(icon: const Icon(Icons.gamepad), label: const Text('Play'), onPressed: () {}),
+            ? FloatingActionButton.extended(
+                icon: const Icon(Icons.add),
+                label: const Text('Create Profile'),
+                onPressed: () {
+                  Profiles.createProfile(context);
+                },
+              )
+            : ((profiles.profiles.selectedProfile != null && accounts.accounts.currentAccount != null)
+                ? FloatingActionButton.extended(
+                    icon: const Icon(Icons.gamepad),
+                    label: profiles.profiles.profiles[profiles.profiles.selectedProfile!]!.launching
+                        ? const Text('Playing...')
+                        : const Text('Play'),
+                    onPressed: () {
+                      profiles.profiles.profiles[profiles.profiles.selectedProfile!]!
+                          .play(kBaseNavigatorKey.currentContext!, false);
+                    })
+                : null),
         body: Stack(children: [
           SafeArea(
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

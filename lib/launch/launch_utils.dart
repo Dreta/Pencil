@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/account.dart';
+import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/launch/download_utils.dart';
 import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
@@ -234,138 +235,198 @@ abstract class LaunchUtils {
   static Future<void> launchGame(BuildContext context, Profile profile, Account account) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
-    Task task = Task(name: 'Launching Minecraft ${profile.version}', type: TaskType.gameLaunch);
-    tasks.addTask(task);
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
 
-    String? launchReady = await _checkLaunchReady(context, profile);
-    if (launchReady != null) {
+    profiles.isRunning = true;
+    profiles.notify();
+
+    try {
+      Task task = Task(name: 'Launching Minecraft ${profile.version}', type: TaskType.gameLaunch);
+      tasks.addTask(task);
+
+      String? launchReady = await _checkLaunchReady(context, profile);
+      if (launchReady != null) {
+        tasks.removeTask(task);
+        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(content: Text(launchReady)));
+        return;
+      }
+
+      task.currentWork = 'Initializing profile directories';
+      tasks.notify();
+      await _initProfile(context, profile);
+
+      List<String> gameArguments = [];
+      List<String> jvmArguments = [];
+
+      task.currentWork = 'Reading version manifest';
+      tasks.notify();
+      File versionFile = File(path.join(settings.data.game!.versionsDirectory!, profile.version, '${profile.version}.json'));
+      Version version = Version.fromJson(jsonDecode(await versionFile.readAsString()));
+
+      task.currentWork = 'Extracting native bindings';
+      tasks.notify();
+      String nativeDirectory = await _initializeNatives(context, profile, version, task, tasks);
+
+      task.currentWork = 'Building classpath';
+      tasks.notify();
+      String classpath = await _buildClasspath(context, profile, version);
+
+      task.currentWork = 'Setting up game arguments';
+      tasks.notify();
+      if (version.arguments != null) {
+        for (dynamic argument in version.arguments!.game) {
+          if (argument is String) {
+            gameArguments.add(await _processArgument(
+                context,
+                profile,
+                account,
+                version,
+                argument,
+                nativeDirectory,
+                classpath));
+          } else if (argument is Map) {
+            PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
+            bool doUse = false;
+            if (platformArg.rules.isEmpty) {
+              doUse = true;
+            } else {
+              for (Rule rule in platformArg.rules) {
+                if (await rule.matches(profile)) {
+                  doUse = rule.action == 'allow';
+                }
+              }
+            }
+            if (doUse) {
+              if (platformArg.value is List) {
+                for (String value in (platformArg.value as List<dynamic>)) {
+                  gameArguments.add(await _processArgument(
+                      context,
+                      profile,
+                      account,
+                      version,
+                      value,
+                      nativeDirectory,
+                      classpath));
+                }
+              } else if (platformArg.value is String) {
+                gameArguments
+                    .add(await _processArgument(
+                    context,
+                    profile,
+                    account,
+                    version,
+                    platformArg.value,
+                    nativeDirectory,
+                    classpath));
+              }
+            }
+          }
+        }
+
+        for (dynamic argument in version.arguments!.jvm) {
+          if (argument is String) {
+            jvmArguments.add(await _processArgument(
+                context,
+                profile,
+                account,
+                version,
+                argument,
+                nativeDirectory,
+                classpath));
+          } else if (argument is Map) {
+            PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
+            bool doUse = false;
+            if (platformArg.rules.isEmpty) {
+              doUse = true;
+            } else {
+              for (Rule rule in platformArg.rules) {
+                if (await rule.matches(profile)) {
+                  doUse = rule.action == 'allow';
+                }
+              }
+            }
+            if (doUse) {
+              if (platformArg.value is List) {
+                for (String value in (platformArg.value as List<dynamic>)) {
+                  jvmArguments.add(await _processArgument(
+                      context,
+                      profile,
+                      account,
+                      version,
+                      value,
+                      nativeDirectory,
+                      classpath));
+                }
+              } else if (platformArg.value is String) {
+                jvmArguments
+                    .add(await _processArgument(
+                    context,
+                    profile,
+                    account,
+                    version,
+                    platformArg.value,
+                    nativeDirectory,
+                    classpath));
+              }
+            }
+          }
+        }
+      } else if (version.minecraftArguments != null) {
+        for (String argument in version.minecraftArguments!.split(' ')) {
+          gameArguments.add(await _processArgument(
+              context,
+              profile,
+              account,
+              version,
+              argument,
+              nativeDirectory,
+              classpath));
+        }
+        jvmArguments.addAll([
+          '-cp',
+          classpath,
+          '-Djava.library.path=$nativeDirectory',
+          '-Dminecraft.launcher.brand=Pencil',
+          '-Dminecraft.launcher.version=stable',
+          '-Dminecraft.client.jar=${path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar')}',
+        ]);
+      }
+
+      if (version.logging != null) {
+        jvmArguments.add(version.logging!.client.argument.replaceAll(
+            '\${path}', path.join(settings.data.game!.assetsDirectory!, 'log_configs', version.logging!.client.file.id)));
+      }
+      jvmArguments.addAll(profile.jvmArguments.split(' '));
+      gameArguments.addAll(profile.gameArguments.split(' '));
+
+      task.currentWork = 'Launching Minecraft';
+      tasks.notify();
+
+      String? javaExecutable;
+      String? javaHome;
+      if (version.releaseTime == null) {
+        javaExecutable = _javaExecutableForPlatform(settings.data.java!.legacyJavaHome!);
+        javaHome = settings.data.java!.legacyJavaHome!;
+      } else if (version.releaseTime!.isAfter(DateTime(2021, 5, 12))) {
+        javaExecutable = _javaExecutableForPlatform(settings.data.java!.modernJavaHome!);
+        javaHome = settings.data.java!.modernJavaHome!;
+      } else {
+        javaExecutable = _javaExecutableForPlatform(settings.data.java!.legacyJavaHome!);
+        javaHome = settings.data.java!.legacyJavaHome!;
+      }
+
+      Process process = await Process.start(javaExecutable, [...jvmArguments, version.mainClass, ...gameArguments],
+          workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),
+          environment: {
+            'JAVA_HOME': Platform.isMacOS ? path.join(javaHome, 'Contents', 'Home') : javaHome,
+            'MINECRAFT_LAUNCHER': 'Dreta/pencil',
+            'USING_PENCIL': 'true'
+          });
       tasks.removeTask(task);
-      ScaffoldMessenger.of(kBaseKey.currentContext!).showSnackBar(SnackBar(content: Text(launchReady)));
-      return;
+      await process.exitCode;
+    } finally {
+      profiles.isRunning = false;
+      profiles.notify();
     }
-
-    task.currentWork = 'Initializing profile directories';
-    tasks.notify();
-    await _initProfile(context, profile);
-
-    List<String> gameArguments = [];
-    List<String> jvmArguments = [];
-
-    task.currentWork = 'Reading version manifest';
-    tasks.notify();
-    File versionFile = File(path.join(settings.data.game!.versionsDirectory!, profile.version, '${profile.version}.json'));
-    Version version = Version.fromJson(jsonDecode(await versionFile.readAsString()));
-
-    task.currentWork = 'Extracting native bindings';
-    tasks.notify();
-    String nativeDirectory = await _initializeNatives(context, profile, version, task, tasks);
-
-    task.currentWork = 'Building classpath';
-    tasks.notify();
-    String classpath = await _buildClasspath(context, profile, version);
-
-    task.currentWork = 'Setting up game arguments';
-    tasks.notify();
-    if (version.arguments != null) {
-      for (dynamic argument in version.arguments!.game) {
-        if (argument is String) {
-          gameArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
-        } else if (argument is Map) {
-          PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
-          bool doUse = false;
-          if (platformArg.rules.isEmpty) {
-            doUse = true;
-          } else {
-            for (Rule rule in platformArg.rules) {
-              if (await rule.matches(profile)) {
-                doUse = rule.action == 'allow';
-              }
-            }
-          }
-          if (doUse) {
-            if (platformArg.value is List) {
-              for (String value in (platformArg.value as List<dynamic>)) {
-                gameArguments.add(await _processArgument(context, profile, account, version, value, nativeDirectory, classpath));
-              }
-            } else if (platformArg.value is String) {
-              gameArguments
-                  .add(await _processArgument(context, profile, account, version, platformArg.value, nativeDirectory, classpath));
-            }
-          }
-        }
-      }
-
-      for (dynamic argument in version.arguments!.jvm) {
-        if (argument is String) {
-          jvmArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
-        } else if (argument is Map) {
-          PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
-          bool doUse = false;
-          if (platformArg.rules.isEmpty) {
-            doUse = true;
-          } else {
-            for (Rule rule in platformArg.rules) {
-              if (await rule.matches(profile)) {
-                doUse = rule.action == 'allow';
-              }
-            }
-          }
-          if (doUse) {
-            if (platformArg.value is List) {
-              for (String value in (platformArg.value as List<dynamic>)) {
-                jvmArguments.add(await _processArgument(context, profile, account, version, value, nativeDirectory, classpath));
-              }
-            } else if (platformArg.value is String) {
-              jvmArguments
-                  .add(await _processArgument(context, profile, account, version, platformArg.value, nativeDirectory, classpath));
-            }
-          }
-        }
-      }
-    } else if (version.minecraftArguments != null) {
-      for (String argument in version.minecraftArguments!.split(' ')) {
-        gameArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
-      }
-      jvmArguments.addAll([
-        '-cp',
-        classpath,
-        '-Djava.library.path=$nativeDirectory',
-        '-Dminecraft.launcher.brand=Pencil',
-        '-Dminecraft.launcher.version=stable',
-        '-Dminecraft.client.jar=${path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar')}',
-      ]);
-    }
-
-    if (version.logging != null) {
-      jvmArguments.add(version.logging!.client.argument.replaceAll(
-          '\${path}', path.join(settings.data.game!.assetsDirectory!, 'log_configs', version.logging!.client.file.id)));
-    }
-    jvmArguments.addAll(profile.jvmArguments.split(' '));
-    gameArguments.addAll(profile.gameArguments.split(' '));
-
-    task.currentWork = 'Launching Minecraft';
-    tasks.notify();
-
-    String? javaExecutable;
-    String? javaHome;
-    if (version.releaseTime == null) {
-      javaExecutable = _javaExecutableForPlatform(settings.data.java!.legacyJavaHome!);
-      javaHome = settings.data.java!.legacyJavaHome!;
-    } else if (version.releaseTime!.isAfter(DateTime(2021, 5, 12))) {
-      javaExecutable = _javaExecutableForPlatform(settings.data.java!.modernJavaHome!);
-      javaHome = settings.data.java!.modernJavaHome!;
-    } else {
-      javaExecutable = _javaExecutableForPlatform(settings.data.java!.legacyJavaHome!);
-      javaHome = settings.data.java!.legacyJavaHome!;
-    }
-    await Process.start(javaExecutable, [...jvmArguments, version.mainClass, ...gameArguments],
-        workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),
-        environment: {
-          'JAVA_HOME': Platform.isMacOS ? path.join(javaHome, 'Contents', 'Home') : javaHome,
-          'MINECRAFT_LAUNCHER': 'Dreta/pencil',
-          'USING_PENCIL': 'true'
-        });
-
-    tasks.removeTask(task);
   }
 }

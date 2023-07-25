@@ -19,19 +19,19 @@ class AccountDetails extends StatefulWidget {
 class _AccountDetailsState extends State<AccountDetails> {
   void copyUUID() {
     Clipboard.setData(ClipboardData(text: widget.account.uuid));
-    ScaffoldMessenger.of(kBaseKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
   }
 
   void copyXUID() {
     Clipboard.setData(ClipboardData(text: widget.account.xuid!));
-    ScaffoldMessenger.of(kBaseKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
   }
 
   void changeOfflineUsername() {
     assert(widget.account.type == AccountType.offline);
     AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
     showDialog(
-        context: context,
+        context: kBaseNavigatorKey.currentContext!,
         builder: (context) {
           TextEditingController username = TextEditingController(text: widget.account.characterName);
           String? usernameError;
@@ -73,7 +73,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                               widget.account.characterName = username.text;
                               accounts.accounts.accounts[widget.account.uuid] = widget.account;
                               accounts.save();
-                              ScaffoldMessenger.of(kBaseKey.currentContext!)
+                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                                   .showSnackBar(SnackBar(content: Text('Changed character\'s name to ${username.text}')));
                               Navigator.pop(context);
                             })
@@ -84,7 +84,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   void removeAccount() {
     AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
     showDialog(
-        context: context,
+        context: kBaseNavigatorKey.currentContext!,
         builder: (context) => AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                 title: const Text('Are you sure?'),
@@ -99,7 +99,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                       child: const Text('Confirm'),
                       onPressed: () {
                         accounts.removeAccount(widget.account.uuid).then((_) {
-                          ScaffoldMessenger.of(kBaseKey.currentContext!)
+                          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                               .showSnackBar(SnackBar(content: Text('Removed account ${widget.account.characterName}')));
                         });
                         Navigator.pop(context);

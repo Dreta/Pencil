@@ -27,7 +27,7 @@ abstract class StartupTasks {
     if (!(await Provider.of<AccountsProvider>(context, listen: false)
             .refreshAccounts(Provider.of<TasksProvider>(context, listen: false))) &&
         context.mounted) {
-      ScaffoldMessenger.of(kBaseKey.currentContext!)
+      ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
           .showSnackBar(const SnackBar(content: Text('Failed to re-authenticate some accounts')));
     }
   }
@@ -35,7 +35,7 @@ abstract class StartupTasks {
   static Future<void> checkWebviewAvailability(BuildContext context) async {
     if (!(await WebviewWindow.isWebviewAvailable()) && context.mounted) {
       showDialog(
-          context: context,
+          context: kBaseNavigatorKey.currentContext!,
           barrierDismissible: Platform.isMacOS,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),

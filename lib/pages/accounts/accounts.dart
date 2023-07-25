@@ -27,7 +27,7 @@ class _AccountsState extends State<Accounts> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       showDialog(
-          context: context,
+          context: kBaseNavigatorKey.currentContext!,
           builder: (context) {
             TextEditingController username = TextEditingController();
             TextEditingController uuid = TextEditingController();
@@ -86,12 +86,12 @@ class _AccountsState extends State<Accounts> {
                                 try {
                                   Account account = await accounts.createOfflineAccount(context, username.text, uuidValue);
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(kBaseKey.currentContext!).showSnackBar(
+                                    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(
                                         SnackBar(content: Text('Created offline account ${account.characterName}')));
                                   }
                                 } catch (e1) {
                                   showDialog(
-                                      context: context,
+                                      context: kBaseNavigatorKey.currentContext!,
                                       builder: (context) => AlertDialog(
                                               insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                                               title: const Text('Failed to authenticate'),
@@ -128,18 +128,18 @@ class _AccountsState extends State<Accounts> {
       if (uri.host == 'login.live.com' && uri.path == '/oauth20_desktop.srf') {
         if (uri.queryParameters.containsKey('code')) {
           window.close();
-          ScaffoldMessenger.of(kBaseKey.currentContext!)
+          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
               .showSnackBar(const SnackBar(content: Text('Authenticating through Xbox Live...')));
           Task task =
               Task(name: 'Logging in through Xbox Live', type: TaskType.microsoftAuth, currentWork: 'Beginning authentication');
           tasks.addTask(task);
           try {
             Account account = await accounts.createMicrosoftAccount(context, uri.queryParameters['code']!, task, tasks);
-            ScaffoldMessenger.of(kBaseKey.currentContext!)
+            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                 .showSnackBar(SnackBar(content: Text('Logged in to Minecraft as ${account.characterName}')));
           } catch (e) {
             showDialog(
-                context: context,
+                context: kBaseNavigatorKey.currentContext!,
                 builder: (context) => AlertDialog(
                         insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                         title: const Text('Failed to authenticate'),
@@ -158,7 +158,7 @@ class _AccountsState extends State<Accounts> {
         if (uri.queryParameters['error'] != null) {
           if (uri.queryParameters['error'] != 'access_denied' && context.mounted) {
             showDialog(
-                context: context,
+                context: kBaseNavigatorKey.currentContext!,
                 builder: (context) => AlertDialog(
                         insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                         title: const Text('Failed to authenticate'),

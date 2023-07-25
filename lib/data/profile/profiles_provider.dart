@@ -9,11 +9,16 @@ import 'package:pencil/data/profile/profile.dart';
 class ProfilesProvider extends ChangeNotifier {
   final File _profilesFile;
   late Profiles profiles;
+  bool isRunning = false;
 
   ProfilesProvider() : _profilesFile = File(getPlatformProfilesPath()) {
     _profilesFile.createSync(recursive: true);
     String string = _profilesFile.readAsStringSync();
     profiles = Profiles.fromJson(string.isEmpty ? {} : jsonDecode(string));
+  }
+
+  void notify() {
+    notifyListeners();
   }
 
   Future<void> addProfile(Profile profile) async {

@@ -24,7 +24,7 @@ class Profiles extends StatefulWidget {
 
     if (manifest.manifest == null) {
       showDialog(
-          context: context,
+          context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                   title: const Text('Can\'t Create Profile'),
@@ -57,7 +57,7 @@ class Profiles extends StatefulWidget {
     }
 
     showDialog(
-        context: context,
+        context: kBaseNavigatorKey.currentContext!,
         builder: (context) {
           TextEditingController name = TextEditingController();
           TextEditingController version = TextEditingController();
@@ -128,7 +128,7 @@ class Profiles extends StatefulWidget {
                                 false,
                                 '-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
                                 ''));
-                            ScaffoldMessenger.of(kBaseKey.currentContext!)
+                            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                                 .showSnackBar(SnackBar(content: Text('Created profile ${name.text}')));
                           },
                         )
@@ -166,7 +166,7 @@ class _ProfilesState extends State<Profiles> {
               else
                 Container(
                     margin: const EdgeInsets.only(bottom: 16), child: Text('Profiles', style: theme.textTheme.headlineLarge)),
-              GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 6 / 5, children: [
+              GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 8 / 7, children: [
                 for (Profile profile in sortedProfiles)
                   ProfileWidget(
                       profile: profile,
@@ -199,7 +199,7 @@ class ProfileWidget extends StatelessWidget {
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     showDialog(
-        context: context,
+        context: kBaseNavigatorKey.currentContext!,
         builder: (context) => AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                 title: const Text('Are you sure?'),
@@ -219,7 +219,7 @@ class ProfileWidget extends StatelessWidget {
                         if (await directory.exists()) {
                           await directory.delete(recursive: true);
                         }
-                        ScaffoldMessenger.of(kBaseKey.currentContext!)
+                        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                             .showSnackBar(SnackBar(content: Text('Deleted profile ${profile.name}')));
                       })
                 ]));
@@ -275,7 +275,16 @@ class ProfileWidget extends StatelessWidget {
                     Container(
                         margin: const EdgeInsets.only(bottom: 5),
                         child: Text(profile.name, style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
-                    Text(profile.version, style: theme.textTheme.bodySmall)
+                    Text(profile.version, style: theme.textTheme.bodySmall),
+                    Align(
+                        alignment: Alignment.bottomRight,
+                        child: FilledButton(
+                            onPressed: profile.launching
+                                ? null
+                                : () {
+                                    profile.play(kBaseNavigatorKey.currentContext!, false);
+                                  },
+                            child: Text(profile.launching ? '...' : 'Play')))
                   ]))
             ])));
   }

@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -126,7 +127,7 @@ class _TextInputTileState extends State<TextInputTile> {
   Future<void> setText() async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     showDialog(
-        context: context,
+        context: kBaseNavigatorKey.currentContext!,
         builder: (context) {
           TextEditingController controller = TextEditingController(text: widget.value);
           String? error;

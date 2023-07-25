@@ -66,7 +66,7 @@ abstract class JavaUtils {
     } catch (e) {
       if (context.mounted) {
         showDialog(
-            context: context,
+            context: kBaseNavigatorKey.currentContext!,
             builder: (context) => AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                 title: const Text('Failed to download Java'),
