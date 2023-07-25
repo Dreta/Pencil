@@ -25,3 +25,9 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Do not commit JetBrains IDE configurations
+.idea/
+*.iml
+
+fonts/ProductSans*.ttf
