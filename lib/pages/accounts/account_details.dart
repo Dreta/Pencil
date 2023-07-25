@@ -157,6 +157,10 @@ class _AccountDetailsState extends State<AccountDetails> {
                             Text('Xbox Live Gamertag', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xboxGamertag!,
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                        trailing: const Icon(Icons.open_in_new),
+                        onTap: () {
+                          launchUrl(Uri.parse('https://social.xbox.com/en-us/ChangeGamerTag'));
+                        },
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
                       leading: const Icon(Icons.numbers),
