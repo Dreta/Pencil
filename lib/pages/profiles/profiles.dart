@@ -11,6 +11,7 @@ import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/data/versions/manifest/manifest_version.dart';
 import 'package:pencil/data/versions/manifest/version_manifest_provider.dart';
 import 'package:pencil/data/versions/version_type.dart';
+import 'package:pencil/pages/profiles/profile_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -219,6 +220,12 @@ class ProfileWidget extends StatelessWidget {
                         if (await directory.exists()) {
                           await directory.delete(recursive: true);
                         }
+                        if (!profile.img.startsWith('asset:')) {
+                          File file = File(profile.img);
+                          if (await file.exists()) {
+                            await file.delete();
+                          }
+                        }
                         ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                             .showSnackBar(SnackBar(content: Text('Deleted profile ${profile.name}')));
                       })
@@ -244,7 +251,10 @@ class ProfileWidget extends StatelessWidget {
                         ListTile(
                             title: Text('Edit', style: theme.textTheme.titleMedium),
                             leading: const Icon(Icons.edit),
-                            onTap: () {}),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileEdit(profile: profile)));
+                            }),
                         ListTile(
                             title: Text('Delete', style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
                             leading: Icon(Icons.delete, color: theme.colorScheme.error),

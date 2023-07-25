@@ -71,7 +71,11 @@ abstract class LaunchUtils {
         .replaceAll('\${resolution_height}', (profile.resolutionHeight ?? 0).toString())
         .replaceAll('\${auth_session}', '0')
         .replaceAll('\${user_properties}', '{}')
-        .replaceAll('\${game_assets}', settings.data.game!.assetsDirectory!);
+        .replaceAll('\${game_assets}', settings.data.game!.assetsDirectory!)
+        .replaceAll('\${quickPlayPath}', 'quickplay/log.json')
+        .replaceAll('\${quickPlaySingleplayer}', profile.quickPlayHost ?? '')
+        .replaceAll('\${quickPlayMultiplayer}', profile.quickPlayHost ?? '')
+        .replaceAll('\${quickPlayRealms}', profile.quickPlayHost ?? '');
   }
 
   static Future<String> _initializeNatives(

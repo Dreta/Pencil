@@ -165,7 +165,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   ListTile(
                       leading: const Icon(Icons.numbers),
                       onTap: copyUUID,
-                      title: Text('UUID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                      title: Text('Minecraft UUID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(widget.account.uuid,
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
