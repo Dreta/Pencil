@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:archive/archive_io.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
@@ -422,8 +423,17 @@ abstract class LaunchUtils {
             'MINECRAFT_LAUNCHER': 'Dreta/pencil',
             'USING_PENCIL': 'true'
           });
+
+      if (settings.data.launcher!.hideLauncherAfterStart!) {
+        appWindow.hide();
+      }
+
       tasks.removeTask(task);
       await process.exitCode;
+
+      if (settings.data.launcher!.hideLauncherAfterStart!) {
+        appWindow.show();
+      }
     } finally {
       profiles.isRunning = false;
       profiles.notify();

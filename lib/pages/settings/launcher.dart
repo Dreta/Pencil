@@ -75,12 +75,16 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
                   icon: const Icon(Icons.sort),
                   title: 'Profile Order',
                   value: settings.data.launcher!.profileSort!,
-                  mapping: const {
-                    ProfileSortType.lastPlayed: 'By Last Played',
-                    ProfileSortType.name: 'By Name'
-                  },
+                  mapping: const {ProfileSortType.lastPlayed: 'By Last Played', ProfileSortType.name: 'By Name'},
                   onChanged: (value) {
                     settings.data.launcher!.profileSort = value;
+                  }),
+              BooleanTile(
+                  icon: const Icon(Icons.remove_red_eye),
+                  title: 'Hide Launcher After Game Starts',
+                  value: settings.data.launcher!.hideLauncherAfterStart!,
+                  onChanged: (value) {
+                    settings.data.launcher!.hideLauncherAfterStart = value;
                   }),
               Container(
                   margin: const EdgeInsets.only(top: 8), child: Text('Download Sources', style: theme.textTheme.headlineSmall)),

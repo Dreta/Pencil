@@ -33,6 +33,7 @@ LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) =>
       json['showSnapshots'] as bool?,
       json['showHistorical'] as bool?,
       $enumDecodeNullable(_$ProfileSortTypeEnumMap, json['profileSort']),
+      json['hideLauncherAfterStart'] as bool?,
       json['checkUpdates'] as bool?,
       json['telemetry'] as bool?,
       json['host'] == null
@@ -48,6 +49,7 @@ Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) =>
       'showSnapshots': instance.showSnapshots,
       'showHistorical': instance.showHistorical,
       'profileSort': _$ProfileSortTypeEnumMap[instance.profileSort],
+      'hideLauncherAfterStart': instance.hideLauncherAfterStart,
       'checkUpdates': instance.checkUpdates,
       'telemetry': instance.telemetry,
       'host': instance.host,

@@ -18,7 +18,9 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       json['xboxToken'] as String?,
       json['xboxUserHash'] as String?,
       json['xstsToken'] as String?,
-      json['tokenExpireTime'] == null ? null : DateTime.parse(json['tokenExpireTime'] as String),
+      json['tokenExpireTime'] == null
+          ? null
+          : DateTime.parse(json['tokenExpireTime'] as String),
       json['reauthFailed'] as bool,
       $enumDecode(_$AccountTypeEnumMap, json['type']),
     );
