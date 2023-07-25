@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pencil/data/host.dart';
+import 'package:pencil/data/settings/settings_data.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/pages/settings/tiles.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,7 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
                   onChanged: (directory) {
                     settings.data.launcher!.imagesDirectory = directory;
                   }),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text('Releases', style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text('Profiles', style: theme.textTheme.headlineSmall)),
               BooleanTile(
                   icon: const Icon(Icons.list),
                   title: 'Show Stable Releases',
@@ -69,6 +70,17 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
                   value: settings.data.launcher!.showHistorical!,
                   onChanged: (value) {
                     settings.data.launcher!.showHistorical = value;
+                  }),
+              EnumTile(
+                  icon: const Icon(Icons.sort),
+                  title: 'Profile Order',
+                  value: settings.data.launcher!.profileSort!,
+                  mapping: const {
+                    ProfileSortType.lastPlayed: 'By Last Played',
+                    ProfileSortType.name: 'By Name'
+                  },
+                  onChanged: (value) {
+                    settings.data.launcher!.profileSort = value;
                   }),
               Container(
                   margin: const EdgeInsets.only(top: 8), child: Text('Download Sources', style: theme.textTheme.headlineSmall)),

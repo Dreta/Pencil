@@ -28,16 +28,17 @@ Map<String, dynamic> _$SettingsDataToJson(SettingsData instance) =>
 LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) =>
     LauncherSettings(
       json['profilesDirectory'] as String?,
-    )
-      ..imagesDirectory = json['imagesDirectory'] as String?
-      ..showReleases = json['showReleases'] as bool?
-      ..showSnapshots = json['showSnapshots'] as bool?
-      ..showHistorical = json['showHistorical'] as bool?
-      ..checkUpdates = json['checkUpdates'] as bool?
-      ..telemetry = json['telemetry'] as bool?
-      ..host = json['host'] == null
+      json['imagesDirectory'] as String?,
+      json['showReleases'] as bool?,
+      json['showSnapshots'] as bool?,
+      json['showHistorical'] as bool?,
+      $enumDecodeNullable(_$ProfileSortTypeEnumMap, json['profileSort']),
+      json['checkUpdates'] as bool?,
+      json['telemetry'] as bool?,
+      json['host'] == null
           ? null
-          : Host.fromJson(json['host'] as Map<String, dynamic>);
+          : Host.fromJson(json['host'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) =>
     <String, dynamic>{
@@ -46,19 +47,26 @@ Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) =>
       'showReleases': instance.showReleases,
       'showSnapshots': instance.showSnapshots,
       'showHistorical': instance.showHistorical,
+      'profileSort': _$ProfileSortTypeEnumMap[instance.profileSort],
       'checkUpdates': instance.checkUpdates,
       'telemetry': instance.telemetry,
       'host': instance.host,
     };
 
-GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings()
-  ..versionsDirectory = json['versionsDirectory'] as String?
-  ..assetsDirectory = json['assetsDirectory'] as String?
-  ..librariesDirectory = json['librariesDirectory'] as String?
-  ..worldsDirectory = json['worldsDirectory'] as String?
-  ..resourcePacksDirectory = json['resourcePacksDirectory'] as String?
-  ..shaderPacksDirectory = json['shaderPacksDirectory'] as String?
-  ..modsDirectory = json['modsDirectory'] as String?;
+const _$ProfileSortTypeEnumMap = {
+  ProfileSortType.lastPlayed: 'lastPlayed',
+  ProfileSortType.name: 'name',
+};
+
+GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
+      json['versionsDirectory'] as String?,
+      json['assetsDirectory'] as String?,
+      json['librariesDirectory'] as String?,
+      json['worldsDirectory'] as String?,
+      json['resourcePacksDirectory'] as String?,
+      json['shaderPacksDirectory'] as String?,
+      json['modsDirectory'] as String?,
+    );
 
 Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
     <String, dynamic>{
@@ -71,10 +79,11 @@ Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
       'modsDirectory': instance.modsDirectory,
     };
 
-JavaSettings _$JavaSettingsFromJson(Map<String, dynamic> json) => JavaSettings()
-  ..useManaged = json['useManaged'] as bool?
-  ..modernJavaHome = json['modernJavaHome'] as String?
-  ..legacyJavaHome = json['legacyJavaHome'] as String?;
+JavaSettings _$JavaSettingsFromJson(Map<String, dynamic> json) => JavaSettings(
+      json['useManaged'] as bool?,
+      json['modernJavaHome'] as String?,
+      json['legacyJavaHome'] as String?,
+    );
 
 Map<String, dynamic> _$JavaSettingsToJson(JavaSettings instance) =>
     <String, dynamic>{

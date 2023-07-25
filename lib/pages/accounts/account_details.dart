@@ -159,7 +159,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         trailing: const Icon(Icons.open_in_new),
                         onTap: () {
-                          launchUrl(Uri.parse('https://social.xbox.com/en-us/ChangeGamerTag'));
+                          launchUrl(Uri.parse('https://social.xbox.com/changegamertag'));
                         },
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(

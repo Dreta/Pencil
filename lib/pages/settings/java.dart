@@ -18,7 +18,7 @@ class SettingsJava extends StatelessWidget {
               Container(margin: const EdgeInsets.only(bottom: 24), child: Text('Java', style: theme.textTheme.headlineLarge)),
               BooleanTile(
                   icon: const Icon(Icons.coffee),
-                  title: 'Allow Pencil to Manage Java (Recommended)',
+                  title: 'Automatically Download Java (Recommended)',
                   value: settings.data.java!.useManaged!,
                   onChanged: (value) {
                     settings.data.java!.useManaged = value;

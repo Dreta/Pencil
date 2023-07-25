@@ -16,6 +16,7 @@ Version _$VersionFromJson(Map<String, dynamic> json) => Version(
       json['complianceLevel'] as int?,
       Downloads.fromJson(json['downloads'] as Map<String, dynamic>),
       json['id'] as String,
+      json['inheritsFrom'] as String?,
       json['javaVersion'] == null
           ? null
           : JavaVersion.fromJson(json['javaVersion'] as Map<String, dynamic>),
@@ -42,6 +43,7 @@ Map<String, dynamic> _$VersionToJson(Version instance) => <String, dynamic>{
       'complianceLevel': instance.complianceLevel,
       'downloads': instance.downloads,
       'id': instance.id,
+      'inheritsFrom': instance.inheritsFrom,
       'javaVersion': instance.javaVersion,
       'libraries': instance.libraries,
       'logging': instance.logging,

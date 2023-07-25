@@ -41,8 +41,9 @@ class _PencilBaseState extends State<PencilBase> {
 
     return Scaffold(
         key: kBaseKey,
-        floatingActionButton:
-            FloatingActionButton.extended(icon: const Icon(Icons.gamepad), label: const Text('Play'), onPressed: () {}),
+        floatingActionButton: _selectedPage == 1
+            ? FloatingActionButton.extended(icon: const Icon(Icons.add), label: const Text('Create Profile'), onPressed: () { Profiles.createProfile(context); },)
+            : FloatingActionButton.extended(icon: const Icon(Icons.gamepad), label: const Text('Play'), onPressed: () {}),
         body: Stack(children: [
           SafeArea(
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

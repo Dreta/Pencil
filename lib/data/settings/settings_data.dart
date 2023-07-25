@@ -28,15 +28,19 @@ class SettingsData {
   Map<String, dynamic> toJson() => _$SettingsDataToJson(this);
 }
 
+enum ProfileSortType { lastPlayed, name }
+
 @JsonSerializable()
 class LauncherSettings {
-  LauncherSettings(this.profilesDirectory);
+  LauncherSettings(this.profilesDirectory, this.imagesDirectory, this.showReleases, this.showSnapshots, this.showHistorical,
+      this.profileSort, this.checkUpdates, this.telemetry, this.host);
 
   String? profilesDirectory;
   String? imagesDirectory;
   bool? showReleases;
   bool? showSnapshots;
   bool? showHistorical;
+  ProfileSortType? profileSort;
   bool? checkUpdates;
   bool? telemetry;
   Host? host;
@@ -58,6 +62,7 @@ class LauncherSettings {
     showReleases ??= true;
     showSnapshots ??= false;
     showHistorical ??= false;
+    profileSort ??= ProfileSortType.lastPlayed;
     checkUpdates ??= true;
     telemetry ??= true;
     host ??= kHostPresetOfficial;
@@ -70,7 +75,8 @@ class LauncherSettings {
 
 @JsonSerializable()
 class GameSettings {
-  GameSettings();
+  GameSettings(this.versionsDirectory, this.assetsDirectory, this.librariesDirectory, this.worldsDirectory,
+      this.resourcePacksDirectory, this.shaderPacksDirectory, this.modsDirectory);
 
   String? versionsDirectory;
   String? assetsDirectory;
@@ -110,7 +116,7 @@ class GameSettings {
 
 @JsonSerializable()
 class JavaSettings {
-  JavaSettings();
+  JavaSettings(this.useManaged, this.modernJavaHome, this.legacyJavaHome);
 
   bool? useManaged;
   String? modernJavaHome;

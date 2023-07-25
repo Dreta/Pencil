@@ -19,6 +19,7 @@ class Version {
       this.complianceLevel,
       this.downloads,
       this.id,
+      this.inheritsFrom,
       this.javaVersion,
       this.libraries,
       this.logging,
@@ -35,6 +36,7 @@ class Version {
   int? complianceLevel;
   final Downloads downloads;
   final String id;
+  String? inheritsFrom;
   JavaVersion? javaVersion;
   final List<Library> libraries;
   Logging? logging;
