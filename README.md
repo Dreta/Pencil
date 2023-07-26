@@ -5,9 +5,9 @@ Pencil is an in-development Material Design Minecraft launcher based on Flutter.
 ## Current Features
 * [x] Material Design looks really good
 * [x] Microsoft authentication
-* [x] Separated profiles
-* [x] Launches the vanilla client (modded clients in progress)
-* [ ] Mod management support
+* [x] Isolated profiles
+* [x] Launches the vanilla, Fabric and Quilt client (Forge support in progress)
+* [ ] Mod management
 
 ## Screenshots
 
