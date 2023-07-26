@@ -24,12 +24,12 @@ class _WelcomeState extends State<Welcome> {
     Profile? selected = profiles.profiles.profiles[profiles.profiles.selectedProfile];
 
     return SizedBox(
-        height: 260,
+        height: 270,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Scrollbar(
               controller: _controller,
               child: SizedBox(
-                  height: 260,
+                  height: 270,
                   child: ListView(controller: _controller, scrollDirection: Axis.horizontal, children: [
                     if (selected != null)
                       Container(
@@ -65,8 +65,10 @@ class _WelcomeState extends State<Welcome> {
                                                   margin: const EdgeInsets.only(bottom: 5),
                                                   child: Text('Hop right back into the game',
                                                       style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
-                                              Text('Continue playing on the profile ${selected.name}.',
-                                                  style: theme.textTheme.bodySmall),
+                                              Container(
+                                                  margin: const EdgeInsets.only(bottom: 8),
+                                                  child: Text('Continue playing on the profile ${selected.name}.',
+                                                      style: theme.textTheme.bodySmall)),
                                               Align(
                                                   alignment: Alignment.bottomRight,
                                                   child: FilledButton(

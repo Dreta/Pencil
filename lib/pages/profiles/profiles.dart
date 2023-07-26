@@ -169,7 +169,7 @@ class _ProfilesState extends State<Profiles> {
               else
                 Container(
                     margin: const EdgeInsets.only(bottom: 16), child: Text('Profiles', style: theme.textTheme.headlineLarge)),
-              GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 8 / 7, children: [
+              GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 20 / 19, children: [
                 for (Profile profile in sortedProfiles)
                   ProfileWidget(
                       profile: profile,
@@ -287,7 +287,13 @@ class ProfileWidget extends StatelessWidget {
                     Container(
                         margin: const EdgeInsets.only(bottom: 5),
                         child: Text(profile.name, style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
-                    Text(profile.version, style: theme.textTheme.bodySmall),
+                    Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                            profile.addon == null
+                                ? profile.version
+                                : '${profile.version} modded with ${profile.addon!.name} ${profile.addonVersion!}',
+                            style: theme.textTheme.bodySmall)),
                     Align(
                         alignment: Alignment.bottomRight,
                         child: FilledButton(
