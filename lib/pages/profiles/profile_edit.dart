@@ -469,7 +469,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                           Container(
                               margin: const EdgeInsets.only(top: 8), child: const Center(child: CircularProgressIndicator()))
                         else if (realmsLoadError)
-                          Container(margin: const EdgeInsets.only(top: 8), child: Center(child: Icon(Icons.error, color: theme.colorScheme.error)))
+                          Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Center(child: Icon(Icons.error, color: theme.colorScheme.error)))
                         else
                           DropdownMenu<int>(
                               controller: host,

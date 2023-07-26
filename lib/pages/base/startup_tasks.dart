@@ -1,23 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:math';
 
-import 'package:archive/archive_io.dart';
-import 'package:crypto/crypto.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/accounts_provider.dart';
-import 'package:pencil/data/settings/settings_provider.dart';
-import 'package:pencil/data/task/task.dart';
 import 'package:pencil/data/task/tasks_provider.dart';
 import 'package:pencil/data/versions/manifest/version_manifest_provider.dart';
-import 'package:pencil/data/versions/rule.dart';
 import 'package:pencil/launch/java_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

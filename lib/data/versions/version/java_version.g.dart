@@ -11,8 +11,7 @@ JavaVersion _$JavaVersionFromJson(Map<String, dynamic> json) => JavaVersion(
       json['majorVersion'] as int,
     );
 
-Map<String, dynamic> _$JavaVersionToJson(JavaVersion instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$JavaVersionToJson(JavaVersion instance) => <String, dynamic>{
       'component': instance.component,
       'majorVersion': instance.majorVersion,
     };

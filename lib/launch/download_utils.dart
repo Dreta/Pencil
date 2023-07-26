@@ -25,7 +25,7 @@ import 'package:pencil/data/versions/version/version.dart';
 import 'package:provider/provider.dart';
 
 abstract class DownloadUtils {
-  static Future<void> downloadProfile(BuildContext context, Profile profile) async {
+  static Future<bool> downloadProfile(BuildContext context, Profile profile) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
     VersionManifestProvider manifest = Provider.of<VersionManifestProvider>(context, listen: false);
@@ -33,7 +33,7 @@ abstract class DownloadUtils {
     if (manifest.manifest == null && context.mounted) {
       ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
           .showSnackBar(const SnackBar(content: Text('Can\'t download game because the version manifest is unavailable.')));
-      return;
+      return false;
     }
 
     Task task = Task(
@@ -49,6 +49,7 @@ abstract class DownloadUtils {
       await _downloadLibraries(context, client, version, profile, host, tasks, task);
       await _downloadAddon(context, version, profile, host, tasks, task);
       await _downloadGame(context, client, version, host, task, tasks);
+      return true;
     } catch (e) {
       showDialog(
           context: kBaseNavigatorKey.currentContext!,
@@ -66,6 +67,7 @@ abstract class DownloadUtils {
     } finally {
       tasks.removeTask(task);
     }
+    return false;
   }
 
   static Future<Version> _downloadVersion(BuildContext context, http.Client client, String version, Host host,

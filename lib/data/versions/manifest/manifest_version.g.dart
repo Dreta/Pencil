@@ -6,8 +6,7 @@ part of 'manifest_version.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ManifestVersion _$ManifestVersionFromJson(Map<String, dynamic> json) =>
-    ManifestVersion(
+ManifestVersion _$ManifestVersionFromJson(Map<String, dynamic> json) => ManifestVersion(
       json['id'] as String,
       $enumDecode(_$VersionTypeEnumMap, json['type']),
       json['url'] as String,
@@ -17,8 +16,7 @@ ManifestVersion _$ManifestVersionFromJson(Map<String, dynamic> json) =>
       json['complianceLevel'] as int?,
     );
 
-Map<String, dynamic> _$ManifestVersionToJson(ManifestVersion instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ManifestVersionToJson(ManifestVersion instance) => <String, dynamic>{
       'id': instance.id,
       'type': _$VersionTypeEnumMap[instance.type]!,
       'url': instance.url,

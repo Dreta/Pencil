@@ -33,45 +33,51 @@ class _WelcomeState extends State<Welcome> {
                   child: ListView(controller: _controller, scrollDirection: Axis.horizontal, children: [
                     if (selected != null)
                       Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        width: 350,
-                        child: Card(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            color: theme.colorScheme.inversePrimary.withAlpha(50),
-                            child: InkWell(
-                                customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                onTap: () async {
-                                  if (!selected.launching) {
-                                    selected.play(kBaseNavigatorKey.currentContext!, false);
-                                  }
-                                },
-                                child:
-                                Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
-                                  SizedBox(
-                                      width: 350,
-                                      height: 150,
-                                      child: ClipRRect(borderRadius: BorderRadius.circular(16), child: selected.img.startsWith('asset:')
-                                          ? Image.asset(selected.img.replaceAll('asset:', ''), fit: BoxFit.cover)
-                                          : Image.file(File(selected.img), fit: BoxFit.cover))),
-                                  Padding(
-                                      padding: const EdgeInsets.all(12),
-                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                        Container(
-                                            margin: const EdgeInsets.only(bottom: 5),
-                                            child: Text('Hop right back into the game', style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
-                                        Text('Continue playing on the profile ${selected.name}.', style: theme.textTheme.bodySmall),
-                                        Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: FilledButton(
-                                                onPressed: selected.launching
-                                                    ? null
-                                                    : () {
-                                                  selected.play(kBaseNavigatorKey.currentContext!, false);
-                                                },
-                                                child: Text(selected.launching ? '...' : 'Play')))
-                                      ])),
-                                ])))),
+                          margin: const EdgeInsets.only(right: 10),
+                          width: 350,
+                          child: Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              color: theme.colorScheme.inversePrimary.withAlpha(50),
+                              child: InkWell(
+                                  customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  onTap: () async {
+                                    if (!selected.launching) {
+                                      selected.play(kBaseNavigatorKey.currentContext!, false);
+                                    }
+                                  },
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                            width: 350,
+                                            height: 150,
+                                            child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(16),
+                                                child: selected.img.startsWith('asset:')
+                                                    ? Image.asset(selected.img.replaceAll('asset:', ''), fit: BoxFit.cover)
+                                                    : Image.file(File(selected.img), fit: BoxFit.cover))),
+                                        Padding(
+                                            padding: const EdgeInsets.all(12),
+                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Container(
+                                                  margin: const EdgeInsets.only(bottom: 5),
+                                                  child: Text('Hop right back into the game',
+                                                      style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
+                                              Text('Continue playing on the profile ${selected.name}.',
+                                                  style: theme.textTheme.bodySmall),
+                                              Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: FilledButton(
+                                                      onPressed: selected.launching
+                                                          ? null
+                                                          : () {
+                                                              selected.play(kBaseNavigatorKey.currentContext!, false);
+                                                            },
+                                                      child: Text(selected.launching ? '...' : 'Play')))
+                                            ])),
+                                      ])))),
                     WelcomeWidget(
                         url: 'https://example.org',
                         title: 'Welcome to Pencil',

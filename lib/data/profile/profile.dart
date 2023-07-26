@@ -129,10 +129,11 @@ class Profile {
     launching = true;
     profiles.notify();
 
-    await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this);
-    await Future.delayed(const Duration(seconds: 2)); // Magic, do not remove (for Linux at least)
-    await LaunchUtils.launchGame(
-        kBaseNavigatorKey.currentContext!, this, accounts.accounts.accounts[accounts.accounts.currentAccount!]!);
+    if (await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this)) {
+      await Future.delayed(const Duration(seconds: 2)); // Magic, do not remove (for Linux at least)
+      await LaunchUtils.launchGame(
+          kBaseNavigatorKey.currentContext!, this, accounts.accounts.accounts[accounts.accounts.currentAccount!]!);
+    }
 
     launching = false;
     profiles.notify();

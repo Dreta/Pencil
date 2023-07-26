@@ -7,13 +7,20 @@ import 'package:pencil/data/versions/version/version.dart';
 abstract class Addon {
   Future<List<String>> listAvailableAddonVersions(BuildContext context, Version version, Host host);
 
-  Future<void> downloadAddonManifest(BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
+  Future<void> downloadAddonManifest(
+      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
 
-  Future<void> downloadClient(BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
+  Future<void> downloadClient(
+      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
 
-  Future<void> downloadLibraries(BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
+  Future<void> downloadLibraries(
+      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks);
 
   Future<List<String>> modClasspath(BuildContext context, Version version, String addonVersion, Host host);
+
+  Future<List<String>> modGameArguments(BuildContext context, Version version, String addonVersion, Host host);
+
+  Future<List<String>> modJVMArguments(BuildContext context, Version version, String addonVersion, Host host);
 
   Future<String> modMainClass(BuildContext context, Version version, String addonVersion, Host host);
 

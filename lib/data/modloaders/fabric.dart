@@ -19,10 +19,10 @@ class FabricCompatibleLoader {
 @JsonSerializable()
 class FabricLibrary {
   FabricLibrary(this.name, this.url);
-  
+
   String name;
-  String url;
-  
+  String? url;
+
   factory FabricLibrary.fromJson(Map<String, dynamic> json) => _$FabricLibraryFromJson(json);
 
   Map<String, dynamic> toJson() => _$FabricLibraryToJson(this);
@@ -34,8 +34,9 @@ class FabricLauncherMeta {
 
   int version;
   FabricLibraries libraries;
-  FabricMainClass mainClass;
-  
+  FabricArguments? arguments;
+  dynamic mainClass; // String | FabricMainClass
+
   factory FabricLauncherMeta.fromJson(Map<String, dynamic> json) => _$FabricLauncherMetaFromJson(json);
 
   Map<String, dynamic> toJson() => _$FabricLauncherMetaToJson(this);
@@ -55,6 +56,22 @@ class FabricLibraries {
 }
 
 @JsonSerializable()
+class FabricArguments {
+  FabricArguments(this.client, this.common, this.server);
+
+  @JsonKey(defaultValue: [])
+  List<String> client;
+  @JsonKey(defaultValue: [])
+  List<String> common;
+  @JsonKey(defaultValue: [])
+  List<String> server;
+
+  factory FabricArguments.fromJson(Map<String, dynamic> json) => _$FabricArgumentsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FabricArgumentsToJson(this);
+}
+
+@JsonSerializable()
 class FabricMainClass {
   FabricMainClass(this.client, this.server, this.serverLauncher);
 
@@ -70,13 +87,13 @@ class FabricMainClass {
 @JsonSerializable()
 class FabricVersion {
   FabricVersion(this.separator, this.build, this.maven, this.version, this.stable);
-  
+
   String? separator;
   int? build;
   String maven;
   String version;
   bool? stable;
-  
+
   factory FabricVersion.fromJson(Map<String, dynamic> json) => _$FabricVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$FabricVersionToJson(this);

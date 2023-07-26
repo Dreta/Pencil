@@ -32,7 +32,7 @@ Map<String, dynamic> _$FabricCompatibleLoaderToJson(
 FabricLibrary _$FabricLibraryFromJson(Map<String, dynamic> json) =>
     FabricLibrary(
       json['name'] as String,
-      json['url'] as String,
+      json['url'] as String?,
     );
 
 Map<String, dynamic> _$FabricLibraryToJson(FabricLibrary instance) =>
@@ -45,13 +45,16 @@ FabricLauncherMeta _$FabricLauncherMetaFromJson(Map<String, dynamic> json) =>
     FabricLauncherMeta(
       json['version'] as int,
       FabricLibraries.fromJson(json['libraries'] as Map<String, dynamic>),
-      FabricMainClass.fromJson(json['mainClass'] as Map<String, dynamic>),
-    );
+      json['mainClass'],
+    )..arguments = json['arguments'] == null
+        ? null
+        : FabricArguments.fromJson(json['arguments'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$FabricLauncherMetaToJson(FabricLauncherMeta instance) =>
     <String, dynamic>{
       'version': instance.version,
       'libraries': instance.libraries,
+      'arguments': instance.arguments,
       'mainClass': instance.mainClass,
     };
 
@@ -69,6 +72,23 @@ FabricLibraries _$FabricLibrariesFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$FabricLibrariesToJson(FabricLibraries instance) =>
+    <String, dynamic>{
+      'client': instance.client,
+      'common': instance.common,
+      'server': instance.server,
+    };
+
+FabricArguments _$FabricArgumentsFromJson(Map<String, dynamic> json) =>
+    FabricArguments(
+      (json['client'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+          [],
+      (json['common'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+          [],
+      (json['server'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+          [],
+    );
+
+Map<String, dynamic> _$FabricArgumentsToJson(FabricArguments instance) =>
     <String, dynamic>{
       'client': instance.client,
       'common': instance.common,

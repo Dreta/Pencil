@@ -7,26 +7,18 @@ part of 'settings_data.dart';
 // **************************************************************************
 
 SettingsData _$SettingsDataFromJson(Map<String, dynamic> json) => SettingsData(
-      json['launcher'] == null
-          ? null
-          : LauncherSettings.fromJson(json['launcher'] as Map<String, dynamic>),
-      json['game'] == null
-          ? null
-          : GameSettings.fromJson(json['game'] as Map<String, dynamic>),
-      json['java'] == null
-          ? null
-          : JavaSettings.fromJson(json['java'] as Map<String, dynamic>),
+      json['launcher'] == null ? null : LauncherSettings.fromJson(json['launcher'] as Map<String, dynamic>),
+      json['game'] == null ? null : GameSettings.fromJson(json['game'] as Map<String, dynamic>),
+      json['java'] == null ? null : JavaSettings.fromJson(json['java'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$SettingsDataToJson(SettingsData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SettingsDataToJson(SettingsData instance) => <String, dynamic>{
       'launcher': instance.launcher,
       'game': instance.game,
       'java': instance.java,
     };
 
-LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) =>
-    LauncherSettings(
+LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) => LauncherSettings(
       json['profilesDirectory'] as String?,
       json['imagesDirectory'] as String?,
       json['showReleases'] as bool?,
@@ -36,13 +28,10 @@ LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) =>
       json['hideLauncherAfterStart'] as bool?,
       json['checkUpdates'] as bool?,
       json['telemetry'] as bool?,
-      json['host'] == null
-          ? null
-          : Host.fromJson(json['host'] as Map<String, dynamic>),
+      json['host'] == null ? null : Host.fromJson(json['host'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) => <String, dynamic>{
       'profilesDirectory': instance.profilesDirectory,
       'imagesDirectory': instance.imagesDirectory,
       'showReleases': instance.showReleases,
@@ -70,8 +59,7 @@ GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
       json['modsDirectory'] as String?,
     );
 
-Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) => <String, dynamic>{
       'versionsDirectory': instance.versionsDirectory,
       'assetsDirectory': instance.assetsDirectory,
       'librariesDirectory': instance.librariesDirectory,
@@ -87,8 +75,7 @@ JavaSettings _$JavaSettingsFromJson(Map<String, dynamic> json) => JavaSettings(
       json['legacyJavaHome'] as String?,
     );
 
-Map<String, dynamic> _$JavaSettingsToJson(JavaSettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$JavaSettingsToJson(JavaSettings instance) => <String, dynamic>{
       'useManaged': instance.useManaged,
       'modernJavaHome': instance.modernJavaHome,
       'legacyJavaHome': instance.legacyJavaHome,

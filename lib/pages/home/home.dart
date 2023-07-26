@@ -23,9 +23,7 @@ class _HomeState extends State<Home> {
               Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   child: Text('Welcome to Pencil', style: theme.textTheme.headlineSmall)),
-              Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: const Welcome()),
+              Container(margin: const EdgeInsets.only(bottom: 16), child: const Welcome()),
               Container(
                   margin: const EdgeInsets.only(bottom: 8), child: Text('Minecraft News', style: theme.textTheme.headlineSmall)),
               const News()

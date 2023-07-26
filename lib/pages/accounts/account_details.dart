@@ -29,7 +29,8 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   void copyAccessToken() {
     Clipboard.setData(ClipboardData(text: widget.account.accessToken));
-    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard (Do not share this with others)')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
+        .showSnackBar(const SnackBar(content: Text('Copied to clipboard (Do not share this with others)')));
   }
 
   void changeOfflineUsername() {
@@ -187,8 +188,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                         leading: const Icon(Icons.key),
                         onTap: copyAccessToken,
                         title: Text('Access Token', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                        subtitle: Text('Click to copy',
-                            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                        subtitle:
+                            Text('Click to copy', style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
                       leading: const Icon(Icons.coffee),

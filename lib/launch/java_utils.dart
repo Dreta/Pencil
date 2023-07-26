@@ -68,16 +68,16 @@ abstract class JavaUtils {
         showDialog(
             context: kBaseNavigatorKey.currentContext!,
             builder: (context) => AlertDialog(
-                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Failed to download Java'),
-                content: const Text('You won\'t be able to launch the game. Please check your internet connection.'),
-                actions: [
-                  TextButton(
-                      child: const Text('Confirm'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      })
-                ]));
+                    insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                    title: const Text('Failed to download Java'),
+                    content: const Text('You won\'t be able to launch the game. Please check your internet connection.'),
+                    actions: [
+                      TextButton(
+                          child: const Text('Confirm'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          })
+                    ]));
       }
     } finally {
       tasks.removeTask(task);

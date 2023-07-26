@@ -10,9 +10,8 @@ import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/account.dart';
 import 'package:pencil/data/host.dart';
-import 'package:pencil/data/profile/profiles_provider.dart';
-import 'package:pencil/launch/download_utils.dart';
 import 'package:pencil/data/profile/profile.dart';
+import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/data/task/task.dart';
 import 'package:pencil/data/task/tasks_provider.dart';
@@ -20,6 +19,7 @@ import 'package:pencil/data/versions/rule.dart';
 import 'package:pencil/data/versions/version/arguments.dart';
 import 'package:pencil/data/versions/version/library.dart';
 import 'package:pencil/data/versions/version/version.dart';
+import 'package:pencil/launch/download_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -286,14 +286,7 @@ abstract class LaunchUtils {
       if (version.arguments != null) {
         for (dynamic argument in version.arguments!.game) {
           if (argument is String) {
-            gameArguments.add(await _processArgument(
-                context,
-                profile,
-                account,
-                version,
-                argument,
-                nativeDirectory,
-                classpath));
+            gameArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
           } else if (argument is Map) {
             PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
             bool doUse = false;
@@ -309,25 +302,12 @@ abstract class LaunchUtils {
             if (doUse) {
               if (platformArg.value is List) {
                 for (String value in (platformArg.value as List<dynamic>)) {
-                  gameArguments.add(await _processArgument(
-                      context,
-                      profile,
-                      account,
-                      version,
-                      value,
-                      nativeDirectory,
-                      classpath));
+                  gameArguments
+                      .add(await _processArgument(context, profile, account, version, value, nativeDirectory, classpath));
                 }
               } else if (platformArg.value is String) {
-                gameArguments
-                    .add(await _processArgument(
-                    context,
-                    profile,
-                    account,
-                    version,
-                    platformArg.value,
-                    nativeDirectory,
-                    classpath));
+                gameArguments.add(
+                    await _processArgument(context, profile, account, version, platformArg.value, nativeDirectory, classpath));
               }
             }
           }
@@ -335,14 +315,7 @@ abstract class LaunchUtils {
 
         for (dynamic argument in version.arguments!.jvm) {
           if (argument is String) {
-            jvmArguments.add(await _processArgument(
-                context,
-                profile,
-                account,
-                version,
-                argument,
-                nativeDirectory,
-                classpath));
+            jvmArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
           } else if (argument is Map) {
             PlatformArgument platformArg = PlatformArgument.fromJson(argument as Map<String, dynamic>);
             bool doUse = false;
@@ -358,39 +331,18 @@ abstract class LaunchUtils {
             if (doUse) {
               if (platformArg.value is List) {
                 for (String value in (platformArg.value as List<dynamic>)) {
-                  jvmArguments.add(await _processArgument(
-                      context,
-                      profile,
-                      account,
-                      version,
-                      value,
-                      nativeDirectory,
-                      classpath));
+                  jvmArguments.add(await _processArgument(context, profile, account, version, value, nativeDirectory, classpath));
                 }
               } else if (platformArg.value is String) {
-                jvmArguments
-                    .add(await _processArgument(
-                    context,
-                    profile,
-                    account,
-                    version,
-                    platformArg.value,
-                    nativeDirectory,
-                    classpath));
+                jvmArguments.add(
+                    await _processArgument(context, profile, account, version, platformArg.value, nativeDirectory, classpath));
               }
             }
           }
         }
       } else if (version.minecraftArguments != null) {
         for (String argument in version.minecraftArguments!.split(' ')) {
-          gameArguments.add(await _processArgument(
-              context,
-              profile,
-              account,
-              version,
-              argument,
-              nativeDirectory,
-              classpath));
+          gameArguments.add(await _processArgument(context, profile, account, version, argument, nativeDirectory, classpath));
         }
         jvmArguments.addAll([
           '-cp',
@@ -401,6 +353,7 @@ abstract class LaunchUtils {
           '-Dminecraft.client.jar=${path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar')}',
         ]);
       }
+      jvmArguments.add('-Dminecraft.pencil=true');
 
       if (version.logging != null) {
         jvmArguments.add(version.logging!.client.argument.replaceAll(
@@ -425,7 +378,9 @@ abstract class LaunchUtils {
         javaHome = settings.data.java!.legacyJavaHome!;
       }
 
-      String mainClass = profile.addon == null ? version.mainClass : (await profile.addon!.modMainClass(context, version, profile.addonVersion!, settings.data.launcher!.host!));
+      String mainClass = profile.addon == null
+          ? version.mainClass
+          : (await profile.addon!.modMainClass(context, version, profile.addonVersion!, settings.data.launcher!.host!));
 
       Process process = await Process.start(javaExecutable, [...jvmArguments, mainClass, ...gameArguments],
           workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),
@@ -445,16 +400,16 @@ abstract class LaunchUtils {
         showDialog(
             context: kBaseNavigatorKey.currentContext!,
             builder: (context) => AlertDialog(
-                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Game Crashed'),
-                content: Text('The game exited with exit code $exitCode.'),
-                actions: [
-                  TextButton(
-                      child: const Text('Confirm'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      })
-                ]));
+                    insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                    title: const Text('Game Crashed'),
+                    content: Text('The game exited with exit code $exitCode.'),
+                    actions: [
+                      TextButton(
+                          child: const Text('Confirm'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          })
+                    ]));
       }
 
       if (settings.data.launcher!.hideLauncherAfterStart!) {

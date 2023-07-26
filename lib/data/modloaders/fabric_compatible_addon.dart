@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -50,21 +51,38 @@ class FabricCompatibleAddon extends Addon {
       task.currentWork = 'Downloading library ${library.name}';
       tasks.notify();
 
+      if (library.url == null) {
+        continue;
+      }
+
       List<String> nameParts = library.name.split(':');
       List<String> orgParts = nameParts[0].split('.');
       String libraryName = nameParts[1];
       String libraryVer = nameParts[2];
 
       File file = File(path.joinAll(
-          [settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '${libraryName}-${libraryVer}.jar']));
-      if (await file.exists()) {
+          [settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '$libraryName-$libraryVer.jar']));
+      String? hash;
+      try {
+        http.Response hashR = await http.get(
+            Uri.parse(host
+                .formatLink('${library.url}/${orgParts.join('/')}/$libraryName/$libraryVer/$libraryName-$libraryVer.jar.sha256')),
+            headers: {'User-Agent': kUserAgent});
+        hash = hashR.body.replaceAll('\n', '');
+      } catch (e) {
+        // ignore
+      }
+      if (await file.exists() &&
+          (hash == null ? true : sha256.convert(await file.readAsBytes()).toString() == hash.toLowerCase())) {
         continue;
       }
-
       http.Response r = await http.get(
-          Uri.parse(host
-              .formatLink('${library.url}/${orgParts.join('/')}/${libraryName}/${libraryVer}/${libraryName}-${libraryVer}.jar')),
+          Uri.parse(
+              host.formatLink('${library.url}/${orgParts.join('/')}/$libraryName/$libraryVer/$libraryName-$libraryVer.jar')),
           headers: {'User-Agent': kUserAgent});
+      if (hash != null && sha256.convert(r.bodyBytes).toString() != hash.toLowerCase()) {
+        throw Exception('Invalid SHA256 checksum for Fabric library $libraryName');
+      }
       if (!(await file.exists())) {
         await file.create(recursive: true);
       }
@@ -102,15 +120,29 @@ class FabricCompatibleAddon extends Addon {
     String libraryVer = nameParts[2];
 
     File file = File(path.joinAll(
-        [settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '${libraryName}-${libraryVer}.jar']));
-    if (await file.exists()) {
+        [settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '$libraryName-$libraryVer.jar']));
+    String? hash;
+    try {
+      http.Response hashR = await http.get(
+          Uri.parse(host.formatLink(
+              '${type.maven(libraryVer.contains('SNAPSHOT'), orgParts.join('.'))}/${orgParts.join('/')}/$libraryName/$libraryVer/$libraryName-$libraryVer.jar.sha256')),
+          headers: {'User-Agent': kUserAgent});
+      hash = hashR.body.replaceAll('\n', '');
+    } catch (e) {
+      // ignore
+    }
+    if (await file.exists() &&
+        (hash == null ? true : sha256.convert(await file.readAsBytes()).toString() == hash.toLowerCase())) {
       return;
     }
 
     http.Response r = await http.get(
         Uri.parse(host.formatLink(
-            '${type.maven(libraryVer.contains('SNAPSHOT'))}/${orgParts.join('/')}/${libraryName}/${libraryVer}/${libraryName}-${libraryVer}.jar')),
+            '${type.maven(libraryVer.contains('SNAPSHOT'), orgParts.join('.'))}/${orgParts.join('/')}/$libraryName/$libraryVer/$libraryName-$libraryVer.jar')),
         headers: {'User-Agent': kUserAgent});
+    if (hash != null && sha256.convert(r.bodyBytes).toString() != hash.toLowerCase()) {
+      throw Exception('Invalid SHA256 checksum for Fabric library $libraryName');
+    }
     if (!(await file.exists())) {
       await file.create(recursive: true);
     }
@@ -134,9 +166,11 @@ class FabricCompatibleAddon extends Addon {
       http.Response r =
           await http.get(Uri.parse(host.formatLink('${type.download}${version.id}')), headers: {'User-Agent': kUserAgent});
       Map<String, FabricCompatibleLoader> available = {};
-      for (Map<String, dynamic> fv in jsonDecode(utf8.decode(r.bodyBytes))) {
-        FabricCompatibleLoader loader = FabricCompatibleLoader.fromJson(fv);
-        available[loader.loader.version] = loader;
+      for (dynamic fv in jsonDecode(utf8.decode(r.bodyBytes))) {
+        if (fv is Map<String, dynamic>) {
+          FabricCompatibleLoader loader = FabricCompatibleLoader.fromJson(fv);
+          available[loader.loader.version] = loader;
+        }
       }
       if (!(await file.exists())) {
         await file.create(recursive: true);
@@ -149,9 +183,11 @@ class FabricCompatibleAddon extends Addon {
       if (await file.exists()) {
         try {
           Map<String, FabricCompatibleLoader> available = {};
-          for (Map<String, dynamic> fv in jsonDecode(await file.readAsString())) {
-            FabricCompatibleLoader loader = FabricCompatibleLoader.fromJson(fv);
-            available[loader.loader.version] = loader;
+          for (dynamic fv in jsonDecode(await file.readAsString())) {
+            if (fv is Map<String, dynamic>) {
+              FabricCompatibleLoader loader = FabricCompatibleLoader.fromJson(fv);
+              available[loader.loader.version] = loader;
+            }
           }
           _cache = available;
           return available;
@@ -185,7 +221,8 @@ class FabricCompatibleAddon extends Addon {
       List<String> orgParts = nameParts[0].split('.');
       String libraryName = nameParts[1];
       String libraryVer = nameParts[2];
-      classpath.add(path.joinAll([settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '${libraryName}-${libraryVer}.jar']));
+      classpath.add(path.joinAll(
+          [settings.data.game!.librariesDirectory!, ...orgParts, libraryName, libraryVer, '$libraryName-$libraryVer.jar']));
     }
     return classpath;
   }
@@ -193,7 +230,27 @@ class FabricCompatibleAddon extends Addon {
   @override
   Future<String> modMainClass(BuildContext context, Version version, String addonVersion, Host host) async {
     FabricCompatibleLoader loader = (await getManifest(context, version, host))[addonVersion]!;
-    return loader.launcherMeta.mainClass.client;
+    if (loader.launcherMeta.mainClass is String) {
+      return loader.launcherMeta.mainClass;
+    }
+    return FabricMainClass.fromJson(loader.launcherMeta.mainClass).client;
+  }
+
+  @override
+  Future<List<String>> modGameArguments(BuildContext context, Version version, String addonVersion, Host host) async {
+    FabricCompatibleLoader loader = (await getManifest(context, version, host))[addonVersion]!;
+    if (loader.launcherMeta.arguments == null) {
+      return [];
+    }
+    List<String> args = [];
+    args.addAll(loader.launcherMeta.arguments!.client);
+    args.addAll(loader.launcherMeta.arguments!.common);
+    return args;
+  }
+
+  @override
+  Future<List<String>> modJVMArguments(BuildContext context, Version version, String addonVersion, Host host) async {
+    return [];
   }
 }
 
@@ -208,8 +265,8 @@ enum FabricType {
     }[this]!;
   }
 
-  String maven(bool isSnapshot) {
-    if (this == FabricType.quilt) {
+  String maven(bool isSnapshot, String orgName) {
+    if (this == FabricType.quilt && orgName.contains('quilt')) {
       return isSnapshot ? 'https://maven.quiltmc.org/repository/snapshot/' : 'https://maven.quiltmc.org/repository/release/';
     }
     return 'https://maven.fabricmc.net/';
