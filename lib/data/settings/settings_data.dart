@@ -95,7 +95,7 @@ class GameSettings {
       librariesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'libraries');
       modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'mods');
     } else if (Platform.isWindows) {
-      versionsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'games');
+      versionsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'versions');
       assetsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'assets');
       librariesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'assets', 'libraries');
       modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'mods');
