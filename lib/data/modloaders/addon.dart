@@ -16,4 +16,6 @@ abstract class Addon {
   Future<List<String>> modClasspath(BuildContext context, Version version, String addonVersion, Host host);
 
   Future<String> modMainClass(BuildContext context, Version version, String addonVersion, Host host);
+
+  String get name;
 }

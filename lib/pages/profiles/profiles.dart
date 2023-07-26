@@ -128,7 +128,9 @@ class Profiles extends StatefulWidget {
                                 null,
                                 false,
                                 '-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
-                                ''));
+                                '',
+                                AddonType.disabled,
+                                null));
                             ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                                 .showSnackBar(SnackBar(content: Text('Created profile ${name.text}')));
                           },

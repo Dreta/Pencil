@@ -47,6 +47,7 @@ abstract class DownloadUtils {
       await _downloadLoggingConfig(context, client, version, host, tasks, task);
       await _downloadAssets(context, client, assets, version.assetIndex.totalSize, host, tasks, task);
       await _downloadLibraries(context, client, version, profile, host, tasks, task);
+      await _downloadAddon(context, version, profile, host, tasks, task);
       await _downloadGame(context, client, version, host, task, tasks);
     } catch (e) {
       showDialog(
@@ -230,6 +231,16 @@ abstract class DownloadUtils {
       throw Exception('Incorrect size for logging config ${version.logging!.client.file.id}');
     }
     await file.writeAsBytes(r.bodyBytes);
+  }
+
+  static Future<void> _downloadAddon(
+      BuildContext context, Version version, Profile profile, Host host, TasksProvider tasks, Task task) async {
+    if (profile.addon == null) {
+      return;
+    }
+    await profile.addon!.downloadAddonManifest(context, version, profile.addonVersion!, host, task, tasks);
+    await profile.addon!.downloadLibraries(context, version, profile.addonVersion!, host, task, tasks);
+    await profile.addon!.downloadClient(context, version, profile.addonVersion!, host, task, tasks);
   }
 
   static Future<void> _downloadLibraries(BuildContext context, http.Client client, Version version, Profile profile, Host host,

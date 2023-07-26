@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/account.dart';
+import 'package:pencil/data/host.dart';
 import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/launch/download_utils.dart';
 import 'package:pencil/data/profile/profile.dart';
@@ -203,7 +204,7 @@ abstract class LaunchUtils {
     throw Exception('Unsupported Platform');
   }
 
-  static Future<String> _buildClasspath(BuildContext context, Profile profile, Version version) async {
+  static Future<String> _buildClasspath(BuildContext context, Profile profile, Host host, Version version) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     List<String> parts = [];
 
@@ -233,6 +234,10 @@ abstract class LaunchUtils {
       }
     }
     parts.add(path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar'));
+
+    if (profile.addon != null) {
+      parts.addAll(await profile.addon!.modClasspath(context, version, profile.addonVersion!, host));
+    }
 
     return parts.join(':');
   }
@@ -274,7 +279,7 @@ abstract class LaunchUtils {
 
       task.currentWork = 'Building classpath';
       tasks.notify();
-      String classpath = await _buildClasspath(context, profile, version);
+      String classpath = await _buildClasspath(context, profile, settings.data.launcher!.host!, version);
 
       task.currentWork = 'Setting up game arguments';
       tasks.notify();
@@ -420,7 +425,9 @@ abstract class LaunchUtils {
         javaHome = settings.data.java!.legacyJavaHome!;
       }
 
-      Process process = await Process.start(javaExecutable, [...jvmArguments, version.mainClass, ...gameArguments],
+      String mainClass = profile.addon == null ? version.mainClass : (await profile.addon!.modMainClass(context, version, profile.addonVersion!, settings.data.launcher!.host!));
+
+      Process process = await Process.start(javaExecutable, [...jvmArguments, mainClass, ...gameArguments],
           workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),
           environment: {
             'JAVA_HOME': Platform.isMacOS ? path.join(javaHome, 'Contents', 'Home') : javaHome,

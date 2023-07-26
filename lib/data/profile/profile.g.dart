@@ -21,6 +21,9 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
       json['jvmArguments'] as String? ??
           '-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
       json['gameArguments'] as String? ?? '',
+      $enumDecodeNullable(_$AddonTypeEnumMap, json['addonType']) ??
+          AddonType.disabled,
+      json['addonVersion'] as String?,
     );
 
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
@@ -36,6 +39,8 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'enabledDemoMode': instance.enabledDemoMode,
       'jvmArguments': instance.jvmArguments,
       'gameArguments': instance.gameArguments,
+      'addonType': _$AddonTypeEnumMap[instance.addonType]!,
+      'addonVersion': instance.addonVersion,
     };
 
 const _$QuickPlayModeEnumMap = {
@@ -43,6 +48,13 @@ const _$QuickPlayModeEnumMap = {
   QuickPlayMode.singleplayer: 'singleplayer',
   QuickPlayMode.multiplayer: 'multiplayer',
   QuickPlayMode.realms: 'realms',
+};
+
+const _$AddonTypeEnumMap = {
+  AddonType.disabled: 'disabled',
+  AddonType.forge: 'forge',
+  AddonType.fabric: 'fabric',
+  AddonType.quilt: 'quilt',
 };
 
 Profiles _$ProfilesFromJson(Map<String, dynamic> json) => Profiles(

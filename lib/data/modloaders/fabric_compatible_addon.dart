@@ -22,6 +22,11 @@ class FabricCompatibleAddon extends Addon {
   Map<String, FabricCompatibleLoader>? _cache;
 
   @override
+  String get name {
+    return type == FabricType.fabric ? 'Fabric' : 'Quilt';
+  }
+
+  @override
   Future<void> downloadAddonManifest(
       BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
     return;
