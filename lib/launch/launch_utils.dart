@@ -394,6 +394,7 @@ abstract class LaunchUtils {
             'MINECRAFT_LAUNCHER': 'Dreta/pencil',
             'USING_PENCIL': 'true'
           });
+      process.stdout.transform(utf8.decoder).forEach(print);
 
       if (settings.data.launcher!.hideLauncherAfterStart!) {
         appWindow.hide();
