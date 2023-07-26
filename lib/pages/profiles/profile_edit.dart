@@ -605,7 +605,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               controller: host,
                               width: 300,
                               menuHeight: 256,
-                              initialSelection: hostPath == null ? null : int.parse(hostPath!),
+                              initialSelection: hostPath == null ? null : int.tryParse(hostPath!),
                               onSelected: (value) {
                                 setState(() {
                                   hostPath = value.toString();
