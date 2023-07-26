@@ -10,6 +10,8 @@ import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/account/account.dart';
 import 'package:pencil/data/account/accounts_provider.dart';
+import 'package:pencil/data/modloaders/addon.dart';
+import 'package:pencil/data/modloaders/fabric_compatible_addon.dart';
 import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
@@ -250,6 +252,132 @@ class _ProfileEditState extends State<ProfileEdit> {
                               Navigator.pop(context);
                             })
                       ]));
+        });
+  }
+
+  void changeAddon() {
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
+    SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
+    ThemeData theme = Theme.of(context);
+
+    Map<AddonType, Addon> dummyAddons = {
+      AddonType.fabric: FabricCompatibleAddon(type: FabricType.fabric),
+      AddonType.quilt: FabricCompatibleAddon(type: FabricType.quilt)
+    };
+    showDialog(
+        context: kBaseNavigatorKey.currentContext!,
+        builder: (context) {
+          TextEditingController version = TextEditingController(text: widget.profile.addonVersion);
+          AddonType type = widget.profile.addonType;
+          String? versionError;
+          bool addonVersionLoading = false;
+          bool addonVersionError = false;
+          List<String>? addonVersions;
+          return StatefulBuilder(builder: (context, setState) {
+            if ((type == AddonType.fabric || type == AddonType.quilt) && addonVersions == null && !addonVersionLoading) {
+              setState(() {
+                addonVersionLoading = true;
+              });
+              dummyAddons[type]!
+                  .listAvailableAddonVersions(context, widget.profile.version, settings.data.launcher!.host!)
+                  .then((versions) {
+                setState(() {
+                  addonVersions = versions;
+                  addonVersionLoading = false;
+                });
+              }).catchError((_) {
+                setState(() {
+                  addonVersionError = false;
+                  addonVersionLoading = false;
+                });
+              });
+            }
+            return AlertDialog(
+                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                title: const Text('Change Mod Loader'),
+                content: SizedBox(
+                    width: 300,
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      DropdownMenu<AddonType>(
+                          width: 300,
+                          menuHeight: 256,
+                          label: const Text('Mod Loader Type'),
+                          initialSelection: widget.profile.addonType,
+                          onSelected: (value) {
+                            setState(() {
+                              type = value ?? AddonType.disabled;
+                              addonVersionLoading = false;
+                              addonVersionError = false;
+                              addonVersions = null;
+                            });
+                          },
+                          enableSearch: false,
+                          inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
+                          dropdownMenuEntries: const [
+                            DropdownMenuEntry(value: AddonType.disabled, label: 'Disabled'),
+                            DropdownMenuEntry(value: AddonType.quilt, label: 'Quilt'),
+                            DropdownMenuEntry(value: AddonType.fabric, label: 'Fabric'),
+                            DropdownMenuEntry(value: AddonType.forge, label: 'Forge')
+                          ]),
+                      if (type != AddonType.disabled)
+                        if (addonVersionLoading)
+                          Container(
+                              margin: const EdgeInsets.only(top: 8), child: const Center(child: CircularProgressIndicator()))
+                        else if (addonVersionError)
+                          Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Center(child: Icon(Icons.error, color: theme.colorScheme.error)))
+                        else
+                          DropdownMenu<String>(
+                              width: 300,
+                              menuHeight: 256,
+                              controller: version,
+                              label: const Text('Mod Loader Version'),
+                              initialSelection: widget.profile.addonVersion,
+                              errorText: versionError,
+                              inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
+                              dropdownMenuEntries: [
+                                for (String version in addonVersions!) DropdownMenuEntry(value: version, label: version)
+                              ]),
+                    ])),
+                actions: [
+                  TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  TextButton(
+                      child: const Text('Confirm'),
+                      onPressed: () {
+                        setState(() {
+                          versionError = null;
+                        });
+                        if (type == AddonType.disabled) {
+                          widget.profile.addonType = AddonType.disabled;
+                          widget.profile.addonVersion = null;
+                          widget.profile.addon = null;
+                          profiles.save();
+                          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
+                              .showSnackBar(const SnackBar(content: Text('Disabled mod loader')));
+                          Navigator.pop(context);
+                          return;
+                        }
+                        if (!addonVersions!.contains(version.text)) {
+                          setState(() {
+                            versionError = 'Must be available version';
+                          });
+                          return;
+                        }
+                        widget.profile.addonType = type;
+                        widget.profile.addonVersion = version.text;
+                        widget.profile.addon = type.addon;
+                        profiles.save();
+                        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
+                            .showSnackBar(SnackBar(content: Text('Changed mod loader to ${widget.profile.addon!.name} ${version.text}')));
+                        Navigator.pop(context);
+                      })
+                ]);
+          });
         });
   }
 
@@ -590,6 +718,19 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               onTap: () {
                                 changeImage();
+                              },
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                          ListTile(
+                              leading: const Icon(Icons.mode_standby),
+                              title:
+                                  Text('Mod Loader', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                              subtitle: Text(
+                                  widget.profile.addon == null
+                                      ? 'Unset'
+                                      : '${widget.profile.addon!.name} ${widget.profile.addonVersion!}',
+                                  style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                              onTap: () {
+                                changeAddon();
                               },
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                           Theme(

@@ -12,7 +12,6 @@ import 'package:pencil/data/modloaders/fabric.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/data/task/task.dart';
 import 'package:pencil/data/task/tasks_provider.dart';
-import 'package:pencil/data/versions/version/version.dart';
 import 'package:provider/provider.dart';
 
 // Usable for both Fabric and Quilt
@@ -29,13 +28,13 @@ class FabricCompatibleAddon extends Addon {
 
   @override
   Future<void> downloadAddonManifest(
-      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
+      BuildContext context, String version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
     return;
   }
 
   @override
   Future<void> downloadLibraries(
-      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
+      BuildContext context, String version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
 
     task.currentWork = 'Beginning to download libraries for Fabric (Quilt)';
@@ -92,7 +91,7 @@ class FabricCompatibleAddon extends Addon {
 
   @override
   Future<void> downloadClient(
-      BuildContext context, Version version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
+      BuildContext context, String version, String addonVersion, Host host, Task task, TasksProvider tasks) async {
     task.currentWork = 'Beginning to download Fabric (Quilt) Loader';
     task.progress = -1;
     tasks.notify();
@@ -150,13 +149,39 @@ class FabricCompatibleAddon extends Addon {
   }
 
   @override
-  Future<List<String>> listAvailableAddonVersions(BuildContext context, Version version, Host host) async {
-    return (await getManifest(context, version, host)).keys.toList();
+  Future<List<String>> listAvailableAddonVersions(BuildContext context, String version, Host host) async {
+    SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
+    List<String> versions = [];
+    for (MapEntry<String, FabricCompatibleLoader> version in (await getManifest(context, version, host)).entries) {
+      if (version.value.loader.stable != null) {
+        if (settings.data.launcher!.showReleases! && version.value.loader.stable!) {
+          versions.add(version.key);
+        }
+        if (settings.data.launcher!.showSnapshots! && !version.value.loader.stable!) {
+          versions.add(version.key);
+        }
+      } else {
+        if (settings.data.launcher!.showSnapshots! &&
+            (version.value.loader.version.toLowerCase().contains('beta') ||
+                version.value.loader.version.toLowerCase().contains('alpha') ||
+                version.value.loader.version.toLowerCase().contains('snapshot'))) {
+          versions.add(version.key);
+        }
+        if (settings.data.launcher!.showReleases! &&
+            !(version.value.loader.version.toLowerCase().contains('beta') ||
+                version.value.loader.version.toLowerCase().contains('alpha') ||
+                version.value.loader.version.toLowerCase().contains('snapshot'))) {
+          versions.add(version.key);
+        }
+      }
+    }
+
+    return versions;
   }
 
-  Future<Map<String, FabricCompatibleLoader>> getManifest(BuildContext context, Version version, Host host) async {
+  Future<Map<String, FabricCompatibleLoader>> getManifest(BuildContext context, String version, Host host) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
-    File file = File(path.join(settings.data.game!.versionsDirectory!, version.id, '${type.name}.json'));
+    File file = File(path.join(settings.data.game!.versionsDirectory!, version, '${type.name}.json'));
 
     if (_cache != null) {
       return _cache!;
@@ -164,7 +189,7 @@ class FabricCompatibleAddon extends Addon {
 
     try {
       http.Response r =
-          await http.get(Uri.parse(host.formatLink('${type.download}${version.id}')), headers: {'User-Agent': kUserAgent});
+          await http.get(Uri.parse(host.formatLink('${type.download}${version}')), headers: {'User-Agent': kUserAgent});
       Map<String, FabricCompatibleLoader> available = {};
       for (dynamic fv in jsonDecode(utf8.decode(r.bodyBytes))) {
         if (fv is Map<String, dynamic>) {
@@ -201,7 +226,7 @@ class FabricCompatibleAddon extends Addon {
   }
 
   @override
-  Future<List<String>> modClasspath(BuildContext context, Version version, String addonVersion, Host host) async {
+  Future<List<String>> modClasspath(BuildContext context, String version, String addonVersion, Host host) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     FabricCompatibleLoader loader = (await getManifest(context, version, host))[addonVersion]!;
 
@@ -228,7 +253,7 @@ class FabricCompatibleAddon extends Addon {
   }
 
   @override
-  Future<String> modMainClass(BuildContext context, Version version, String addonVersion, Host host) async {
+  Future<String> modMainClass(BuildContext context, String version, String addonVersion, Host host) async {
     FabricCompatibleLoader loader = (await getManifest(context, version, host))[addonVersion]!;
     if (loader.launcherMeta.mainClass is String) {
       return loader.launcherMeta.mainClass;
@@ -237,7 +262,7 @@ class FabricCompatibleAddon extends Addon {
   }
 
   @override
-  Future<List<String>> modGameArguments(BuildContext context, Version version, String addonVersion, Host host) async {
+  Future<List<String>> modGameArguments(BuildContext context, String version, String addonVersion, Host host) async {
     FabricCompatibleLoader loader = (await getManifest(context, version, host))[addonVersion]!;
     if (loader.launcherMeta.arguments == null) {
       return [];
@@ -249,7 +274,7 @@ class FabricCompatibleAddon extends Addon {
   }
 
   @override
-  Future<List<String>> modJVMArguments(BuildContext context, Version version, String addonVersion, Host host) async {
+  Future<List<String>> modJVMArguments(BuildContext context, String version, String addonVersion, Host host) async {
     return [];
   }
 }

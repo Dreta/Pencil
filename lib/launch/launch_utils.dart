@@ -236,7 +236,7 @@ abstract class LaunchUtils {
     parts.add(path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar'));
 
     if (profile.addon != null) {
-      parts.addAll(await profile.addon!.modClasspath(context, version, profile.addonVersion!, host));
+      parts.addAll(await profile.addon!.modClasspath(context, version.id, profile.addonVersion!, host));
     }
 
     return parts.join(':');
@@ -362,6 +362,11 @@ abstract class LaunchUtils {
       jvmArguments.addAll(profile.jvmArguments.split(' '));
       gameArguments.addAll(profile.gameArguments.split(' '));
 
+      if (profile.addon != null) {
+        gameArguments.addAll(await profile.addon!.modGameArguments(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
+        jvmArguments.addAll(await profile.addon!.modJVMArguments(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
+      }
+
       task.currentWork = 'Launching Minecraft';
       tasks.notify();
 
@@ -380,7 +385,7 @@ abstract class LaunchUtils {
 
       String mainClass = profile.addon == null
           ? version.mainClass
-          : (await profile.addon!.modMainClass(context, version, profile.addonVersion!, settings.data.launcher!.host!));
+          : (await profile.addon!.modMainClass(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
 
       Process process = await Process.start(javaExecutable, [...jvmArguments, mainClass, ...gameArguments],
           workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),

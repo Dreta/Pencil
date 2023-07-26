@@ -240,9 +240,9 @@ abstract class DownloadUtils {
     if (profile.addon == null) {
       return;
     }
-    await profile.addon!.downloadAddonManifest(context, version, profile.addonVersion!, host, task, tasks);
-    await profile.addon!.downloadLibraries(context, version, profile.addonVersion!, host, task, tasks);
-    await profile.addon!.downloadClient(context, version, profile.addonVersion!, host, task, tasks);
+    await profile.addon!.downloadAddonManifest(context, version.id, profile.addonVersion!, host, task, tasks);
+    await profile.addon!.downloadLibraries(context, version.id, profile.addonVersion!, host, task, tasks);
+    await profile.addon!.downloadClient(context, version.id, profile.addonVersion!, host, task, tasks);
   }
 
   static Future<void> _downloadLibraries(BuildContext context, http.Client client, Version version, Profile profile, Host host,
