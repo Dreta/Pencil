@@ -27,6 +27,11 @@ class _AccountDetailsState extends State<AccountDetails> {
     ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
   }
 
+  void copyAccessToken() {
+    Clipboard.setData(ClipboardData(text: widget.account.accessToken));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard (Do not share this with others)')));
+  }
+
   void changeOfflineUsername() {
     assert(widget.account.type == AccountType.offline);
     AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
@@ -175,6 +180,14 @@ class _AccountDetailsState extends State<AccountDetails> {
                         onTap: copyXUID,
                         title: Text('XUID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xuid!,
+                            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                  if (widget.account.type == AccountType.microsoft)
+                    ListTile(
+                        leading: const Icon(Icons.key),
+                        onTap: copyAccessToken,
+                        title: Text('Access Token', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                        subtitle: Text('Click to copy',
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(

@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
+import 'package:pencil/data/account/account.dart';
+import 'package:pencil/data/account/accounts_provider.dart';
 import 'package:pencil/data/profile/profile.dart';
 import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
@@ -175,7 +179,8 @@ class _ProfileEditState extends State<ProfileEdit> {
     if (!(await imagesDir.exists())) {
       await imagesDir.create(recursive: true);
     }
-    File newFile = await file.copy(path.join(settings.data.launcher!.imagesDirectory!, 'p-${widget.profile.uuid}${path.extension(file.path)}'));
+    File newFile = await file
+        .copy(path.join(settings.data.launcher!.imagesDirectory!, 'p-${widget.profile.uuid}${path.extension(file.path)}'));
     widget.profile.img = newFile.absolute.path;
     profiles.save();
     ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
@@ -337,7 +342,12 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   void changeQuickPlay() async {
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
+    AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
+    ThemeData theme = Theme.of(context);
+
+    Account? selectedAccount =
+        accounts.accounts.currentAccount == null ? null : accounts.accounts.accounts[accounts.accounts.currentAccount!]!;
 
     Map<String, String> saves = {};
     Directory directory = Directory(path.join(settings.data.launcher!.profilesDirectory!, widget.profile.uuid, 'saves'));
@@ -367,90 +377,154 @@ class _ProfileEditState extends State<ProfileEdit> {
                   .toString());
           String? hostPath = widget.profile.quickPlayHost;
           String? hostError;
-          return StatefulBuilder(
-              builder: (context, setState) => AlertDialog(
-                      insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Quick Play Options'),
-                      content: SizedBox(
+
+          bool realmsLoading = false;
+          bool realmsLoadError = false;
+          Map<int, String>? realmsAvailable;
+
+          return StatefulBuilder(builder: (context, setState) {
+            if (mode == QuickPlayMode.realms &&
+                realmsAvailable == null &&
+                !realmsLoading &&
+                selectedAccount != null &&
+                selectedAccount.type == AccountType.microsoft) {
+              setState(() {
+                realmsLoading = true;
+              });
+              http.get(Uri.parse('https://pc.realms.minecraft.net/worlds'), headers: {
+                'User-Agent': kUserAgent,
+                'Cookie':
+                    'sid=token:${selectedAccount.accessToken}:${selectedAccount.uuid};user=${selectedAccount.characterName};version=${widget.profile.version}'
+              }).then((r) {
+                realmsAvailable = {};
+                for (Map<String, dynamic> server in jsonDecode(utf8.decode(r.bodyBytes))['servers']) {
+                  realmsAvailable![server['id']] = server['name'];
+                }
+                setState(() {
+                  realmsLoading = false;
+                });
+              }).catchError((_) {
+                setState(() {
+                  realmsLoading = false;
+                  realmsLoadError = true;
+                });
+              });
+            }
+            return AlertDialog(
+                insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                title: const Text('Quick Play Options'),
+                content: SizedBox(
+                    width: 300,
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      Container(
+                          margin: const EdgeInsets.only(bottom: 4),
+                          child: const Text('Quick Play will only take effect in version 23w14a (1.20) or later.')),
+                      DropdownMenu<QuickPlayMode>(
                           width: 300,
-                          child: Column(mainAxisSize: MainAxisSize.min, children: [
-                            Container(
-                                margin: const EdgeInsets.only(bottom: 4),
-                                child: const Text('Quick Play will only take effect in version 23w14a (1.20) or later.')),
-                            DropdownMenu<QuickPlayMode>(
-                                width: 300,
-                                menuHeight: 256,
-                                label: const Text('Mode'),
-                                initialSelection: mode,
-                                onSelected: (value) {
-                                  setState(() {
-                                    mode = value ?? QuickPlayMode.disabled;
-                                  });
-                                },
-                                enableSearch: false,
-                                inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
-                                dropdownMenuEntries: [
-                                  for (MapEntry<QuickPlayMode, String> entry in quickPlayMode.entries)
-                                    DropdownMenuEntry(value: entry.key, label: entry.value)
-                                ]),
-                            if (mode == QuickPlayMode.singleplayer)
-                              DropdownMenu<String>(
-                                  controller: host,
-                                  width: 300,
-                                  menuHeight: 256,
-                                  initialSelection: hostPath,
-                                  onSelected: (value) {
-                                    setState(() {
-                                      hostPath = value;
-                                    });
-                                  },
-                                  label: const Text('Singleplayer World'),
-                                  enableFilter: true,
-                                  errorText: hostError,
-                                  inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
-                                  dropdownMenuEntries: [
-                                    for (MapEntry<String, String> save in saves.entries)
-                                      DropdownMenuEntry(value: save.key, label: save.value)
-                                  ]),
-                            if (mode == QuickPlayMode.multiplayer)
-                              TextField(
-                                decoration: InputDecoration(labelText: 'Server Address', errorText: hostError),
-                                controller: host,
-                              ),
-                            if (mode == QuickPlayMode.realms)
-                              TextField(
-                                decoration: InputDecoration(labelText: 'Realms ID', errorText: hostError),
-                                controller: host,
-                              )
-                          ])),
-                      actions: [
-                        TextButton(
-                            child: const Text('Cancel'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }),
-                        TextButton(
-                            child: const Text('Confirm'),
-                            onPressed: () {
+                          menuHeight: 256,
+                          label: const Text('Mode'),
+                          initialSelection: mode,
+                          onSelected: (value) {
+                            setState(() {
+                              mode = value ?? QuickPlayMode.disabled;
+                            });
+                          },
+                          enableSearch: false,
+                          inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
+                          dropdownMenuEntries: [
+                            for (MapEntry<QuickPlayMode, String> entry in quickPlayMode.entries)
+                              DropdownMenuEntry(value: entry.key, label: entry.value)
+                          ]),
+                      if (mode == QuickPlayMode.singleplayer)
+                        DropdownMenu<String>(
+                            controller: host,
+                            width: 300,
+                            menuHeight: 256,
+                            initialSelection: hostPath,
+                            onSelected: (value) {
                               setState(() {
-                                hostError = null;
+                                hostPath = value;
                               });
-                              if (mode == QuickPlayMode.singleplayer && !saves.containsKey(hostPath)) {
+                            },
+                            label: const Text('Singleplayer World'),
+                            enableFilter: true,
+                            errorText: hostError,
+                            inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
+                            dropdownMenuEntries: [
+                              for (MapEntry<String, String> save in saves.entries)
+                                DropdownMenuEntry(value: save.key, label: save.value)
+                            ]),
+                      if (mode == QuickPlayMode.multiplayer)
+                        TextField(
+                          decoration: InputDecoration(labelText: 'Server Address', errorText: hostError),
+                          controller: host,
+                        ),
+                      if (mode == QuickPlayMode.realms)
+                        if (selectedAccount == null || selectedAccount.type == AccountType.offline)
+                          Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: const Text(
+                                  'You must select a Microsoft account to view the Minecraft Realms available to you.'))
+                        else if (realmsLoading)
+                          Container(
+                              margin: const EdgeInsets.only(top: 8), child: const Center(child: CircularProgressIndicator()))
+                        else if (realmsLoadError)
+                          Container(margin: const EdgeInsets.only(top: 8), child: Center(child: Icon(Icons.error, color: theme.colorScheme.error)))
+                        else
+                          DropdownMenu<int>(
+                              controller: host,
+                              width: 300,
+                              menuHeight: 256,
+                              initialSelection: hostPath == null ? null : int.parse(hostPath!),
+                              onSelected: (value) {
                                 setState(() {
-                                  hostError = 'Must be a world in this profile';
+                                  hostPath = value.toString();
                                 });
-                                return;
-                              }
-                              widget.profile.quickPlayMode = mode;
-                              widget.profile.quickPlayHost = (host.text.isEmpty || mode == QuickPlayMode.disabled)
-                                  ? null
-                                  : (mode == QuickPlayMode.singleplayer ? hostPath : host.text);
-                              profiles.save();
-                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(const SnackBar(content: Text('Changed Quick Play settings')));
-                              Navigator.pop(context);
-                            })
-                      ]));
+                              },
+                              label: const Text('Minecraft Realms'),
+                              enableFilter: true,
+                              errorText: hostError,
+                              inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
+                              dropdownMenuEntries: [
+                                for (MapEntry<int, String> realm in realmsAvailable!.entries)
+                                  DropdownMenuEntry(value: realm.key, label: realm.value)
+                              ]),
+                    ])),
+                actions: [
+                  TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  TextButton(
+                      child: const Text('Confirm'),
+                      onPressed: () {
+                        setState(() {
+                          hostError = null;
+                        });
+                        if (mode == QuickPlayMode.singleplayer && !saves.containsValue(host.text)) {
+                          setState(() {
+                            hostError = 'Must be a world in this profile';
+                          });
+                          return;
+                        }
+                        if (mode == QuickPlayMode.realms && !(realmsAvailable ?? {}).containsValue(host.text)) {
+                          setState(() {
+                            hostError = 'Must be a Minecraft Realms you can access';
+                          });
+                          return;
+                        }
+                        widget.profile.quickPlayMode = mode;
+                        widget.profile.quickPlayHost = (host.text.isEmpty || mode == QuickPlayMode.disabled)
+                            ? null
+                            : (mode == QuickPlayMode.multiplayer ? host.text : hostPath);
+                        profiles.save();
+                        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
+                            .showSnackBar(const SnackBar(content: Text('Changed Quick Play settings')));
+                        Navigator.pop(context);
+                      })
+                ]);
+          });
         });
   }
 
