@@ -19,6 +19,7 @@ class Profile {
       this.version,
       this.img,
       this.lastUsed,
+      this.lastDownloaded,
       this.quickPlayMode,
       this.quickPlayHost,
       this.resolutionWidth,
@@ -36,6 +37,8 @@ class Profile {
   @JsonKey(defaultValue: 'asset:assets/images/profiles/23.png')
   String img;
   DateTime lastUsed;
+
+  DateTime? lastDownloaded;
 
   @JsonKey(defaultValue: QuickPlayMode.disabled)
   QuickPlayMode quickPlayMode;
@@ -129,7 +132,8 @@ class Profile {
     launching = true;
     profiles.notify();
 
-    if (await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this)) {
+    if ((lastDownloaded != null && DateTime.now().difference(lastDownloaded!).inDays < 3) ||
+        await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this)) {
       await Future.delayed(const Duration(seconds: 2)); // Magic, do not remove (for Linux at least)
       await LaunchUtils.launchGame(
           kBaseNavigatorKey.currentContext!, this, accounts.accounts.accounts[accounts.accounts.currentAccount!]!);

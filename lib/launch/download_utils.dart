@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/host.dart';
 import 'package:pencil/data/profile/profile.dart';
+import 'package:pencil/data/profile/profiles_provider.dart';
 import 'package:pencil/data/settings/settings_provider.dart';
 import 'package:pencil/data/task/task.dart';
 import 'package:pencil/data/task/tasks_provider.dart';
@@ -27,6 +28,7 @@ import 'package:provider/provider.dart';
 abstract class DownloadUtils {
   static Future<bool> downloadProfile(BuildContext context, Profile profile) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
     VersionManifestProvider manifest = Provider.of<VersionManifestProvider>(context, listen: false);
 
@@ -49,6 +51,9 @@ abstract class DownloadUtils {
       await _downloadLibraries(context, client, version, profile, host, tasks, task);
       await _downloadAddon(context, version, profile, host, tasks, task);
       await _downloadGame(context, client, version, host, task, tasks);
+
+      profile.lastDownloaded = DateTime.now();
+      profiles.save();
       return true;
     } catch (e) {
       showDialog(

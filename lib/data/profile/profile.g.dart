@@ -12,6 +12,9 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
       json['version'] as String,
       json['img'] as String? ?? 'asset:assets/images/profiles/23.png',
       DateTime.parse(json['lastUsed'] as String),
+      json['lastDownloaded'] == null
+          ? null
+          : DateTime.parse(json['lastDownloaded'] as String),
       $enumDecodeNullable(_$QuickPlayModeEnumMap, json['quickPlayMode']) ??
           QuickPlayMode.disabled,
       json['quickPlayHost'] as String?,
@@ -32,6 +35,7 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'version': instance.version,
       'img': instance.img,
       'lastUsed': instance.lastUsed.toIso8601String(),
+      'lastDownloaded': instance.lastDownloaded?.toIso8601String(),
       'quickPlayMode': _$QuickPlayModeEnumMap[instance.quickPlayMode]!,
       'quickPlayHost': instance.quickPlayHost,
       'resolutionWidth': instance.resolutionWidth,

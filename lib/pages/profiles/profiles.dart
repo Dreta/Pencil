@@ -122,6 +122,7 @@ class Profiles extends StatefulWidget {
                                 version.text,
                                 'asset:assets/images/profiles/23.png',
                                 DateTime.now(),
+                                null,
                                 QuickPlayMode.disabled,
                                 null,
                                 null,

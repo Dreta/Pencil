@@ -159,6 +159,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               return;
                             }
                             widget.profile.version = version.text;
+                            widget.profile.lastDownloaded = null;
                             profiles.save();
                             ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                                 .showSnackBar(SnackBar(content: Text('Changed profile\'s version to ${version.text}')));
@@ -200,7 +201,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                       title: const Text('Change JVM Arguments'),
                       content: TextField(
-                        decoration: InputDecoration(labelText: 'JVM Arguments'),
+                        decoration: const InputDecoration(labelText: 'JVM Arguments'),
                         controller: args,
                       ),
                       actions: [
@@ -233,7 +234,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                       title: const Text('Change Game Arguments'),
                       content: TextField(
-                        decoration: InputDecoration(labelText: 'Game Arguments'),
+                        decoration: const InputDecoration(labelText: 'Game Arguments'),
                         controller: args,
                       ),
                       actions: [
@@ -356,6 +357,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                           widget.profile.addonType = AddonType.disabled;
                           widget.profile.addonVersion = null;
                           widget.profile.addon = null;
+                          widget.profile.lastDownloaded = null;
                           profiles.save();
                           ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                               .showSnackBar(const SnackBar(content: Text('Disabled mod loader')));
@@ -371,6 +373,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                         widget.profile.addonType = type;
                         widget.profile.addonVersion = version.text;
                         widget.profile.addon = type.addon;
+                        widget.profile.lastDownloaded = null;
                         profiles.save();
                         ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
                             .showSnackBar(SnackBar(content: Text('Changed mod loader to ${widget.profile.addon!.name} ${version.text}')));
