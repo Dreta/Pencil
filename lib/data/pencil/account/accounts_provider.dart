@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
@@ -33,27 +34,29 @@ class AccountsProvider extends ChangeNotifier {
     await save();
   }
 
-  Future<Account?> refreshAccount(Account account, TasksProvider tasks) async {
+  Future<Account?> refreshAccount(BuildContext context, Account account, TasksProvider tasks) async {
     if (account.type != AccountType.microsoft || !DateTime.now().isAfter(account.tokenExpireTime!)) {
       return null;
     }
-    Task task = Task(name: 'Re-authenticating account ${account.characterName}', type: TaskType.microsoftAuth);
+    Task task = Task(
+        name: FlutterI18n.translate(context, 'auth.reAuth', translationParams: {'name': account.characterName}),
+        type: TaskType.microsoftAuth);
     tasks.addTask(task);
-    List<dynamic> tokens = await _refreshMSToken(account.msRefreshToken!, task, tasks);
+    List<dynamic> tokens = await _refreshMSToken(context, account.msRefreshToken!, task, tasks);
     String msAccessToken = tokens[0] as String;
     String msRefreshToken = tokens[1] as String;
     int msExpiresIn = tokens[2] as int;
-    Account? acc = await _authenticateMicrosoftAccount(msAccessToken, msRefreshToken, msExpiresIn, task, tasks);
+    Account? acc = await _authenticateMicrosoftAccount(context, msAccessToken, msRefreshToken, msExpiresIn, task, tasks);
     tasks.removeTask(task);
     return acc;
   }
 
-  Future<bool> refreshAccounts(TasksProvider tasks) async {
+  Future<bool> refreshAccounts(BuildContext context, TasksProvider tasks) async {
     List<Account> refreshedAccounts = [];
     bool anyFailures = false;
     for (Account account in accounts.accounts.values) {
       try {
-        Account? refreshedAccount = await refreshAccount(account, tasks);
+        Account? refreshedAccount = await refreshAccount(context, account, tasks);
         if (refreshedAccount != null) {
           refreshedAccounts.add(refreshedAccount);
         }
@@ -70,13 +73,13 @@ class AccountsProvider extends ChangeNotifier {
   }
 
   Future<Account> createMicrosoftAccount(BuildContext context, String code, Task task, TasksProvider tasks) async {
-    List<dynamic> tokens = await _obtainTokensFromMSCode(code, task, tasks);
+    List<dynamic> tokens = await _obtainTokensFromMSCode(context, code, task, tasks);
     String msAccessToken = tokens[0] as String;
     String msRefreshToken = tokens[1] as String;
     int msExpiresIn = tokens[2] as int;
-    Account account = await _authenticateMicrosoftAccount(msAccessToken, msRefreshToken, msExpiresIn, task, tasks);
+    Account account = await _authenticateMicrosoftAccount(context, msAccessToken, msRefreshToken, msExpiresIn, task, tasks);
     if (accounts.accounts.containsKey(account.uuid)) {
-      throw Exception('This account has already been added.');
+      throw Exception(FlutterI18n.translate(context, 'auth.ms.duplicate'));
     }
     accounts.accounts[account.uuid] = account;
     accounts.currentAccount = account.uuid;
@@ -85,15 +88,16 @@ class AccountsProvider extends ChangeNotifier {
   }
 
   Future<List<dynamic> /* access, refresh, expiresIn */ > _obtainTokensFromMSCode(
-      String code, Task task, TasksProvider tasks) async {
-    task.currentWork = 'Exchanging authorization code for tokens';
+      BuildContext context, String code, Task task, TasksProvider tasks) async {
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.codeExchange');
     tasks.notify();
     http.Response codeRp = await http.get(
         Uri.parse(
             'https://login.live.com/oauth20_token.srf?client_id=00000000402B5328&code=$code&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&grant_type=authorization_code&scope=service::user.auth.xboxlive.com::MBI_SSL'),
         headers: {'User-Agent': 'XAL Win32 2021.11.20220411.002'});
     if (codeRp.statusCode != 200) {
-      throw Exception('Code exchange resulted in ${codeRp.statusCode}');
+      throw Exception(
+          FlutterI18n.translate(context, 'auth.ms.codeExchangeFail', translationParams: {'code': codeRp.statusCode.toString()}));
     }
     Map<String, dynamic> codeRpJ = jsonDecode(utf8.decode(codeRp.bodyBytes));
     if (codeRpJ.containsKey('error')) {
@@ -103,8 +107,8 @@ class AccountsProvider extends ChangeNotifier {
   }
 
   Future<List<dynamic> /* access, refresh, expiresIn */ > _refreshMSToken(
-      String refreshToken, Task task, TasksProvider tasks) async {
-    task.currentWork = 'Refreshing access token';
+      BuildContext context, String refreshToken, Task task, TasksProvider tasks) async {
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.refreshToken');
     tasks.notify();
     http.Response tokenRp = await http.get(
         Uri.parse(
@@ -121,10 +125,10 @@ class AccountsProvider extends ChangeNotifier {
   }
 
   Future<Account> _authenticateMicrosoftAccount(
-      String msAccessToken, String msRefreshToken, int msExpiresIn, Task task, TasksProvider tasks) async {
+      BuildContext context, String msAccessToken, String msRefreshToken, int msExpiresIn, Task task, TasksProvider tasks) async {
     DateTime now = DateTime.now();
 
-    task.currentWork = 'Authenticating to Xbox Live';
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xblAuth');
     tasks.notify();
     http.Response xblRp = await http.post(Uri.parse('https://user.auth.xboxlive.com/user/authenticate'),
         headers: {
@@ -152,17 +156,19 @@ class AccountsProvider extends ChangeNotifier {
               'TokenType': 'JWT'
             }));
         if (xblRp.statusCode != 200) {
-          throw Exception('Xbox Live authentication resulted in ${xblRp.statusCode}');
+          throw Exception(
+              FlutterI18n.translate(context, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
         }
       } else {
-        throw Exception('Xbox Live authentication resulted in ${xblRp.statusCode}');
+        throw Exception(
+            FlutterI18n.translate(context, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
       }
     }
     Map<String, dynamic> xblRpJ = jsonDecode(utf8.decode(xblRp.bodyBytes));
     String xboxToken = xblRpJ['Token'];
     String xboxUserHash = xblRpJ['DisplayClaims']['xui'][0]['uhs'];
 
-    task.currentWork = 'Authenticating to XSTS';
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xstsAuth');
     tasks.notify();
     http.Response xstsRp = await http.post(Uri.parse('https://xsts.auth.xboxlive.com/xsts/authorize'),
         headers: {
@@ -179,27 +185,28 @@ class AccountsProvider extends ChangeNotifier {
           'TokenType': 'JWT'
         }));
     if (xstsRp.statusCode != 200 && xstsRp.statusCode != 401) {
-      throw Exception('XSTS authentication resulted in ${xstsRp.statusCode}');
+      throw Exception(
+          FlutterI18n.translate(context, 'auth.ms.xstsAuthFail', translationParams: {'code': xstsRp.statusCode.toString()}));
     }
     Map<String, dynamic> xstsRpJ = jsonDecode(utf8.decode(xstsRp.bodyBytes));
     if (xstsRp.statusCode == 401 && xstsRpJ.containsKey('XErr')) {
       switch (xstsRpJ['XErr']) {
         case 2148916233:
-          throw Exception('You must create an Xbox account before logging in.');
+          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsNoProfile'));
         case 2148916235:
-          throw Exception('Xbox Live is not available in your Microsoft account\'s region.');
+          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsGeoBlocked'));
         case 2148916236:
         case 2148916237:
-          throw Exception('Your Microsoft account needs adult verification. (South Korea)');
+          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsChild'));
         case 2148916238:
-          throw Exception('Your Microsoft account must be added to a Family by an adult before continuing.');
+          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsFamily'));
         default:
-          throw Exception('Unknown Xbox Live error.');
+          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsUnknown'));
       }
     }
     String xstsToken = xstsRpJ['Token'];
 
-    task.currentWork = 'Fetching Xbox Live profile';
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xblProfile');
     tasks.notify();
     http.Response xstsProfRp = await http.post(Uri.parse('https://xsts.auth.xboxlive.com/xsts/authorize'),
         headers: {
@@ -217,35 +224,37 @@ class AccountsProvider extends ChangeNotifier {
           'TokenType': 'JWT'
         }));
     if (xstsProfRp.statusCode != 200) {
-      throw Exception('Xbox Live profile fetching resulted in ${xstsProfRp.statusCode}');
+      throw Exception(FlutterI18n.translate(context, 'auth.ms.xblProfileFail',
+          translationParams: {'code': xstsProfRp.statusCode.toString()}));
     }
     Map<String, dynamic> xstsProfRpJ = jsonDecode(utf8.decode(xstsProfRp.bodyBytes));
     String xboxGamertag = xstsProfRpJ['DisplayClaims']['xui'][0]['gtg'];
     String xuid = xstsProfRpJ['DisplayClaims']['xui'][0]['xid'];
 
-    task.currentWork = 'Authenticating to Minecraft Services';
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.mc');
     tasks.notify();
     http.Response minecraftRp = await http.post(Uri.parse('https://api.minecraftservices.com/authentication/login_with_xbox'),
         headers: {'User-Agent': 'XAL Win32 2021.11.20220411.002', 'Content-Type': 'application/json'},
         body: jsonEncode({'identityToken': 'XBL3.0 x=$xboxUserHash;$xstsToken'}));
     if (minecraftRp.statusCode != 200) {
-      throw Exception('Minecraft Services authentication resulted in ${xblRp.statusCode}');
+      throw Exception(
+          FlutterI18n.translate(context, 'auth.ms.mcFail', translationParams: {'code': minecraftRp.statusCode.toString()}));
     }
     Map<String, dynamic> minecraftRpJ = jsonDecode(utf8.decode(minecraftRp.bodyBytes));
     String mcToken = minecraftRpJ['access_token'];
     int mcExpiresIn = minecraftRpJ['expires_in'];
 
-    task.currentWork = 'Fetching Minecraft profile';
+    task.currentWork = FlutterI18n.translate(context, 'auth.ms.mcProfile');
     tasks.notify();
     http.Response profileRp = await http.get(Uri.parse('https://api.minecraftservices.com/minecraft/profile'),
         headers: {'User-Agent': kUserAgent, 'Authorization': 'Bearer $mcToken'});
     if (profileRp.statusCode != 200 && profileRp.statusCode != 404) {
-      throw Exception('Minecraft Services profile fetching resulted in ${profileRp.statusCode}');
+      throw Exception(
+          FlutterI18n.translate(context, 'auth.ms.mcProfileFail', translationParams: {'code': profileRp.statusCode.toString()}));
     }
     Map<String, dynamic> profileRpJ = jsonDecode(utf8.decode(profileRp.bodyBytes));
     if (profileRpJ['error'] == 'NOT_FOUND') {
-      throw Exception(
-          'You must log in to the official Minecraft Launcher or minecraft.net at least once to set up your Minecraft profile.');
+      throw Exception(FlutterI18n.translate(context, 'auth.ms.mcNoProfile'));
     }
     String username = profileRpJ['name'];
     String unhyphenedUUID = profileRpJ['id'];

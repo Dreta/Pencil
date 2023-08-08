@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/account.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
@@ -19,18 +20,17 @@ class AccountDetails extends StatefulWidget {
 class _AccountDetailsState extends State<AccountDetails> {
   void copyUUID() {
     Clipboard.setData(ClipboardData(text: widget.account.uuid));
-    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(content: I18nText('generic.copyNotSensitive')));
   }
 
   void copyXUID() {
     Clipboard.setData(ClipboardData(text: widget.account.xuid!));
-    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(content: I18nText('generic.copyNotSensitive')));
   }
 
   void copyAccessToken() {
     Clipboard.setData(ClipboardData(text: widget.account.accessToken));
-    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-        .showSnackBar(const SnackBar(content: Text('Copied to clipboard (Do not share this with others)')));
+    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(content: I18nText('generic.copySensitive')));
   }
 
   void changeOfflineUsername() {
@@ -44,33 +44,35 @@ class _AccountDetailsState extends State<AccountDetails> {
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Change Character Name'),
+                      title: I18nText('accountDetails.nameChange.title'),
                       content: TextField(
-                        decoration: InputDecoration(labelText: 'Username', errorText: usernameError),
+                        decoration: InputDecoration(
+                            labelText: FlutterI18n.translate(context, 'accountDetails.nameChange.field'),
+                            errorText: usernameError),
                         controller: username,
                       ),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               setState(() {
                                 usernameError = null;
                               });
                               if (username.text.length > 16 || username.text.length < 4) {
                                 setState(() {
-                                  usernameError = 'Must be 4 to 16 characters';
+                                  usernameError = FlutterI18n.translate(context, 'accountDetails.nameChange.lengthError');
                                 });
                                 return;
                               }
                               for (String character in username.text.characters) {
                                 if (!('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.contains(character))) {
                                   setState(() {
-                                    usernameError = 'Can only contain alphabets, numbers and underscore';
+                                    usernameError = FlutterI18n.translate(context, 'accountDetails.nameChange.charError');
                                   });
                                   return;
                                 }
@@ -79,8 +81,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                               widget.account.characterName = username.text;
                               accounts.accounts.accounts[widget.account.uuid] = widget.account;
                               accounts.save();
-                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(SnackBar(content: Text('Changed character\'s name to ${username.text}')));
+                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                                  content:
+                                      I18nText('accountDetails.nameChange.success', translationParams: {'name': username.text})));
                               Navigator.pop(context);
                             })
                       ]));
@@ -93,20 +96,21 @@ class _AccountDetailsState extends State<AccountDetails> {
         context: kBaseNavigatorKey.currentContext!,
         builder: (context) => AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Are you sure?'),
-                content: const Text('You will need to add this account again if you wish to play on it.'),
+                title: I18nText('accountDetails.delete.title'),
+                content: I18nText('accountDetails.delete.content'),
                 actions: [
                   TextButton(
-                      child: const Text('Cancel'),
+                      child: I18nText('generic.cancel'),
                       onPressed: () {
                         Navigator.pop(context);
                       }),
                   TextButton(
-                      child: const Text('Confirm'),
+                      child: I18nText('generic.confirm'),
                       onPressed: () {
                         accounts.removeAccount(widget.account.uuid).then((_) {
-                          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                              .showSnackBar(SnackBar(content: Text('Removed account ${widget.account.characterName}')));
+                          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                              content: I18nText('accountDetails.delete.success',
+                                  translationParams: {'name': widget.account.characterName})));
                         });
                         Navigator.pop(context);
                       })
@@ -138,13 +142,11 @@ class _AccountDetailsState extends State<AccountDetails> {
                 Flexible(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   if (widget.account.reauthFailed)
-                    Container(
-                        margin: const EdgeInsets.only(bottom: 4),
-                        child: const Text(
-                            'This account needs to be re-authenticated. Please delete this account and add it again.')),
+                    Container(margin: const EdgeInsets.only(bottom: 4), child: I18nText('accountDetails.reauthRequired')),
                   ListTile(
                       leading: const Icon(Icons.person),
-                      title: Text('Character Name', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                      title: Text(FlutterI18n.translate(context, 'accountDetails.name'),
+                          style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(widget.account.characterName,
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       trailing: widget.account.type == AccountType.microsoft ? const Icon(Icons.open_in_new) : null,
@@ -159,8 +161,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                   if (widget.account.xboxGamertag != null)
                     ListTile(
                         leading: const Icon(Icons.person),
-                        title:
-                            Text('Xbox Live Gamertag', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                        title: Text(FlutterI18n.translate(context, 'accountDetails.xblName'),
+                            style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xboxGamertag!,
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         trailing: const Icon(Icons.open_in_new),
@@ -171,7 +173,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                   ListTile(
                       leading: const Icon(Icons.numbers),
                       onTap: copyUUID,
-                      title: Text('Minecraft UUID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                      title: Text(FlutterI18n.translate(context, 'accountDetails.uuid'),
+                          style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(widget.account.uuid,
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
@@ -179,7 +182,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                     ListTile(
                         leading: const Icon(Icons.numbers),
                         onTap: copyXUID,
-                        title: Text('XUID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                        title: Text(FlutterI18n.translate(context, 'accountDetails.xuid'),
+                            style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xuid!,
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
@@ -187,14 +191,19 @@ class _AccountDetailsState extends State<AccountDetails> {
                     ListTile(
                         leading: const Icon(Icons.key),
                         onTap: copyAccessToken,
-                        title: Text('Access Token', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                        subtitle:
-                            Text('Click to copy', style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                        title: Text(FlutterI18n.translate(context, 'accountDetails.accessToken'),
+                            style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                        subtitle: Text(FlutterI18n.translate(context, 'accountDetails.copyAction'),
+                            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
                       leading: const Icon(Icons.coffee),
-                      title: Text('Account Type', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                      subtitle: Text(widget.account.type == AccountType.microsoft ? 'Microsoft' : 'Offline',
+                      title: Text(FlutterI18n.translate(context, 'accountDetails.accountType'),
+                          style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                      subtitle: Text(
+                          widget.account.type == AccountType.microsoft
+                              ? FlutterI18n.translate(context, 'generic.accountTypes.microsoft')
+                              : FlutterI18n.translate(context, 'generic.accountTypes.offline'),
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
@@ -203,7 +212,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     focusColor: theme.colorScheme.error.withAlpha(30),
                     splashColor: theme.colorScheme.error.withAlpha(30),
                     onTap: removeAccount,
-                    title: Text('Remove Account',
+                    title: Text(FlutterI18n.translate(context, 'accountDetails.remove'),
                         style:
                             theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400, color: theme.colorScheme.error)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

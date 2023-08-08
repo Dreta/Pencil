@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
@@ -141,12 +142,12 @@ class _TextInputTileState extends State<TextInputTile> {
                       ),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               setState(() {
                                 error = widget.isValid(controller.text);

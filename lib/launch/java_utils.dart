@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:archive/archive_io.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
@@ -51,17 +52,17 @@ abstract class JavaUtils {
       throw Exception('Unsupported Platform');
     }
 
-    Task task = Task(name: 'Downloading Java', type: TaskType.javaDownload)..progress = 0;
+    Task task = Task(name: FlutterI18n.translate(context, 'java.mainTaskName'), type: TaskType.javaDownload)..progress = 0;
     tasks.addTask(task);
 
     try {
       Map<String, dynamic>? java17VerInfo = await _javaNeedsUpdate(settings.data.java!.modernJavaHome!, '17', javaArch, javaOS);
       if (java17VerInfo != null) {
-        await _downloadJavaTo(settings.data.java!.modernJavaHome!, java17VerInfo, javaArch, javaOS, task, tasks);
+        await _downloadJavaTo(context, settings.data.java!.modernJavaHome!, java17VerInfo, javaArch, javaOS, task, tasks);
       }
       Map<String, dynamic>? java8VerInfo = await _javaNeedsUpdate(settings.data.java!.legacyJavaHome!, '8', javaArch, javaOS);
       if (java8VerInfo != null) {
-        await _downloadJavaTo(settings.data.java!.legacyJavaHome!, java8VerInfo, javaArch, javaOS, task, tasks);
+        await _downloadJavaTo(context, settings.data.java!.legacyJavaHome!, java8VerInfo, javaArch, javaOS, task, tasks);
       }
     } catch (e) {
       if (context.mounted) {
@@ -69,11 +70,11 @@ abstract class JavaUtils {
             context: kBaseNavigatorKey.currentContext!,
             builder: (context) => AlertDialog(
                     insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                    title: const Text('Failed to download Java'),
-                    content: const Text('You won\'t be able to launch the game. Please check your internet connection.'),
+                    title: I18nText('java.genericError.title'),
+                    content: I18nText('java.genericError.content'),
                     actions: [
                       TextButton(
-                          child: const Text('Confirm'),
+                          child: I18nText('generic.confirm'),
                           onPressed: () {
                             Navigator.pop(context);
                           })
@@ -108,9 +109,9 @@ abstract class JavaUtils {
     }
   }
 
-  static Future<void> _downloadJavaTo(
+  static Future<void> _downloadJavaTo(BuildContext context,
       String directory, Map<String, dynamic> verInfo, String javaArch, String javaOS, Task task, TasksProvider tasks) async {
-    task.currentWork = 'Downloading JRE ${verInfo['version']['openjdk_version']} ($javaOS on $javaArch)';
+    task.currentWork = FlutterI18n.translate(context, 'java.download.work', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
     task.progress = 0;
     tasks.notify();
     File tmpZip = File(path.join(directory, '..', 'jre-${verInfo['version']['openjdk_version']}-$javaOS-$javaArch'));
@@ -141,12 +142,12 @@ abstract class JavaUtils {
       })
       ..onDone(() async {
         if (sha256Hash != sha256.convert(bodyBytes).toString()) {
-          completer.completeError('Invalid SHA256 checksum for JRE ${verInfo['version']['openjdk_version']}/$javaOS/$javaArch');
+          completer.completeError(FlutterI18n.translate(context, 'java.download.errorChecksum', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch}));
           return;
         }
         task
           ..progress = -1
-          ..currentWork = 'Extracting JRE ${verInfo['version']['openjdk_version']} ($javaOS on $javaArch)';
+          ..currentWork = FlutterI18n.translate(context, 'java.download.extractWork', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
         tasks.notify();
 
         await tmpZip.writeAsBytes(bodyBytes, flush: true);

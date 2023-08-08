@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
@@ -79,7 +80,7 @@ class Profile {
                   content: const Text('You can\'t run the same profile at the same time.'),
                   actions: [
                     TextButton(
-                        child: const Text('Confirm'),
+                        child: I18nText('generic.confirm'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         })
@@ -95,7 +96,7 @@ class Profile {
                   content: const Text('Running multiple games simultaneously may cause conflicts. Do you wish to continue?'),
                   actions: [
                     TextButton(
-                        child: const Text('Cancel'),
+                        child: I18nText('generic.cancel'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         }),
@@ -116,7 +117,7 @@ class Profile {
                   content: const Text('You must select an account before starting the game.'),
                   actions: [
                     TextButton(
-                        child: const Text('Confirm'),
+                        child: I18nText('generic.confirm'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         })

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:pencil/data/pencil/profile/profiles_provider.dart';
@@ -49,7 +50,7 @@ class _PencilBaseState extends State<PencilBase> {
         floatingActionButton: _selectedPage == 1
             ? FloatingActionButton.extended(
                 icon: const Icon(Icons.add),
-                label: const Text('Create Profile'),
+                label: I18nText('base.createProfile'),
                 onPressed: () {
                   Profiles.createProfile(context);
                 },
@@ -58,8 +59,8 @@ class _PencilBaseState extends State<PencilBase> {
                 ? FloatingActionButton.extended(
                     icon: const Icon(Icons.gamepad),
                     label: profiles.profiles.profiles[profiles.profiles.selectedProfile!]!.launching
-                        ? const Text('Playing...')
-                        : const Text('Play'),
+                        ? I18nText('base.playing')
+                        : I18nText('generic.play'),
                     onPressed: () {
                       profiles.profiles.profiles[profiles.profiles.selectedProfile!]!
                           .play(kBaseNavigatorKey.currentContext!, false);
@@ -81,17 +82,17 @@ class _PencilBaseState extends State<PencilBase> {
                   labelType: NavigationRailLabelType.all,
                   backgroundColor: theme.colorScheme.inversePrimary.withAlpha(30),
                   leading: const SizedBox(height: 16),
-                  destinations: const [
+                  destinations: [
                     NavigationRailDestination(
-                        icon: Icon(Icons.feed_outlined), selectedIcon: Icon(Icons.feed), label: Text('Home')),
+                        icon: const Icon(Icons.feed_outlined), selectedIcon: const Icon(Icons.feed), label: I18nText('base.home')),
                     NavigationRailDestination(
-                        icon: Icon(Icons.gamepad_outlined), selectedIcon: Icon(Icons.gamepad), label: Text('Profiles')),
+                        icon: const Icon(Icons.gamepad_outlined), selectedIcon: const Icon(Icons.gamepad), label: I18nText('base.profiles')),
                     NavigationRailDestination(
-                        icon: Icon(Icons.mode_standby_outlined), selectedIcon: Icon(Icons.mode_standby), label: Text('Mods')),
+                        icon: const Icon(Icons.mode_standby_outlined), selectedIcon: const Icon(Icons.mode_standby), label: I18nText('base.mods')),
                     NavigationRailDestination(
-                        icon: Icon(Icons.person_outlined), selectedIcon: Icon(Icons.person), label: Text('Accounts')),
+                        icon: const Icon(Icons.person_outlined), selectedIcon: const Icon(Icons.person), label: I18nText('base.accounts')),
                     NavigationRailDestination(
-                        icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: Text('Settings'))
+                        icon: const Icon(Icons.settings_outlined), selectedIcon: const Icon(Icons.settings), label: I18nText('base.settings'))
                   ]),
               Positioned(
                   bottom: 0,

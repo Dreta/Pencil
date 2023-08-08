@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:pencil/data/pencil/task/tasks_provider.dart';
@@ -15,10 +16,10 @@ import 'package:url_launcher/url_launcher.dart';
 abstract class StartupTasks {
   static Future<void> refreshAccounts(BuildContext context) async {
     if (!(await Provider.of<AccountsProvider>(context, listen: false)
-            .refreshAccounts(Provider.of<TasksProvider>(context, listen: false))) &&
+            .refreshAccounts(context, Provider.of<TasksProvider>(context, listen: false))) &&
         context.mounted) {
       ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-          .showSnackBar(const SnackBar(content: Text('Failed to re-authenticate some accounts')));
+          .showSnackBar(SnackBar(content: I18nText('startupTasks.reauthFailed')));
     }
   }
 
@@ -29,29 +30,29 @@ abstract class StartupTasks {
           barrierDismissible: Platform.isMacOS,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: Text(Platform.isMacOS ? 'Embedded Browser Issue' : 'Components Required'),
-                  content: Text(Platform.isWindows
-                      ? 'To continue, you must install the WebView2 Runtime on your system. You will need to download the "Evergreen" versions. Please restart Pencil after installing.'
+                  title: I18nText(Platform.isMacOS ? 'startupTasks.webviewUnavailable.macOSTitle' : 'startupTasks.webviewUnavailable.title'),
+                  content: I18nText(Platform.isWindows
+                      ? 'startupTasks.webviewUnavailable.windowsContent'
                       : (Platform.isMacOS
-                          ? 'The embedded browser cannot be initialized on your system. You might not be able to log in.'
-                          : 'To continue, you must install webkit2gtk on your system. Please restart Pencil after installing.')),
+                          ? 'startupTasks.webviewUnavailable.macOSContent'
+                          : 'startupTasks.webviewUnavailable.linuxContent')),
                   actions: [
                     if (!Platform.isMacOS)
                       TextButton(
-                          child: const Text('Exit'),
+                          child: I18nText('startupTasks.webviewUnavailable.exit'),
                           onPressed: () {
                             SystemNavigator.pop();
                           }),
                     if (Platform.isWindows)
                       TextButton(
-                          child: const Text('Install'),
+                          child: I18nText('startupTasks.webviewUnavailable.windowsInstall'),
                           onPressed: () async {
                             await launchUrl(
                                 Uri.parse('https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section'));
                           }),
                     if (Platform.isMacOS)
                       TextButton(
-                          child: const Text('Confirm'),
+                          child: I18nText('generic.confirm'),
                           onPressed: () {
                             Navigator.pop(context);
                           })

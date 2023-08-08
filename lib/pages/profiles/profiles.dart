@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/profile/profile.dart';
@@ -28,12 +29,11 @@ class Profiles extends StatefulWidget {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: const Text('Can\'t Create Profile'),
-                  content: const Text(
-                      'You can\'t create a profile right now because the version manifest isn\'t available yet. Please wait for a bit or restart Pencil.'),
+                  title: I18nText('profiles.manifestUnavailable.title'),
+                  content: I18nText('profiles.manifestUnavailable.content'),
                   actions: [
                     TextButton(
-                        child: const Text('Confirm'),
+                        child: I18nText('generic.confirm'),
                         onPressed: () {
                           Navigator.pop(context);
                         })
@@ -66,21 +66,21 @@ class Profiles extends StatefulWidget {
           String? versionError;
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
-                      title: const Text('Create Profile'),
+                      title: I18nText('profiles.createProfile.title'),
                       insetPadding: const EdgeInsets.symmetric(horizontal: 250),
                       content: SizedBox(
                           width: 300,
                           child:
                               Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                             TextField(
-                              decoration: InputDecoration(labelText: 'Name', errorText: nameError),
+                              decoration: InputDecoration(labelText: FlutterI18n.translate(context, 'profiles.createProfile.fieldName'), errorText: nameError),
                               controller: name,
                             ),
                             DropdownMenu<String>(
                                 controller: version,
                                 width: 300,
                                 menuHeight: 256,
-                                label: const Text('Version'),
+                                label: I18nText('profiles.createProfile.fieldVersion'),
                                 enableFilter: true,
                                 errorText: versionError,
                                 inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
@@ -91,13 +91,13 @@ class Profiles extends StatefulWidget {
                           ])),
                       actions: [
                         TextButton(
-                          child: const Text('Cancel'),
+                          child: I18nText('generic.cancel'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
-                          child: const Text('Create'),
+                          child: I18nText('generic.create'),
                           onPressed: () async {
                             setState(() {
                               nameError = null;
@@ -105,13 +105,13 @@ class Profiles extends StatefulWidget {
                             });
                             if (name.text.length > 20 || name.text.isEmpty) {
                               setState(() {
-                                nameError = 'Must be between 1 to 20 characters';
+                                nameError = FlutterI18n.translate(context, 'profiles.createProfile.lengthError');
                               });
                               return;
                             }
                             if (!available.contains(version.text)) {
                               setState(() {
-                                versionError = 'Version does not exist';
+                                versionError = FlutterI18n.translate(context, 'profiles.createProfile.versionError');
                               });
                               return;
                             }
@@ -133,7 +133,7 @@ class Profiles extends StatefulWidget {
                                 AddonType.disabled,
                                 null));
                             ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                .showSnackBar(SnackBar(content: Text('Created profile ${name.text}')));
+                                .showSnackBar(SnackBar(content: I18nText('profiles.createProfile.success', translationParams: {'name': name.text})));
                           },
                         )
                       ]));
@@ -166,10 +166,10 @@ class _ProfilesState extends State<Profiles> {
               if (profiles.profiles.profiles.isEmpty)
                 Expanded(
                     child: Container(
-                        margin: const EdgeInsets.only(bottom: 16), child: Text('Profiles', style: theme.textTheme.headlineLarge)))
+                        margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'profiles.title'), style: theme.textTheme.headlineLarge)))
               else
                 Container(
-                    margin: const EdgeInsets.only(bottom: 16), child: Text('Profiles', style: theme.textTheme.headlineLarge)),
+                    margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'profiles.title'), style: theme.textTheme.headlineLarge)),
               GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 20 / 19, children: [
                 for (Profile profile in sortedProfiles)
                   ProfileWidget(
@@ -186,7 +186,7 @@ class _ProfilesState extends State<Profiles> {
                         child: Column(children: [
                   Container(
                       margin: const EdgeInsets.only(bottom: 8), child: const Icon(Icons.subdirectory_arrow_right, size: 72)),
-                  const Text('Create a profile to start playing')
+                  I18nText('profiles.noProfiles')
                 ])))
             ])));
   }
@@ -206,16 +206,16 @@ class ProfileWidget extends StatelessWidget {
         context: kBaseNavigatorKey.currentContext!,
         builder: (context) => AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Are you sure?'),
-                content: const Text('All data (including worlds) stored on this profile will be permanently deleted.'),
+                title: I18nText('profiles.deleteProfile.title'),
+                content: I18nText('profiles.deleteProfile.content'),
                 actions: [
                   TextButton(
-                      child: const Text('Cancel'),
+                      child: I18nText('generic.cancel'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   TextButton(
-                      child: const Text('Confirm'),
+                      child: I18nText('generic.confirm'),
                       onPressed: () async {
                         Navigator.of(context).pop();
                         await profiles.removeProfile(profile.uuid);
@@ -230,7 +230,7 @@ class ProfileWidget extends StatelessWidget {
                           }
                         }
                         ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                            .showSnackBar(SnackBar(content: Text('Deleted profile ${profile.name}')));
+                            .showSnackBar(SnackBar(content: I18nText('profiles.deleteProfile.success', translationParams: {'name': profile.name})));
                       })
                 ]));
   }
@@ -252,14 +252,14 @@ class ProfileWidget extends StatelessWidget {
                   context,
                   (context) => [
                         ListTile(
-                            title: Text('Edit', style: theme.textTheme.titleMedium),
+                            title: Text(FlutterI18n.translate(context, 'profiles.contextEdit'), style: theme.textTheme.titleMedium),
                             leading: const Icon(Icons.edit),
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileEdit(profile: profile)));
                             }),
                         ListTile(
-                            title: Text('Delete', style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
+                            title: Text(FlutterI18n.translate(context, 'profiles.contextDelete'), style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
                             leading: Icon(Icons.delete, color: theme.colorScheme.error),
                             hoverColor: theme.colorScheme.error.withAlpha(20),
                             focusColor: theme.colorScheme.error.withAlpha(30),
@@ -292,8 +292,8 @@ class ProfileWidget extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 8),
                         child: Text(
                             profile.addon == null
-                                ? profile.version
-                                : '${profile.version} modded with ${profile.addon!.name} ${profile.addonVersion!}',
+                                ? FlutterI18n.translate(context, 'profiles.vanillaProfileDescription', translationParams: {'version': profile.version})
+                                : FlutterI18n.translate(context, 'profiles.moddedProfileDescription', translationParams: {'version': profile.version, 'addonName': profile.addon!.name, 'addonVersion': profile.addonVersion!}),
                             style: theme.textTheme.bodySmall)),
                     Align(
                         alignment: Alignment.bottomRight,
@@ -303,7 +303,7 @@ class ProfileWidget extends StatelessWidget {
                                 : () {
                                     profile.play(kBaseNavigatorKey.currentContext!, false);
                                   },
-                            child: Text(profile.launching ? '...' : 'Play')))
+                            child: Text(profile.launching ? '...' : FlutterI18n.translate(context, 'generic.play'))))
                   ]))
             ])));
   }

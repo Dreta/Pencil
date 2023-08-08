@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/news/mojang_news.dart';
@@ -22,7 +23,8 @@ class _NewsState extends State<News> {
     http.Response response =
         await http.get(Uri.parse('https://launchercontent.mojang.com/news.json'), headers: {'User-Agent': kUserAgent});
     if (response.statusCode != 200) {
-      throw Exception('Error ${response.statusCode} while fetching news');
+      throw Exception(FlutterI18n.translate(context, 'home.news.errorDescription',
+          translationParams: {'code': response.statusCode.toString()}));
     }
     return MinecraftNews.fromJson(json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);
   }
@@ -96,7 +98,7 @@ class _NewsState extends State<News> {
                     Container(
                         margin: const EdgeInsets.only(bottom: 8),
                         child: Icon(Icons.error, color: theme.colorScheme.error, size: 48)),
-                    const Text('Failed to load the news')
+                    I18nText('home.news.error')
                   ])));
                 } else {
                   return const Expanded(child: Center(child: CircularProgressIndicator()));

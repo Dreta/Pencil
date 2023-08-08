@@ -6,6 +6,7 @@ import 'dart:isolate';
 import 'package:archive/archive_io.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/account.dart';
@@ -41,10 +42,10 @@ abstract class LaunchUtils {
   static Future<String?> _checkLaunchReady(BuildContext context, Profile profile) async {
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
     if (tasks.tasks.containsKey(TaskType.javaDownload) && tasks.tasks[TaskType.javaDownload]!.isNotEmpty) {
-      return 'Can\'t start game when downloading Java';
+      return FlutterI18n.translate(context, 'launch.notReady.java');
     }
     if (tasks.tasks.containsKey(TaskType.gameDownload) && tasks.tasks[TaskType.gameDownload]!.isNotEmpty) {
-      return 'Can\'t start game when a download task is running';
+      return FlutterI18n.translate(context, 'launch.notReady.downloading');
     }
     return null;
   }
@@ -144,7 +145,7 @@ abstract class LaunchUtils {
       Isolate.spawn(_extractIsolate, [receivePort.sendPort, toExtract, nativeDir.path]);
       await for (dynamic msg in receivePort) {
         if (msg['type'] == 'progress') {
-          task.currentWork = msg['progress'];
+          task.currentWork = FlutterI18n.translate(context, 'launch.nativeExtractFile', translationParams: {'file': msg['progress']});
           tasks.notify();
         }
         if (msg['type'] == 'complete') {
@@ -167,7 +168,7 @@ abstract class LaunchUtils {
     try {
       for (String native in toExtract) {
         List<String> pathParts = path.split(native);
-        sendPort.send({'type': 'progress', 'progress': 'Extracting ${pathParts[pathParts.length - 1]}'});
+        sendPort.send({'type': 'progress', 'progress': pathParts[pathParts.length - 1]});
         Archive archive = ZipDecoder().decodeBytes(await File(native).readAsBytes());
         for (ArchiveFile file in archive) {
           String filename = file.name;
@@ -251,7 +252,7 @@ abstract class LaunchUtils {
     profiles.notify();
 
     try {
-      Task task = Task(name: 'Launching Minecraft ${profile.version}', type: TaskType.gameLaunch);
+      Task task = Task(name: FlutterI18n.translate(context, 'launch.mainTaskName', translationParams: {'version': profile.version}), type: TaskType.gameLaunch);
       tasks.addTask(task);
 
       String? launchReady = await _checkLaunchReady(context, profile);
@@ -261,27 +262,27 @@ abstract class LaunchUtils {
         return;
       }
 
-      task.currentWork = 'Initializing profile directories';
+      task.currentWork = FlutterI18n.translate(context, 'launch.initProfileDir');
       tasks.notify();
       await _initProfile(context, profile);
 
       List<String> gameArguments = [];
       List<String> jvmArguments = [];
 
-      task.currentWork = 'Reading version manifest';
+      task.currentWork = FlutterI18n.translate(context, 'launch.readVersion');
       tasks.notify();
       File versionFile = File(path.join(settings.data.game!.versionsDirectory!, profile.version, '${profile.version}.json'));
       Version version = Version.fromJson(jsonDecode(await versionFile.readAsString()));
 
-      task.currentWork = 'Extracting native bindings';
+      task.currentWork = FlutterI18n.translate(context, 'launch.extractingNatives');
       tasks.notify();
       String nativeDirectory = await _initializeNatives(context, profile, version, task, tasks);
 
-      task.currentWork = 'Building classpath';
+      task.currentWork = FlutterI18n.translate(context, 'launch.classpath');
       tasks.notify();
       String classpath = await _buildClasspath(context, profile, settings.data.launcher!.host!, version);
 
-      task.currentWork = 'Setting up game arguments';
+      task.currentWork = FlutterI18n.translate(context, 'launch.arguments');
       tasks.notify();
       if (version.arguments != null) {
         for (dynamic argument in version.arguments!.game) {
@@ -367,7 +368,7 @@ abstract class LaunchUtils {
         jvmArguments.addAll(await profile.addon!.modJVMArguments(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
       }
 
-      task.currentWork = 'Launching Minecraft';
+      task.currentWork = FlutterI18n.translate(context, 'launch.launching');
       tasks.notify();
 
       String? javaExecutable;
@@ -407,11 +408,11 @@ abstract class LaunchUtils {
             context: kBaseNavigatorKey.currentContext!,
             builder: (context) => AlertDialog(
                     insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                    title: const Text('Game Crashed'),
-                    content: Text('The game exited with exit code $exitCode.'),
+                    title: I18nText('launch.crash.title'),
+                    content: I18nText('launch.crash.content', translationParams: {'exitCode': exitCode.toString()}),
                     actions: [
                       TextButton(
-                          child: const Text('Confirm'),
+                          child: I18nText('generic.confirm'),
                           onPressed: () {
                             Navigator.pop(context);
                           })

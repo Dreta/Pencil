@@ -1,0 +1,416 @@
+{
+  "generic": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "continue": "Continue",
+    "continueAnyways": "Continue Anyways",
+    "create": "Create",
+    "unknownError": "Unknown Error",
+    "play": "Play",
+    "copyNotSensitive": "Copied to clipboard",
+    "copySensitive": "Copied to clipboard (Do not share with others!)",
+    "unset": "Unset",
+    "accountTypes": {
+      "microsoft": "Microsoft",
+      "mojang": "Mojang",
+      "offline": "Offline"
+    },
+    "addonTypes": {
+      "disabled": "Disabled",
+      "quilt": "Quilt",
+      "fabric": "Fabric",
+      "forge": "Forge"
+    }
+  },
+  "download": {
+    "errorVersionManifestUnavailable": "Can't download game because the version manifest is unavailable.",
+    "errorGeneric": "Failed to download {version}",
+    "errorInvalidVersion": "Invalid version {version}",
+    "metadata": {
+      "work": "Downloading version metadata for {version}",
+      "errorChecksum": "Invalid SHA1 checksum for the version metadata of {version}"
+    },
+    "assetIndex": {
+      "work": "Downloading asset index {assetIndex}",
+      "errorChecksum": "Invalid SHA1 checksum for asset index {assetIndex}",
+      "errorSize": "Incorrect size for asset index {assetIndex}"
+    },
+    "asset": {
+      "begin": "Beginning to download assets",
+      "work": "Downloading asset {asset}",
+      "errorChecksum": "Invalid SHA1 checksum for asset {asset}",
+      "errorSize": "Incorrect size for asset {asset}"
+    },
+    "loggingConfig": {
+      "work": "Downloading logging config {loggingConfig}",
+      "errorChecksum": "Invalid SHA1 checksum for logging config {loggingConfig}",
+      "errorSize": "Incorrect size for logging config {loggingConfig}"
+    },
+    "library": {
+      "begin": "Beginning to download libraries",
+      "work": "Downloading library {library}",
+      "main": {
+        "work": "Downloading library {library}'s main artifact",
+        "errorChecksum": "Invalid SHA1 checksum for main artifact of {library}",
+        "errorSize": "Incorrect size for main artifact of {library}"
+      },
+      "native": {
+        "work": "Downloading library {library}'s native bindings",
+        "errorChecksum": "Invalid SHA1 checksum for native bindings of {library}",
+        "errorSize": "Incorrect size for native bindings of {library}"
+      }
+    },
+    "client": {
+      "work": "Downloading Minecraft client version {version}",
+      "errorChecksum": "Invalid SHA1 checksum for client version {version}",
+      "errorSize": "Incorrect size for client version {version}"
+    },
+    "versionManifest": {
+      "mainTaskName": "Downloading version manifest",
+      "error": "Failed to download version manifest",
+      "errorContent": "You won't be able to download the game or create profiles. Please check your internet connection."
+    },
+    "mainTaskName": "Downloading Minecraft version {version}",
+    "begin": "Beginning download"
+  },
+  "java": {
+    "mainTaskName": "Downloading Java",
+    "genericError": {
+      "title": "Failed to download Java",
+      "content": "You won't be able to launch the game. Please check your internet connection."
+    },
+    "download": {
+      "work": "Downloading JRE {version} ({os} on {arch})",
+      "extractWork": "Extracting JRE {version} ({os} on {arch})",
+      "errorChecksum": "Invalid SHA256 checksum for JRE {version} ({os} on {arch})"
+    }
+  },
+  "launch": {
+    "notReady": {
+      "java": "Can't start game when downloading Java",
+      "downloading": "Can't start game when a download task is running"
+    },
+    "nativeExtractFile": "Extracting {file}",
+    "initProfileDir": "Initializing profile directories",
+    "readVersion": "Reading version manifest",
+    "extractingNatives": "Extracting native bindings",
+    "classpath": "Building classpath",
+    "arguments": "Setting up game arguments",
+    "launching": "Launching Minecraft",
+    "crash": {
+      "title": "Game Crashed",
+      "content": "The game exited with exit code {exitCode}."
+    },
+    "mainTaskName": "Launching Minecraft {version}"
+  },
+  "accountDetails": {
+    "copyAction": "Click to copy",
+    "reauthRequired": "This account needs to be re-authenticated. Please remove this account and add it again.",
+    "nameChange": {
+      "title": "Change Character Name",
+      "field": "Character Name",
+      "lengthError": "Must be 4 to 16 characters",
+      "charError": "Only alphabets, numbers and underscore",
+      "success": "Changed character's name to {name}"
+    },
+    "delete": {
+      "title": "Are you sure?",
+      "content": "You will need to add this account again if you wish to play on it.",
+      "success": "Removed account {name}"
+    },
+    "name": "Character Name",
+    "xblName": "Xbox Live Gamertag",
+    "uuid": "Minecraft UUID",
+    "xuid": "XUID",
+    "accessToken": "Access Token",
+    "accountType": "Account Type",
+    "remove": "Remove Account"
+  },
+  "accounts": {
+    "authError": "Failed to authenticate",
+    "unknownError": "Unknown Error: {error}",
+    "addOffline": {
+      "title": "Add Offline Account",
+      "content": "Offline accounts are stored locally, and cannot be used for playing on servers with verification or Minecraft Realms.",
+      "fieldName": "Character Name",
+      "fieldUUID": "UUID",
+      "lengthError": "Must be 4 to 16 characters",
+      "charError": "Only alphabets, numbers and underscore",
+      "uuidError": "Incorrect format",
+      "success": "Created offline account {name}"
+    },
+    "addMicrosoft": {
+      "title": "Login with Microsoft",
+      "webviewFinished": "Authenticating through Xbox Live...",
+      "begin": "Beginning authentication",
+      "mainTaskName": "Logging in through Xbox Live",
+      "success": "Logged in to Minecraft as {name}"
+    },
+    "accounts": "Accounts",
+    "noAccounts": "No Accounts",
+    "addAccount": "Add Account",
+    "switchAccount": "Switch Account"
+  },
+  "base": {
+    "createProfile": "Create Profile",
+    "playing": "Playing...",
+    "home": "Home",
+    "profiles": "Profiles",
+    "mods": "Mods",
+    "accounts": "Accounts",
+    "settings": "Settings"
+  },
+  "startupTasks": {
+    "reauthFailed": "Failed to re-authenticate some accounts",
+    "webviewUnavailable": {
+      "title": "Components Required",
+      "macOSTitle": "Embedded Browser Issue",
+      "windowsContent": "To continue, you must install the WebView2 Runtime on your system. You will need to download the \"Evergreen\" versions. Please restart Pencil after installing.",
+      "macOSContent": "The embedded browser cannot be initialized on your system. You might not be able to log in.",
+      "linuxContent": "To continue, you must install webkit2gtk on your system. Please restart Pencil after installing.",
+      "exit": "Exit",
+      "windowsInstall": "Install"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "welcomeHeader": "Welcome to Pencil",
+    "newsHeader": "Minecraft News",
+    "news": {
+      "errorDescription": "Error {code} while fetching news",
+      "error": "Failed to load the news"
+    },
+    "welcome": {
+      "featuredProfile": {
+        "title": "Hop right back into the game",
+        "content": "Continue playing on the profile {profile}"
+      },
+      "featuredTutorial": {
+        "title": "Welcome to Pencil",
+        "content": "Learn more about how to easily get started"
+      }
+    }
+  },
+  "profileEdit": {
+    "changeName": {
+      "title": "Change Profile Name",
+      "field": "Profile Name",
+      "lengthError": "Must be 1 to 20 characters",
+      "success": "Changed profile's name to {name}"
+    },
+    "changeVersion": {
+      "manifestUnavailable": {
+        "title": "Can't Change Version",
+        "content": "You can't change the version right now because the version manifest isn't available yet. Please wait for a bit or restart Pencil."
+      },
+      "title": "Change Version",
+      "field": "Version",
+      "versionError": "Version does not exist",
+      "success": "Changed profile's version to {version}"
+    },
+    "changeProfileImage": {
+      "title": "Choose Profile Image",
+      "success": "Changed profile's image"
+    },
+    "changeJVMArgs": {
+      "title": "Change JVM Arguments",
+      "field": "JVM Arguments",
+      "success": "Changed JVM arguments"
+    },
+    "changeGameArgs": {
+      "title": "Change Game Arguments",
+      "field": "Game Arguments",
+      "success": "Changed game arguments"
+    },
+    "changeAddon": {
+      "title": "Change Mod Loader",
+      "fieldType": "Mod Loader Type",
+      "fieldVersion": "Mod Loader Version",
+      "successDisabled": "Disabled mod loader",
+      "errorVersion": "Must be available version",
+      "success": "Changed mod loader to {name} {version}"
+    },
+    "changeResolution": {
+      "title": "Change Resolution",
+      "fieldWidth": "Width",
+      "fieldHeight": "Height",
+      "errorNumber": "Must be integer",
+      "errorNegative": "Must be above 0",
+      "success": "Changed resolution to {width} × {height}",
+      "successDisabled": "Disabled custom resolution"
+    },
+    "changeQuickPlay": {
+      "modes": {
+        "disabled": "Disabled",
+        "singleplayer": "Singleplayer",
+        "multiplayer": "Multiplayer",
+        "realms": "Minecraft Realms"
+      },
+      "title": "Quick Play Options",
+      "description": "Quick Play will only take effect in 1.20 (23w14a) or later.",
+      "fieldMode": "Mode",
+      "fieldWorld": "Singleplayer World",
+      "fieldServer": "Server Address",
+      "fieldRealms": "Minecraft Realms",
+      "errorMSRequired": "You must select a Microsoft account to view available realms.",
+      "errorWorld": "Must be a world in this profile",
+      "errorRealms": "Must be a Minecraft Realms you can access",
+      "success": "Changed Quick Play settings"
+    },
+    "name": "Name",
+    "version": "Version",
+    "profileId": "Profile ID",
+    "profileImage": "Profile Image",
+    "addon": "Mod Loader",
+    "addonVersion": "{name} {version}",
+    "advanced": "Advanced",
+    "jvmArgs": "Custom JVM Arguments",
+    "gameArgs": "Custom Game Arguments",
+    "resolution": "Custom Resolution",
+    "demoMode": "Play in Demo Mode",
+    "demoDescription": "Only available in version 1.3 or later",
+    "quickPlay": "Quick Play",
+    "quickPlayDescription": "Only available in version 1.20 (23w14a) or later"
+  },
+  "profiles": {
+    "manifestUnavailable": {
+      "title": "Can't Create Profile",
+      "content": "You can't create a profile right now because the version manifest isn't available yet."
+    },
+    "createProfile": {
+      "title": "Create Profile",
+      "fieldName": "Name",
+      "fieldVersion": "Version",
+      "lengthError": "Must be 1 to 20 characters",
+      "versionError": "Version does not exist",
+      "success": "Created profile {name}"
+    },
+    "deleteProfile": {
+      "title": "Are you sure?",
+      "content": "All data (including worlds) stored on this profile will be permanently deleted.",
+      "success": "Deleted profile {name}"
+    },
+    "title": "Profiles",
+    "noProfiles": "Create a profile to start playing",
+    "contextEdit": "Edit",
+    "contextDelete": "Delete",
+    "vanillaProfileDescription": "{version}",
+    "moddedProfileDescription": "{version} modded with {addonName} {addonVersion}"
+  },
+  "settings": {
+    "title": "Settings",
+    "about": {
+      "name": "Pencil",
+      "title": "Pencil is a modern Material Design Minecraft launcher.",
+      "disclaimer": "Pencil is not endorsed by or affiliated with Microsoft, Mojang or Minecraft."
+    },
+    "game": {
+      "title": "Game",
+      "storage": {
+        "title": "Storage",
+        "versionsDir": "Versions Directory",
+        "chooseVersionsDir": "Choose Versions Directory",
+        "assetsDir": "Assets Directory",
+        "chooseAssetsDir": "Choose Assets Directory",
+        "librariesDir": "Libraries Directory",
+        "chooseLibrariesDir": "Choose Libraries Directory"
+      }
+    },
+    "java": {
+      "title": "Java",
+      "autoDownload": "Automatically Download Java (Recommended)",
+      "modernHome": "Modern Java Home (Java 17)",
+      "setModernHome": "Set Modern Java Home",
+      "legacyHome": "Legacy Java Home (Java 8)",
+      "setLegacyHome": "Set Legacy Java Home"
+    },
+    "launcher": {
+      "title": "Launcher",
+      "storage": {
+        "title": "Storage",
+        "profilesDir": "Profiles Directory",
+        "chooseProfilesDir": "Choose Profiles Directory",
+        "imgDir": "Images Directory",
+        "chooseImgDir": "Choose Images Directory"
+      },
+      "profiles": {
+        "title": "Profiles",
+        "showStable": "Show Stable Releases",
+        "showSnapshot": "Show Snapshot Releases",
+        "showHistorical": "Show Historical Releases",
+        "profileSort": {
+          "title": "Profile Order",
+          "byLastPlayed": "By Last Played",
+          "byName": "By Name"
+        },
+        "autoHide": "Hide Launcher After Game Starts"
+      },
+      "host": {
+        "title": "Download Sources",
+        "preset": "Download Preset",
+        "presetOfficial": "Official",
+        "presetBMCL": "BMCLAPI (For users in mainland China)",
+        "presetCustom": "Custom",
+        "launcherMeta": "Launcher Meta Host",
+        "setLauncherMeta": "Set Launcher Meta Host",
+        "pistonMeta": "Piston Meta Host",
+        "setPistonMeta": "Set Piston Meta Host",
+        "resources": "Resources Host",
+        "setResources": "Set Resources Host",
+        "libraries": "Libraries Host",
+        "setLibraries": "Set Libraries Host",
+        "forge": "Forge Host",
+        "setForge": "Set Forge Host",
+        "fabricMeta": "Fabric Meta Host",
+        "setFabricMeta": "Set Fabric Meta Host",
+        "fabricMaven": "Fabric Maven Host",
+        "setFabricMaven": "Set Fabric Maven Host",
+        "quiltMeta": "Quilt Meta Host",
+        "setQuiltMeta": "Set Quilt Meta Host",
+        "quiltMaven": "Quilt Maven Host",
+        "setQuiltMaven": "Set Quilt Maven Host",
+        "urlErrors": {
+          "valid": "Must be a valid URL",
+          "slash": "Must not end with a slash",
+          "https": "Protocol must be HTTPS"
+        }
+      }
+    },
+    "others": {
+      "title": "Others",
+      "checkUpdates": "Check Updates on Startup",
+      "telemetry": "Enable Anonymous Telemetry"
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "noTasks": "All tasks completed!"
+  },
+  "auth": {
+    "reAuth": "Re-authenticating account {name}",
+    "ms": {
+      "duplicate": "This account has already been added.",
+      "codeExchange": "Exchanging authorization code for tokens",
+      "codeExchangeFail": "Code exchange resulted in {code}",
+      "refreshToken": "Refreshing access token",
+      "xblAuth": "Authenticating to Xbox Live",
+      "xblAuthFail": "Xbox Live authentication resulted in {code}",
+      "xstsAuth": "Authenticating to XSTS",
+      "xstsAuthFail": "XSTS authentication resulted in {code}",
+      "xstsNoProfile": "You must create an Xbox account before logging in.",
+      "xstsGeoBlocked": "Xbox Live is not available in your Microsoft account's region.",
+      "xstsChild": "Your Microsoft account needs adult verification (South Korea).",
+      "xstsFamily": "Your Microsoft account must be added to a Family by an adult before continuing.",
+      "xstsUnknown": "Unknown Xbox Live error.",
+      "xblProfile": "Fetching Xbox Live profile",
+      "xblProfileFail": "Xbox Live profile fetching resulted in {code}",
+      "mc": "Authenticating to Minecraft Services",
+      "mcFail": "Minecraft Services authentication resulted in {code}",
+      "mcProfile": "Fetching Minecraft profile",
+      "mcProfileFail": "Minecraft Services profile fetching resulted in {code}",
+      "mcNoProfile": "You must log in to the official Minecraft launcher or minecraft.net at least once to set up your Minecraft profile."
+    }
+  }
+}

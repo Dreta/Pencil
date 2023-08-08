@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
@@ -22,7 +23,7 @@ class VersionManifestProvider extends ChangeNotifier {
     if (!(await _manifestFile.exists())) {
       await _manifestFile.create(recursive: true);
     }
-    Task task = Task(name: 'Downloading version manifest', type: TaskType.gameDownload);
+    Task task = Task(name: FlutterI18n.translate(context, 'download.versionManifest.mainTaskName'), type: TaskType.gameDownload);
     tasks.addTask(task);
     await download(context);
     tasks.removeTask(task);
@@ -44,12 +45,11 @@ class VersionManifestProvider extends ChangeNotifier {
               context: kBaseNavigatorKey.currentContext!,
               builder: (context) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Failed to download version manifest'),
-                      content: const Text(
-                          'You won\'t be able to download the game or create profiles. Please check your internet connection.'),
+                      title: I18nText('download.versionManifest.error'),
+                      content: I18nText('download.versionManifest.errorContent'),
                       actions: [
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               Navigator.pop(context);
                             })

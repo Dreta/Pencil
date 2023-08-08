@@ -1,6 +1,7 @@
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/account.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
@@ -36,31 +37,31 @@ class _AccountsState extends State<Accounts> {
             String? uuidError;
             return StatefulBuilder(
                 builder: (context, setState) => AlertDialog(
-                        title: const Text('Add Offline Account'),
+                        title: I18nText('accounts.addOffline.title'),
                         insetPadding: const EdgeInsets.symmetric(horizontal: 250),
                         content: Column(mainAxisSize: MainAxisSize.min, children: [
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 4),
-                              child: const Text(
-                                  'Offline accounts are stored locally, and cannot be used for logging in to servers with verification or Minecraft Realms.')),
+                          Container(margin: const EdgeInsets.only(bottom: 4), child: I18nText('accounts.addOffline.content')),
                           TextField(
-                            decoration: InputDecoration(labelText: 'Character Name', errorText: usernameError),
+                            decoration: InputDecoration(
+                                labelText: FlutterI18n.translate(context, 'accounts.addOffline.fieldName'),
+                                errorText: usernameError),
                             controller: username,
                           ),
                           TextField(
-                            decoration: InputDecoration(labelText: 'UUID', errorText: uuidError),
+                            decoration: InputDecoration(
+                                labelText: FlutterI18n.translate(context, 'accounts.addOffline.fieldUUID'), errorText: uuidError),
                             controller: uuid,
                           )
                         ]),
                         actions: [
                           TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
                           TextButton(
-                            child: const Text('Create'),
+                            child: I18nText('generic.create'),
                             onPressed: () async {
                               setState(() {
                                 usernameError = null;
@@ -68,14 +69,14 @@ class _AccountsState extends State<Accounts> {
                               });
                               if (username.text.length > 16 || username.text.length < 4) {
                                 setState(() {
-                                  usernameError = 'Must be 4 to 16 characters';
+                                  usernameError = FlutterI18n.translate(context, 'accounts.addOffline.lengthError');
                                 });
                                 return;
                               }
                               for (String character in username.text.characters) {
                                 if (!('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.contains(character))) {
                                   setState(() {
-                                    usernameError = 'Can only contain alphabets, numbers and underscore';
+                                    usernameError = FlutterI18n.translate(context, 'accounts.addOffline.charError');
                                   });
                                   return;
                                 }
@@ -86,19 +87,20 @@ class _AccountsState extends State<Accounts> {
                                 try {
                                   Account account = await accounts.createOfflineAccount(context, username.text, uuidValue);
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(
-                                        SnackBar(content: Text('Created offline account ${account.characterName}')));
+                                    ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                                        content: I18nText('accounts.addOffline.success',
+                                            translationParams: {'name': account.characterName})));
                                   }
                                 } catch (e1) {
                                   showDialog(
                                       context: kBaseNavigatorKey.currentContext!,
                                       builder: (context) => AlertDialog(
                                               insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                                              title: const Text('Failed to authenticate'),
+                                              title: I18nText('accounts.authError'),
                                               content: Text(e1.toString()),
                                               actions: [
                                                 TextButton(
-                                                    child: const Text('Confirm'),
+                                                    child: I18nText('generic.confirm'),
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     })
@@ -106,7 +108,7 @@ class _AccountsState extends State<Accounts> {
                                 }
                               } catch (e) {
                                 setState(() {
-                                  uuidError = 'Incorrect format';
+                                  uuidError = FlutterI18n.translate(context, 'accounts.addOffline.uuidError');
                                 });
                               }
                             },
@@ -120,7 +122,8 @@ class _AccountsState extends State<Accounts> {
     AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
 
-    Webview window = await WebviewWindow.create(configuration: const CreateConfiguration(title: 'Login with Microsoft'));
+    Webview window = await WebviewWindow.create(
+        configuration: CreateConfiguration(title: FlutterI18n.translate(context, 'accounts.addMicrosoft.title')));
     window.launch(
         'https://login.live.com/oauth20_authorize.srf?lw=1&fl=dob,easi2&xsup=1&prompt=select_account&client_id=00000000402B5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&nopa=2');
     window.addOnUrlRequestCallback((url) async {
@@ -129,24 +132,26 @@ class _AccountsState extends State<Accounts> {
         if (uri.queryParameters.containsKey('code')) {
           window.close();
           ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-              .showSnackBar(const SnackBar(content: Text('Authenticating through Xbox Live...')));
-          Task task =
-              Task(name: 'Logging in through Xbox Live', type: TaskType.microsoftAuth, currentWork: 'Beginning authentication');
+              .showSnackBar(SnackBar(content: I18nText('accounts.addMicrosoft.webviewFinished')));
+          Task task = Task(
+              name: FlutterI18n.translate(context, 'accounts.addMicrosoft.mainTaskName'),
+              type: TaskType.microsoftAuth,
+              currentWork: FlutterI18n.translate(context, 'accounts.addMicrosoft.begin'));
           tasks.addTask(task);
           try {
             Account account = await accounts.createMicrosoftAccount(context, uri.queryParameters['code']!, task, tasks);
-            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                .showSnackBar(SnackBar(content: Text('Logged in to Minecraft as ${account.characterName}')));
+            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(
+                SnackBar(content: I18nText('accounts.addMicrosoft.success', translationParams: {'name': account.characterName})));
           } catch (e) {
             showDialog(
                 context: kBaseNavigatorKey.currentContext!,
                 builder: (context) => AlertDialog(
                         insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                        title: const Text('Failed to authenticate'),
+                        title: I18nText('accounts.authError'),
                         content: Text(e.toString()),
                         actions: [
                           TextButton(
-                              child: const Text('Confirm'),
+                              child: I18nText('generic.confirm'),
                               onPressed: () {
                                 Navigator.pop(context);
                               })
@@ -161,12 +166,13 @@ class _AccountsState extends State<Accounts> {
                 context: kBaseNavigatorKey.currentContext!,
                 builder: (context) => AlertDialog(
                         insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                        title: const Text('Failed to authenticate'),
-                        content:
-                            Text(uri.queryParameters['error_description'] ?? 'Unknown error: ${uri.queryParameters['error']}'),
+                        title: I18nText('accounts.authError'),
+                        content: Text(uri.queryParameters['error_description'] ??
+                            FlutterI18n.translate(context, 'accounts.unknownError',
+                                translationParams: {'error': uri.queryParameters['error'] ?? 'null'})),
                         actions: [
                           TextButton(
-                              child: const Text('Confirm'),
+                              child: I18nText('generic.confirm'),
                               onPressed: () {
                                 Navigator.pop(context);
                               })
@@ -205,9 +211,9 @@ class _AccountsState extends State<Accounts> {
           children: [
             Padding(
                 padding: const EdgeInsets.fromLTRB(28, 16, 16, 16),
-                child: Text('Accounts', style: theme.textTheme.headlineMedium)),
+                child: Text(FlutterI18n.translate(context, 'accounts.accounts'), style: theme.textTheme.headlineMedium)),
             if (accounts.accounts.accounts.isEmpty)
-              const NavigationDrawerDestination(icon: Icon(Icons.person), label: Text('No Accounts')),
+              NavigationDrawerDestination(icon: Icon(Icons.person), label: I18nText('accounts.noAccounts')),
             for (String uuid in indexToUUID)
               NavigationDrawerDestination(
                   icon: accounts.accounts.accounts[uuid]!.reauthFailed
@@ -246,14 +252,14 @@ class _AccountsState extends State<Accounts> {
                                       onTap: () {
                                         createMicrosoftAccount();
                                       },
-                                      child: const Text('Microsoft')),
+                                      child: I18nText('generic.accountTypes.microsoft')),
                                   PopupMenuItem(
                                       onTap: () {
                                         createOfflineAccount();
                                       },
-                                      child: const Text('Offline'))
+                                      child: I18nText('generic.accountTypes.offline'))
                                 ],
-                            child: const Text('Add Account')),
+                            child: I18nText('accounts.addAccount')),
                         icon: const Icon(Icons.add))))
           ]),
       if (accounts.accounts.accounts.isNotEmpty)

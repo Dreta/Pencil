@@ -5,19 +5,20 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/pencil/account/account.dart';
-import 'package:pencil/data/pencil/account/accounts_provider.dart';
-import 'package:pencil/data/modloaders/addon.dart';
-import 'package:pencil/data/modloaders/fabric_compatible_addon.dart';
-import 'package:pencil/data/pencil/profile/profile.dart';
-import 'package:pencil/data/pencil/profile/profiles_provider.dart';
-import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:pencil/data/minecraft/manifest/manifest_version.dart';
 import 'package:pencil/data/minecraft/manifest/version_manifest_provider.dart';
 import 'package:pencil/data/minecraft/version_type.dart';
+import 'package:pencil/data/modloaders/addon.dart';
+import 'package:pencil/data/modloaders/fabric_compatible_addon.dart';
+import 'package:pencil/data/pencil/account/account.dart';
+import 'package:pencil/data/pencil/account/accounts_provider.dart';
+import 'package:pencil/data/pencil/profile/profile.dart';
+import 'package:pencil/data/pencil/profile/profiles_provider.dart';
+import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -40,33 +41,34 @@ class _ProfileEditState extends State<ProfileEdit> {
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Change Profile Name'),
+                      title: I18nText('profileEdit.changeName.title'),
                       content: TextField(
-                        decoration: InputDecoration(labelText: 'Profile Name', errorText: nameError),
+                        decoration: InputDecoration(
+                            labelText: FlutterI18n.translate(context, 'profileEdit.changeName.field'), errorText: nameError),
                         controller: name,
                       ),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               setState(() {
                                 nameError = null;
                               });
                               if (name.text.length > 20 || name.text.isEmpty) {
                                 setState(() {
-                                  nameError = 'Must be between 1 to 20 characters';
+                                  nameError = FlutterI18n.translate(context, 'profileEdit.changeName.lengthError');
                                 });
                                 return;
                               }
                               widget.profile.name = name.text;
                               profiles.save();
-                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(SnackBar(content: Text('Changed profile\'s name to ${name.text}')));
+                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                                  content: I18nText('profileEdit.changeName.success', translationParams: {'name': name.text})));
                               Navigator.pop(context);
                             })
                       ]));
@@ -83,12 +85,11 @@ class _ProfileEditState extends State<ProfileEdit> {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: const Text('Can\'t Change Version'),
-                  content: const Text(
-                      'You can\'t change the version right now because the version manifest isn\'t available yet. Please wait for a bit or restart Pencil.'),
+                  title: I18nText('profileEdit.changeVersion.manifestUnavailable.title'),
+                  content: I18nText('profileEdit.changeVersion.manifestUnavailable.content'),
                   actions: [
                     TextButton(
-                        child: const Text('Confirm'),
+                        child: I18nText('generic.confirm'),
                         onPressed: () {
                           Navigator.pop(context);
                         })
@@ -119,7 +120,7 @@ class _ProfileEditState extends State<ProfileEdit> {
           String? versionError;
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
-                      title: const Text('Change Version'),
+                      title: I18nText('profileEdit.changeVersion.title'),
                       insetPadding: const EdgeInsets.symmetric(horizontal: 250),
                       content: SizedBox(
                           width: 300,
@@ -130,7 +131,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 width: 300,
                                 menuHeight: 256,
                                 initialSelection: widget.profile.version,
-                                label: const Text('Version'),
+                                label: I18nText('profileEdit.changeVersion.field'),
                                 enableFilter: true,
                                 errorText: versionError,
                                 inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
@@ -141,28 +142,29 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ])),
                       actions: [
                         TextButton(
-                          child: const Text('Cancel'),
+                          child: I18nText('generic.cancel'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
-                          child: const Text('Confirm'),
+                          child: I18nText('generic.confirm'),
                           onPressed: () async {
                             setState(() {
                               versionError = null;
                             });
                             if (!available.contains(version.text)) {
                               setState(() {
-                                versionError = 'Version does not exist';
+                                versionError = FlutterI18n.translate(context, 'profileEdit.changeVersion.versionError');
                               });
                               return;
                             }
                             widget.profile.version = version.text;
                             widget.profile.lastDownloaded = null;
                             profiles.save();
-                            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                .showSnackBar(SnackBar(content: Text('Changed profile\'s version to ${version.text}')));
+                            ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                                content:
+                                    I18nText('profileEdit.changeVersion.success', translationParams: {'version': version.text})));
                             Navigator.of(context).pop();
                           },
                         )
@@ -173,7 +175,8 @@ class _ProfileEditState extends State<ProfileEdit> {
   void changeImage() async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image, dialogTitle: 'Choose Profile Image');
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.image, dialogTitle: FlutterI18n.translate(context, 'profileEdit.changeProfileImage.title'));
     if (result == null) {
       return;
     }
@@ -187,7 +190,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     widget.profile.img = newFile.absolute.path;
     profiles.save();
     ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-        .showSnackBar(const SnackBar(content: Text('Changed profile\'s image')));
+        .showSnackBar(SnackBar(content: I18nText('profileEdit.changeProfileImage.success')));
   }
 
   void changeJVMArguments() {
@@ -199,24 +202,24 @@ class _ProfileEditState extends State<ProfileEdit> {
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Change JVM Arguments'),
+                      title: I18nText('profileEdit.changeJVMArgs.title'),
                       content: TextField(
-                        decoration: const InputDecoration(labelText: 'JVM Arguments'),
+                        decoration: InputDecoration(labelText: FlutterI18n.translate(context, 'profileEdit.changeJVMArgs.field')),
                         controller: args,
                       ),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               widget.profile.jvmArguments = args.text;
                               profiles.save();
                               ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(const SnackBar(content: Text('Changed JVM arguments')));
+                                  .showSnackBar(SnackBar(content: I18nText('profileEdit.changeJVMArgs.success')));
                               Navigator.pop(context);
                             })
                       ]));
@@ -232,24 +235,25 @@ class _ProfileEditState extends State<ProfileEdit> {
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Change Game Arguments'),
+                      title: I18nText('profileEdit.changeGameArgs.title'),
                       content: TextField(
-                        decoration: const InputDecoration(labelText: 'Game Arguments'),
+                        decoration:
+                            InputDecoration(labelText: FlutterI18n.translate(context, 'profileEdit.changeGameArgs.field')),
                         controller: args,
                       ),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               widget.profile.gameArguments = args.text;
                               profiles.save();
                               ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(const SnackBar(content: Text('Changed game arguments')));
+                                  .showSnackBar(SnackBar(content: I18nText('profileEdit.changeGameArgs.success')));
                               Navigator.pop(context);
                             })
                       ]));
@@ -295,14 +299,14 @@ class _ProfileEditState extends State<ProfileEdit> {
             }
             return AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Change Mod Loader'),
+                title: I18nText('profileEdit.changeAddon.title'),
                 content: SizedBox(
                     width: 300,
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       DropdownMenu<AddonType>(
                           width: 300,
                           menuHeight: 256,
-                          label: const Text('Mod Loader Type'),
+                          label: I18nText('profileEdit.changeAddon.fieldType'),
                           initialSelection: widget.profile.addonType,
                           onSelected: (value) {
                             setState(() {
@@ -314,11 +318,15 @@ class _ProfileEditState extends State<ProfileEdit> {
                           },
                           enableSearch: false,
                           inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
-                          dropdownMenuEntries: const [
-                            DropdownMenuEntry(value: AddonType.disabled, label: 'Disabled'),
-                            DropdownMenuEntry(value: AddonType.quilt, label: 'Quilt'),
-                            DropdownMenuEntry(value: AddonType.fabric, label: 'Fabric'),
-                            DropdownMenuEntry(value: AddonType.forge, label: 'Forge')
+                          dropdownMenuEntries: [
+                            DropdownMenuEntry(
+                                value: AddonType.disabled, label: FlutterI18n.translate(context, 'generic.addonTypes.disabled')),
+                            DropdownMenuEntry(
+                                value: AddonType.quilt, label: FlutterI18n.translate(context, 'generic.addonTypes.quilt')),
+                            DropdownMenuEntry(
+                                value: AddonType.fabric, label: FlutterI18n.translate(context, 'generic.addonTypes.fabric')),
+                            DropdownMenuEntry(
+                                value: AddonType.forge, label: FlutterI18n.translate(context, 'generic.addonTypes.forge'))
                           ]),
                       if (type != AddonType.disabled)
                         if (addonVersionLoading)
@@ -333,7 +341,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               width: 300,
                               menuHeight: 256,
                               controller: version,
-                              label: const Text('Mod Loader Version'),
+                              label: I18nText('profileEdit.changeAddon.fieldVersion'),
                               initialSelection: widget.profile.addonVersion,
                               errorText: versionError,
                               inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
@@ -343,12 +351,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ])),
                 actions: [
                   TextButton(
-                      child: const Text('Cancel'),
+                      child: I18nText('generic.cancel'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   TextButton(
-                      child: const Text('Confirm'),
+                      child: I18nText('generic.confirm'),
                       onPressed: () {
                         setState(() {
                           versionError = null;
@@ -360,13 +368,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                           widget.profile.lastDownloaded = null;
                           profiles.save();
                           ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                              .showSnackBar(const SnackBar(content: Text('Disabled mod loader')));
+                              .showSnackBar(SnackBar(content: I18nText('profileEdit.changeAddon.successDisabled')));
                           Navigator.pop(context);
                           return;
                         }
                         if (!addonVersions!.contains(version.text)) {
                           setState(() {
-                            versionError = 'Must be available version';
+                            versionError = FlutterI18n.translate(context, 'profileEdit.changeAddon.errorVersion');
                           });
                           return;
                         }
@@ -375,8 +383,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                         widget.profile.addon = type.addon;
                         widget.profile.lastDownloaded = null;
                         profiles.save();
-                        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                            .showSnackBar(SnackBar(content: Text('Changed mod loader to ${widget.profile.addon!.name} ${version.text}')));
+                        ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                            content: I18nText('profileEdit.changeAddon.success',
+                                translationParams: {'name': widget.profile.addon!.name, 'version': version.text})));
                         Navigator.pop(context);
                       })
                 ]);
@@ -396,13 +405,15 @@ class _ProfileEditState extends State<ProfileEdit> {
           return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                      title: const Text('Change Resolution'),
+                      title: I18nText('profileEdit.changeResolution.title'),
                       content: Row(children: [
                         Container(
                             width: 100,
                             margin: const EdgeInsets.only(right: 16),
                             child: TextField(
-                              decoration: InputDecoration(labelText: 'Width', errorText: widthError),
+                              decoration: InputDecoration(
+                                  labelText: FlutterI18n.translate(context, 'profileEdit.changeResolution.fieldWidth'),
+                                  errorText: widthError),
                               controller: width,
                             )),
                         const Text('×'),
@@ -410,18 +421,20 @@ class _ProfileEditState extends State<ProfileEdit> {
                             width: 100,
                             margin: const EdgeInsets.only(left: 16),
                             child: TextField(
-                              decoration: InputDecoration(labelText: 'Height', errorText: heightError),
+                              decoration: InputDecoration(
+                                  labelText: FlutterI18n.translate(context, 'profileEdit.changeResolution.fieldHeight'),
+                                  errorText: heightError),
                               controller: height,
                             ))
                       ]),
                       actions: [
                         TextButton(
-                            child: const Text('Cancel'),
+                            child: I18nText('generic.cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             }),
                         TextButton(
-                            child: const Text('Confirm'),
+                            child: I18nText('generic.confirm'),
                             onPressed: () {
                               setState(() {
                                 widthError = null;
@@ -432,39 +445,40 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 widget.profile.resolutionHeight = null;
                                 profiles.save();
                                 ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                    .showSnackBar(const SnackBar(content: Text('Removed custom resolution')));
+                                    .showSnackBar(SnackBar(content: I18nText('profileEdit.changeResolution.successDisabled')));
                                 Navigator.pop(context);
                                 return;
                               }
                               if (int.tryParse(width.text) == null) {
                                 setState(() {
-                                  widthError = 'Must be number';
+                                  widthError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNumber');
                                 });
                                 return;
                               }
                               if (int.parse(width.text) <= 0) {
                                 setState(() {
-                                  widthError = 'Must be above 0';
+                                  widthError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNegative');
                                 });
                                 return;
                               }
                               if (int.tryParse(height.text) == null) {
                                 setState(() {
-                                  heightError = 'Must be number';
+                                  heightError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNumber');
                                 });
                                 return;
                               }
                               if (int.parse(height.text) <= 0) {
                                 setState(() {
-                                  heightError = 'Must be above 0';
+                                  heightError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNegative');
                                 });
                                 return;
                               }
                               widget.profile.resolutionWidth = int.parse(width.text);
                               widget.profile.resolutionHeight = int.parse(height.text);
                               profiles.save();
-                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                  .showSnackBar(SnackBar(content: Text('Changed resolution to ${width.text} × ${height.text}')));
+                              ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!).showSnackBar(SnackBar(
+                                  content: I18nText('profileEdit.changeResolution.success',
+                                      translationParams: {'width': width.text, 'height': height.text})));
                               Navigator.pop(context);
                             })
                       ]));
@@ -495,10 +509,10 @@ class _ProfileEditState extends State<ProfileEdit> {
         context: kBaseNavigatorKey.currentContext!,
         builder: (context) {
           Map<QuickPlayMode, String> quickPlayMode = {
-            QuickPlayMode.disabled: 'Disabled',
-            QuickPlayMode.singleplayer: 'Singleplayer',
-            QuickPlayMode.multiplayer: 'Multiplayer',
-            QuickPlayMode.realms: 'Minecraft Realms'
+            QuickPlayMode.disabled: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.disabled'),
+            QuickPlayMode.singleplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.singleplayer'),
+            QuickPlayMode.multiplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.multiplayer'),
+            QuickPlayMode.realms: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.realms')
           };
           QuickPlayMode mode = widget.profile.quickPlayMode;
           TextEditingController host = TextEditingController(
@@ -543,17 +557,16 @@ class _ProfileEditState extends State<ProfileEdit> {
             }
             return AlertDialog(
                 insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                title: const Text('Quick Play Options'),
+                title: I18nText('profileEdit.changeQuickPlay.title'),
                 content: SizedBox(
                     width: 300,
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Container(
-                          margin: const EdgeInsets.only(bottom: 4),
-                          child: const Text('Quick Play will only take effect in version 23w14a (1.20) or later.')),
+                          margin: const EdgeInsets.only(bottom: 4), child: I18nText('profileEdit.changeQuickPlay.description')),
                       DropdownMenu<QuickPlayMode>(
                           width: 300,
                           menuHeight: 256,
-                          label: const Text('Mode'),
+                          label: I18nText('profileEdit.changeQuickPlay.fieldMode'),
                           initialSelection: mode,
                           onSelected: (value) {
                             setState(() {
@@ -577,7 +590,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 hostPath = value;
                               });
                             },
-                            label: const Text('Singleplayer World'),
+                            label: I18nText('profileEdit.changeQuickPlay.fieldWorld'),
                             enableFilter: true,
                             errorText: hostError,
                             inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
@@ -587,15 +600,16 @@ class _ProfileEditState extends State<ProfileEdit> {
                             ]),
                       if (mode == QuickPlayMode.multiplayer)
                         TextField(
-                          decoration: InputDecoration(labelText: 'Server Address', errorText: hostError),
+                          decoration: InputDecoration(
+                              labelText: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.fieldServer'),
+                              errorText: hostError),
                           controller: host,
                         ),
                       if (mode == QuickPlayMode.realms)
                         if (selectedAccount == null || selectedAccount.type == AccountType.offline)
                           Container(
                               margin: const EdgeInsets.only(top: 8),
-                              child: const Text(
-                                  'You must select a Microsoft account to view the Minecraft Realms available to you.'))
+                              child: I18nText('profileEdit.changeQuickPlay.errorMSRequired'))
                         else if (realmsLoading)
                           Container(
                               margin: const EdgeInsets.only(top: 8), child: const Center(child: CircularProgressIndicator()))
@@ -614,7 +628,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   hostPath = value.toString();
                                 });
                               },
-                              label: const Text('Minecraft Realms'),
+                              label: I18nText('profileEdit.changeQuickPlay.fieldRealms'),
                               enableFilter: true,
                               errorText: hostError,
                               inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
@@ -625,25 +639,25 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ])),
                 actions: [
                   TextButton(
-                      child: const Text('Cancel'),
+                      child: I18nText('generic.cancel'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   TextButton(
-                      child: const Text('Confirm'),
+                      child: I18nText('generic.confirm'),
                       onPressed: () {
                         setState(() {
                           hostError = null;
                         });
                         if (mode == QuickPlayMode.singleplayer && !saves.containsValue(host.text)) {
                           setState(() {
-                            hostError = 'Must be a world in this profile';
+                            hostError = FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.errorWorld');
                           });
                           return;
                         }
                         if (mode == QuickPlayMode.realms && !(realmsAvailable ?? {}).containsValue(host.text)) {
                           setState(() {
-                            hostError = 'Must be a Minecraft Realms you can access';
+                            hostError = FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.errorRealms');
                           });
                           return;
                         }
@@ -653,7 +667,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             : (mode == QuickPlayMode.multiplayer ? host.text : hostPath);
                         profiles.save();
                         ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                            .showSnackBar(const SnackBar(content: Text('Changed Quick Play settings')));
+                            .showSnackBar(SnackBar(content: I18nText('profileEdit.changeQuickPlay.success')));
                         Navigator.pop(context);
                       })
                 ]);
@@ -687,7 +701,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               child: Text(widget.profile.name, style: theme.textTheme.headlineLarge)),
                           ListTile(
                               leading: const Icon(Icons.message),
-                              title: Text('Name', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                              title: Text(FlutterI18n.translate(context, 'profileEdit.name'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.name,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
@@ -696,7 +710,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                           ListTile(
                               leading: const Icon(Icons.update),
-                              title: Text('Version', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                              title: Text(FlutterI18n.translate(context, 'profileEdit.version'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.version,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
@@ -706,18 +720,18 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ListTile(
                               leading: const Icon(Icons.numbers),
                               title:
-                                  Text('Profile ID', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                                  Text(FlutterI18n.translate(context, 'profileEdit.profileId'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.uuid,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
                                 Clipboard.setData(ClipboardData(text: widget.profile.uuid));
                                 ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-                                    .showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+                                    .showSnackBar(SnackBar(content: I18nText('generic.copyNotSensitive')));
                               },
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                           ListTile(
                               leading: const Icon(Icons.image),
-                              title: Text('Profile Image',
+                              title: Text(FlutterI18n.translate(context, 'profileEdit.profileImage'),
                                   style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               onTap: () {
                                 changeImage();
@@ -726,11 +740,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ListTile(
                               leading: const Icon(Icons.mode_standby),
                               title:
-                                  Text('Mod Loader', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                                  Text(FlutterI18n.translate(context, 'profileEdit.addon'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(
                                   widget.profile.addon == null
-                                      ? 'Unset'
-                                      : '${widget.profile.addon!.name} ${widget.profile.addonVersion!}',
+                                      ? FlutterI18n.translate(context, 'generic.unset')
+                                      : FlutterI18n.translate(context, 'profileEdit.addonVersion', translationParams: {'name': widget.profile.addon!.name, 'version': widget.profile.addonVersion!}),
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
                                 changeAddon();
@@ -746,13 +760,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   color: Colors.transparent,
                                   child: ExpansionTile(
                                       leading: const Icon(Icons.settings),
-                                      title: Text('Advanced',
+                                      title: Text(FlutterI18n.translate(context, 'profileEdit.advanced'),
                                           style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                       children: [
                                         ListTile(
                                             leading: const Icon(Icons.code),
-                                            title: Text('Custom JVM Arguments',
+                                            title: Text(FlutterI18n.translate(context, 'profileEdit.jvmArgs'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 widget.profile.jvmArguments.length > 64
@@ -765,10 +779,10 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.code),
-                                            title: Text('Custom Game Arguments',
+                                            title: Text(FlutterI18n.translate(context, 'profileEdit.gameArgs'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
-                                                widget.profile.gameArguments.isEmpty ? 'Unset' : widget.profile.gameArguments,
+                                                widget.profile.gameArguments.isEmpty ? FlutterI18n.translate(context, 'generic.unset') : widget.profile.gameArguments,
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
                                               changeGameArguments();
@@ -776,13 +790,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.desktop_windows),
-                                            title: Text('Custom Resolution',
+                                            title: Text(FlutterI18n.translate(context, 'profileEdit.resolution'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 (widget.profile.resolutionWidth != null &&
                                                         widget.profile.resolutionHeight != null)
                                                     ? '${widget.profile.resolutionWidth} × ${widget.profile.resolutionHeight}'
-                                                    : 'Unset',
+                                                    : FlutterI18n.translate(context, 'generic.unset'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
                                               changeResolution();
@@ -795,22 +809,22 @@ class _ProfileEditState extends State<ProfileEdit> {
                                               widget.profile.enabledDemoMode = value;
                                               profiles.save();
                                             },
-                                            title: Text('Play in Demo Mode',
+                                            title: Text(FlutterI18n.translate(context, 'profileEdit.demoMode'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                                            subtitle: Text('Only available in version 1.3 or later',
+                                            subtitle: Text(FlutterI18n.translate(context, 'profileEdit.demoDescription'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.speed),
-                                            title: Text('Quick Play',
+                                            title: Text(FlutterI18n.translate(context, 'profileEdit.quickPlay'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 (widget.profile.quickPlayMode == QuickPlayMode.disabled
-                                                    ? 'Only available in version 23w14a (1.20) or later'
+                                                    ? FlutterI18n.translate(context, 'profileEdit.quickPlayDescription')
                                                     : '${{
-                                                        QuickPlayMode.singleplayer: 'Singleplayer',
-                                                        QuickPlayMode.multiplayer: 'Multiplayer',
-                                                        QuickPlayMode.realms: 'Minecraft Realms'
+                                                        QuickPlayMode.singleplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.singleplayer'),
+                                                        QuickPlayMode.multiplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.multiplayer'),
+                                                        QuickPlayMode.realms: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.realms')
                                                       }[widget.profile.quickPlayMode]}: ${widget.profile.quickPlayHost!.length > 64 ? '${widget.profile.quickPlayHost!.substring(0, 61)}…' : widget.profile.quickPlayHost}'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {

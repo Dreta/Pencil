@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/data/pencil/host.dart';
 import 'package:pencil/data/pencil/settings/settings_data.dart';
 import 'package:pencil/data/pencil/settings/settings_provider.dart';
@@ -31,71 +32,71 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
         child: Container(
             padding: const EdgeInsets.all(56),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(margin: const EdgeInsets.only(bottom: 24), child: Text('Launcher', style: theme.textTheme.headlineLarge)),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text('Storage', style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(bottom: 24), child: Text(FlutterI18n.translate(context, 'settings.launcher.title'), style: theme.textTheme.headlineLarge)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(context, 'settings.launcher.storage.title'), style: theme.textTheme.headlineSmall)),
               DirectoryTile(
                   icon: const Icon(Icons.gamepad),
-                  title: 'Profiles Directory',
-                  dialogTitle: 'Choose Profiles Directory',
-                  subtitle: '${settings.data.launcher!.profilesDirectory!} (This is not .minecraft)',
+                  title: FlutterI18n.translate(context, 'settings.launcher.storage.profilesDir'),
+                  dialogTitle: FlutterI18n.translate(context, 'settings.launcher.storage.chooseProfilesDir'),
+                  subtitle: settings.data.launcher!.profilesDirectory!,
                   onChanged: (directory) {
                     settings.data.launcher!.profilesDirectory = directory;
                   }),
               DirectoryTile(
                   icon: const Icon(Icons.image),
-                  title: 'Images Directory',
-                  dialogTitle: 'Choose Images Directory',
+                  title: FlutterI18n.translate(context, 'settings.launcher.storage.imgDir'),
+                  dialogTitle: FlutterI18n.translate(context, 'settings.launcher.storage.chooseImgDir'),
                   subtitle: settings.data.launcher!.imagesDirectory!,
                   onChanged: (directory) {
                     settings.data.launcher!.imagesDirectory = directory;
                   }),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text('Profiles', style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(context, 'settings.launcher.profiles.title'), style: theme.textTheme.headlineSmall)),
               BooleanTile(
                   icon: const Icon(Icons.list),
-                  title: 'Show Stable Releases',
+                  title: FlutterI18n.translate(context, 'settings.launcher.profiles.showStable'),
                   value: settings.data.launcher!.showReleases!,
                   onChanged: (value) {
                     settings.data.launcher!.showReleases = value;
                   }),
               BooleanTile(
                   icon: const Icon(Icons.fast_forward),
-                  title: 'Show Snapshot Releases',
+                  title: FlutterI18n.translate(context, 'settings.launcher.profiles.showSnapshot'),
                   value: settings.data.launcher!.showSnapshots!,
                   onChanged: (value) {
                     settings.data.launcher!.showSnapshots = value;
                   }),
               BooleanTile(
                   icon: const Icon(Icons.history),
-                  title: 'Show Historical Releases',
+                  title: FlutterI18n.translate(context, 'settings.launcher.profiles.showHistorical'),
                   value: settings.data.launcher!.showHistorical!,
                   onChanged: (value) {
                     settings.data.launcher!.showHistorical = value;
                   }),
               EnumTile(
                   icon: const Icon(Icons.sort),
-                  title: 'Profile Order',
+                  title: FlutterI18n.translate(context, 'settings.launcher.profiles.profileSort.title'),
                   value: settings.data.launcher!.profileSort!,
-                  mapping: const {ProfileSortType.lastPlayed: 'By Last Played', ProfileSortType.name: 'By Name'},
+                  mapping: {ProfileSortType.lastPlayed: FlutterI18n.translate(context, 'settings.launcher.profiles.profileSort.byLastPlayed'), ProfileSortType.name: FlutterI18n.translate(context, 'settings.launcher.profiles.profileSort.byName')},
                   onChanged: (value) {
                     settings.data.launcher!.profileSort = value;
                   }),
               BooleanTile(
                   icon: const Icon(Icons.remove_red_eye),
-                  title: 'Hide Launcher After Game Starts',
+                  title: FlutterI18n.translate(context, 'settings.launcher.profiles.autoHide'),
                   value: settings.data.launcher!.hideLauncherAfterStart!,
                   onChanged: (value) {
                     settings.data.launcher!.hideLauncherAfterStart = value;
                   }),
               Container(
-                  margin: const EdgeInsets.only(top: 8), child: Text('Download Sources', style: theme.textTheme.headlineSmall)),
+                  margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(context, 'settings.launcher.host.title'), style: theme.textTheme.headlineSmall)),
               EnumTile(
                   icon: const Icon(Icons.menu),
-                  title: 'Download Preset',
+                  title: FlutterI18n.translate(context, 'settings.launcher.host.preset'),
                   value: hostPreset,
-                  mapping: const {
-                    HostPresetType.official: 'Official',
-                    HostPresetType.bmclapi: 'BMCLAPI (For users in mainland China)',
-                    HostPresetType.custom: 'Custom'
+                  mapping: {
+                    HostPresetType.official: FlutterI18n.translate(context, 'settings.launcher.host.presetOfficial'),
+                    HostPresetType.bmclapi: FlutterI18n.translate(context, 'settings.launcher.host.presetBMCL'),
+                    HostPresetType.custom: FlutterI18n.translate(context, 'settings.launcher.host.presetCustom')
                   },
                   onChanged: (value) {
                     if (value == HostPresetType.official) {
@@ -109,8 +110,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Launcher Meta Host',
-                    dialogTitle: 'Set Launcher Meta Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.launcherMeta'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setLauncherMeta'),
                     value: settings.data.launcher!.host!.launcherMeta,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -119,8 +120,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Piston Meta Host',
-                    dialogTitle: 'Set Piston Meta Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.pistonMeta'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setPistonMeta'),
                     value: settings.data.launcher!.host!.pistonMeta,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -129,8 +130,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Resources Host',
-                    dialogTitle: 'Set Resources Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.resources'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setResources'),
                     value: settings.data.launcher!.host!.resources,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -139,8 +140,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Libraries Host',
-                    dialogTitle: 'Set Libraries Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.libraries'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setLibraries'),
                     value: settings.data.launcher!.host!.libraries,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -149,8 +150,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Forge Host',
-                    dialogTitle: 'Set Forge Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.forge'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setForge'),
                     value: settings.data.launcher!.host!.forge,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -159,8 +160,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Fabric Meta Host',
-                    dialogTitle: 'Set Fabric Meta Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.fabricMeta'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setFabricMeta'),
                     value: settings.data.launcher!.host!.fabricMeta,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -169,8 +170,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Fabric Maven Host',
-                    dialogTitle: 'Set Fabric Maven Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.fabricMaven'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setFabricMaven'),
                     value: settings.data.launcher!.host!.fabricMaven,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -179,8 +180,8 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Quilt Meta Host',
-                    dialogTitle: 'Set Quilt Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.quiltMeta'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setQuiltMeta'),
                     value: settings.data.launcher!.host!.quiltMeta,
                     isValid: validateURL,
                     onChanged: (value) {
@@ -189,24 +190,24 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
               if (hostPreset == HostPresetType.custom)
                 TextInputTile(
                     icon: const Icon(Icons.link),
-                    title: 'Quilt Maven Host',
-                    dialogTitle: 'Set Quilt Maven Host',
+                    title: FlutterI18n.translate(context, 'settings.launcher.host.quiltMaven'),
+                    dialogTitle: FlutterI18n.translate(context, 'settings.launcher.host.setQuiltMaven'),
                     value: settings.data.launcher!.host!.quiltMaven,
                     isValid: validateURL,
                     onChanged: (value) {
                       settings.data.launcher!.host!.quiltMaven = value;
                     }),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text('Others', style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(context, 'settings.others.title'), style: theme.textTheme.headlineSmall)),
               BooleanTile(
                   icon: const Icon(Icons.update),
-                  title: 'Automatically Check Updates',
+                  title: FlutterI18n.translate(context, 'settings.others.checkUpdates'),
                   value: settings.data.launcher!.checkUpdates!,
                   onChanged: (value) {
                     settings.data.launcher!.checkUpdates = value;
                   }),
               BooleanTile(
                   icon: const Icon(Icons.phone_in_talk),
-                  title: 'Enable Anonymous Telemetry',
+                  title: FlutterI18n.translate(context, 'settings.others.telemetry'),
                   value: settings.data.launcher!.telemetry!,
                   onChanged: (value) {
                     settings.data.launcher!.telemetry = value;
@@ -217,13 +218,13 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
   String? validateURL(String url) {
     Uri? uri = Uri.tryParse(url);
     if (uri == null || !uri.isAbsolute) {
-      return 'Must be a valid URL';
+      return FlutterI18n.translate(context, 'settings.launcher.host.urlErrors.valid');
     }
     if (url.endsWith('/')) {
-      return 'Must not end with a slash';
+      return FlutterI18n.translate(context, 'settings.launcher.host.urlErrors.slash');
     }
     if (!uri.isScheme('https')) {
-      return 'Protocol must be HTTPS';
+      return FlutterI18n.translate(context, 'settings.launcher.host.urlErrors.https');
     }
     return null;
   }

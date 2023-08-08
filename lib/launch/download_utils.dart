@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
@@ -34,12 +35,12 @@ abstract class DownloadUtils {
 
     if (manifest.manifest == null && context.mounted) {
       ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
-          .showSnackBar(const SnackBar(content: Text('Can\'t download game because the version manifest is unavailable.')));
+          .showSnackBar(SnackBar(content: I18nText('download.errorVersionManifestUnavailable')));
       return false;
     }
 
     Task task = Task(
-        name: 'Downloading Minecraft version ${profile.version}', type: TaskType.gameDownload, currentWork: 'Beginning download');
+        name: FlutterI18n.translate(context, 'download.mainTaskName', translationParams: {'version': profile.version}), type: TaskType.gameDownload, currentWork: FlutterI18n.translate(context, 'download.begin'));
     tasks.addTask(task);
     Host host = settings.data.launcher!.host!;
     try {
@@ -60,11 +61,11 @@ abstract class DownloadUtils {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: Text('Failed to download ${profile.version}'),
+                  title: I18nText('download.errorGeneric', translationParams: {'version': profile.version}),
                   content: Text(e.toString()),
                   actions: [
                     TextButton(
-                        child: const Text('Confirm'),
+                        child: I18nText('generic.confirm'),
                         onPressed: () {
                           Navigator.pop(context);
                         })
@@ -83,7 +84,7 @@ abstract class DownloadUtils {
       await file.create(recursive: true);
     }
 
-    task.currentWork = 'Downloading version metadata for $version';
+    task.currentWork = FlutterI18n.translate(context, 'download.metadata.work', translationParams: {'version': version});
     task.progress = -1;
     tasks.notify();
 
@@ -95,7 +96,7 @@ abstract class DownloadUtils {
       }
     }
     if (mfVersion == null) {
-      throw Exception('Invalid version $version');
+      throw Exception(FlutterI18n.translate(context, 'download.errorInvalidVersion', translationParams: {'version': version}));
     }
 
     Uint8List fileBytes = await file.readAsBytes();
@@ -105,7 +106,7 @@ abstract class DownloadUtils {
 
     http.Response r = await client.get(Uri.parse(host.formatLink(mfVersion.url)), headers: {'User-Agent': kUserAgent});
     if (mfVersion.sha1 != null && sha1.convert(r.bodyBytes).toString() != mfVersion.sha1) {
-      throw Exception('Invalid SHA1 checksum for the version metadata of $version');
+      throw Exception(FlutterI18n.translate(context, 'download.metadata.errorChecksum', translationParams: {'version': version}));
     }
 
     await file.writeAsBytes(r.bodyBytes);
@@ -120,7 +121,7 @@ abstract class DownloadUtils {
       await file.create(recursive: true);
     }
 
-    task.currentWork = 'Downloading asset index ${version.assetIndex.id}';
+    task.currentWork = FlutterI18n.translate(context, 'download.assetIndex.work', translationParams: {'assetIndex': version.assetIndex.id});
     task.progress = -1;
     tasks.notify();
 
@@ -131,10 +132,10 @@ abstract class DownloadUtils {
 
     http.Response r = await client.get(Uri.parse(host.formatLink(version.assetIndex.url)), headers: {'User-Agent': kUserAgent});
     if (version.assetIndex.sha1 != sha1.convert(r.bodyBytes).toString()) {
-      throw Exception('Invalid SHA1 checksum for asset index ${version.assetIndex.id}');
+      throw Exception(FlutterI18n.translate(context, 'download.assetIndex.errorChecksum', translationParams: {'assetIndex': version.assetIndex.id}));
     }
     if (version.assetIndex.size != r.bodyBytes.lengthInBytes) {
-      throw Exception('Incorrect size for asset index ${version.assetIndex.id}');
+      throw Exception(FlutterI18n.translate(context, 'download.assetIndex.errorSize', translationParams: {'assetIndex': version.assetIndex.id}));
     }
     await file.writeAsBytes(r.bodyBytes);
     return Assets.fromJson(jsonDecode(utf8.decode(r.bodyBytes)));
@@ -142,7 +143,7 @@ abstract class DownloadUtils {
 
   static Future<void> _downloadAssets(
       BuildContext context, http.Client client, Assets assets, int totalSize, Host host, TasksProvider tasks, Task task) async {
-    task.currentWork = 'Beginning to download assets';
+    task.currentWork = FlutterI18n.translate(context, 'download.asset.begin');
     task.progress = 0;
     tasks.notify();
     await _downloadAsset(context, client, host, assets.objects.entries.toList(), 0, totalSize, 0, tasks, task);
@@ -156,7 +157,7 @@ abstract class DownloadUtils {
 
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     MapEntry<String, Asset> asset = assets[current];
-    task.currentWork = 'Downloading asset ${asset.key}';
+    task.currentWork = FlutterI18n.translate(context, 'download.asset.work', translationParams: {'asset': asset.key});
     tasks.notify();
 
     File file =
@@ -193,11 +194,11 @@ abstract class DownloadUtils {
       })
       ..onDone(() async {
         if (asset.value.hash != sha1.convert(bodyBytes).toString()) {
-          completer.completeError('Invalid SHA1 checksum for asset ${asset.key}');
+          completer.completeError(FlutterI18n.translate(context, 'download.asset.errorChecksum', translationParams: {'asset': asset.key}));
           return;
         }
         if (asset.value.size != null && asset.value.size != bodyBytes.length) {
-          completer.completeError('Incorrect size for asset ${asset.key}');
+          completer.completeError(FlutterI18n.translate(context, 'download.asset.errorSize', translationParams: {'asset': asset.key}));
           return;
         }
         await file.writeAsBytes(bodyBytes);
@@ -211,7 +212,7 @@ abstract class DownloadUtils {
       BuildContext context, http.Client client, Version version, Host host, TasksProvider tasks, Task task) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
 
-    task.currentWork = 'Downloading logging config';
+    task.currentWork = FlutterI18n.translate(context, 'download.loggingConfig', translationParams: {'loggingConfig': version.logging!.client.file.id});
     task.progress = -1;
     tasks.notify();
 
@@ -232,10 +233,10 @@ abstract class DownloadUtils {
     http.Response r =
         await client.get(Uri.parse(host.formatLink(version.logging!.client.file.url)), headers: {'User-Agent': kUserAgent});
     if (version.logging!.client.file.sha1 != null && version.logging!.client.file.sha1 != sha1.convert(r.bodyBytes).toString()) {
-      throw Exception('Invalid SHA1 checksum for logging config ${version.logging!.client.file.id}');
+      throw Exception(FlutterI18n.translate(context, 'download.loggingConfig.errorChecksum', translationParams: {'loggingConfig': version.logging!.client.file.id}));
     }
     if (version.logging!.client.file.size != null && version.logging!.client.file.size != r.bodyBytes.lengthInBytes) {
-      throw Exception('Incorrect size for logging config ${version.logging!.client.file.id}');
+      throw Exception(FlutterI18n.translate(context, 'download.loggingConfig.errorSize', translationParams: {'loggingConfig': version.logging!.client.file.id}));
     }
     await file.writeAsBytes(r.bodyBytes);
   }
@@ -254,7 +255,7 @@ abstract class DownloadUtils {
       TasksProvider tasks, Task task) async {
     String arch = await OS.getArchitecture();
 
-    task.currentWork = 'Beginning to download libraries';
+    task.currentWork = FlutterI18n.translate(context, 'download.libraries.begin');
     task.progress = 0;
     tasks.notify();
 
@@ -306,7 +307,7 @@ abstract class DownloadUtils {
     Library library = libraries[current];
     Completer<void> completer = Completer<void>();
 
-    task.currentWork = 'Downloading library ${library.name}';
+    task.currentWork = FlutterI18n.translate(context, 'download.library.work', translationParams: {'library': library.name});
     tasks.notify();
 
     // Download main artifact, if any (This can be a native in newer versions of the game)
@@ -326,7 +327,7 @@ abstract class DownloadUtils {
         isValid = false;
       }
       if (!isValid) {
-        task.currentWork = 'Downloading library ${library.name}\'s main artifact';
+        task.currentWork = FlutterI18n.translate(context, 'download.library.main.work', translationParams: {'library': library.name});
         tasks.notify();
 
         http.Request request = http.Request('GET', Uri.parse(host.formatLink(library.downloads.artifact!.url)))
@@ -346,11 +347,11 @@ abstract class DownloadUtils {
           ..onDone(() async {
             if (library.downloads.artifact!.sha1 != null &&
                 library.downloads.artifact!.sha1 != sha1.convert(bodyBytes).toString()) {
-              completer.completeError('Invalid SHA1 checksum for main artifact of ${library.name}');
+              completer.completeError(FlutterI18n.translate(context, 'download.library.main.errorChecksum', translationParams: {'library': library.name}));
               return;
             }
             if (library.downloads.artifact!.size != null && library.downloads.artifact!.size != bodyBytes.length) {
-              completer.completeError('Incorrect size for main artifact of ${library.name}');
+              completer.completeError(FlutterI18n.translate(context, 'download.library.main.errorSize', translationParams: {'library': library.name}));
               return;
             }
             await aFile.writeAsBytes(bodyBytes);
@@ -395,7 +396,7 @@ abstract class DownloadUtils {
         isValid = false;
       }
       if (!isValid) {
-        task.currentWork = 'Downloading library ${library.name}\'s native bindings';
+        task.currentWork = FlutterI18n.translate(context, 'download.library.native.work', translationParams: {'library': library.name});
         tasks.notify();
 
         http.Request request = http.Request('GET', Uri.parse(host.formatLink(native.url)))..headers['User-Agent'] = kUserAgent;
@@ -413,11 +414,11 @@ abstract class DownloadUtils {
           })
           ..onDone(() async {
             if (native.sha1 != null && native.sha1 != sha1.convert(bodyBytes).toString()) {
-              completer.completeError('Invalid SHA1 checksum for native bindings of ${library.name}');
+              completer.completeError(FlutterI18n.translate(context, 'download.library.native.errorChecksum', translationParams: {'library': library.name}));
               return;
             }
             if (native.size != null && native.size != bodyBytes.length) {
-              completer.completeError('Incorrect size for native bindings of ${library.name}');
+              completer.completeError(FlutterI18n.translate(context, 'download.library.native.errorSize', translationParams: {'library': library.name}));
               return;
             }
             await nFile.writeAsBytes(bodyBytes);
@@ -445,7 +446,7 @@ abstract class DownloadUtils {
       await file.create(recursive: true);
     }
 
-    task.currentWork = 'Download Minecraft ${version.id} client';
+    task.currentWork = FlutterI18n.translate(context, 'download.client.work', translationParams: {'version': version.id});
     task.progress = 0;
     tasks.notify();
 
@@ -469,10 +470,10 @@ abstract class DownloadUtils {
       tasks.notify();
     }).onDone(() async {
       if (version.downloads.client.sha1 != null && version.downloads.client.sha1 != sha1.convert(bodyBytes).toString()) {
-        throw Exception('Invalid SHA1 checksum for client version ${version.id}');
+        throw Exception(FlutterI18n.translate(context, 'download.client.errorChecksum', translationParams: {'version': version.id}));
       }
       if (version.downloads.client.size != null && version.downloads.client.size != bodyBytes.length) {
-        throw Exception('Incorrect size for client version ${version.id}');
+        throw Exception(FlutterI18n.translate(context, 'download.client.errorSize', translationParams: {'version': version.id}));
       }
       await file.writeAsBytes(bodyBytes);
     });

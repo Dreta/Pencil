@@ -2,12 +2,14 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pencil/constants.dart';
+import 'package:pencil/data/minecraft/manifest/version_manifest_provider.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:pencil/data/pencil/profile/profiles_provider.dart';
 import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:pencil/data/pencil/task/tasks_provider.dart';
-import 'package:pencil/data/minecraft/manifest/version_manifest_provider.dart';
 import 'package:pencil/pages/base/base.dart';
 import 'package:provider/provider.dart';
 import 'package:window_size/window_size.dart';
@@ -61,19 +63,25 @@ class PencilBaseApp extends StatelessWidget {
         child: Consumer(
             builder: (context, provider, child) => DynamicColorBuilder(builder: (light, dark) {
                   return MaterialApp(
-                    title: 'Pencil',
-                    debugShowCheckedModeBanner: false,
-                    navigatorKey: kBaseNavigatorKey,
-                    theme: ThemeData(
-                        colorScheme: light ?? ColorScheme.fromSeed(seedColor: Colors.lightBlue),
-                        useMaterial3: true,
-                        textTheme: textTheme),
-                    darkTheme: ThemeData(
-                        colorScheme: dark ?? ColorScheme.fromSeed(seedColor: Colors.lightBlue, brightness: Brightness.dark),
-                        useMaterial3: true,
-                        textTheme: textTheme),
-                    home: const PencilBase(),
-                  );
+                      title: 'Pencil',
+                      debugShowCheckedModeBanner: false,
+                      navigatorKey: kBaseNavigatorKey,
+                      theme: ThemeData(
+                          colorScheme: light ?? ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+                          useMaterial3: true,
+                          textTheme: textTheme),
+                      darkTheme: ThemeData(
+                          colorScheme: dark ?? ColorScheme.fromSeed(seedColor: Colors.lightBlue, brightness: Brightness.dark),
+                          useMaterial3: true,
+                          textTheme: textTheme),
+                      localizationsDelegates: [
+                        FlutterI18nDelegate(
+                            translationLoader: FileTranslationLoader(useCountryCode: true, fallbackFile: 'en_US')),
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate
+                      ],
+                      builder: FlutterI18n.rootAppBuilder(),
+                      home: const PencilBase());
                 })));
   }
 }

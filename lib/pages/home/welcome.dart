@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/profile/profile.dart';
 import 'package:pencil/data/pencil/profile/profiles_provider.dart';
@@ -63,11 +64,11 @@ class _WelcomeState extends State<Welcome> {
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                               Container(
                                                   margin: const EdgeInsets.only(bottom: 5),
-                                                  child: Text('Hop right back into the game',
+                                                  child: Text(FlutterI18n.translate(context, 'home.welcome.featuredProfile.title'),
                                                       style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
                                               Container(
                                                   margin: const EdgeInsets.only(bottom: 8),
-                                                  child: Text('Continue playing on the profile ${selected.name}.',
+                                                  child: Text(FlutterI18n.translate(context, 'home.welcome.featuredProfile.content', translationParams: {'profile': selected.name}),
                                                       style: theme.textTheme.bodySmall)),
                                               Align(
                                                   alignment: Alignment.bottomRight,
@@ -82,8 +83,8 @@ class _WelcomeState extends State<Welcome> {
                                       ])))),
                     WelcomeWidget(
                         url: 'https://example.org',
-                        title: 'Welcome to Pencil',
-                        subtitle: 'Learn more about how to easily get started.',
+                        title: FlutterI18n.translate(context, 'home.welcome.featuredTutorial.title'),
+                        subtitle: FlutterI18n.translate(context, 'home.welcome.featuredTutorial.content'),
                         image: 'assets/images/styles/style-1.png')
                   ])))
         ]));
