@@ -20,7 +20,7 @@ Pencil is an in-development Material Design Minecraft launcher based on Flutter.
 ## Development
 
 Pencil is built against the stable version of Flutter, and can be built on Linux, Windows and macOS. To get started,
-clone the directory and download the required fonts in `fonts/`. After that, you can run:
+clone the repository and download the required fonts in `fonts/`. After that, you can run:
 
 ```
 flutter pub get
