@@ -73,7 +73,7 @@ class Profiles extends StatefulWidget {
                           child:
                               Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                             TextField(
-                              decoration: InputDecoration(labelText: FlutterI18n.translate(context, 'profiles.createProfile.fieldName'), errorText: nameError),
+                              decoration: InputDecoration(labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.createProfile.fieldName'), errorText: nameError),
                               controller: name,
                             ),
                             DropdownMenu<String>(
@@ -105,13 +105,13 @@ class Profiles extends StatefulWidget {
                             });
                             if (name.text.length > 20 || name.text.isEmpty) {
                               setState(() {
-                                nameError = FlutterI18n.translate(context, 'profiles.createProfile.lengthError');
+                                nameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.createProfile.lengthError');
                               });
                               return;
                             }
                             if (!available.contains(version.text)) {
                               setState(() {
-                                versionError = FlutterI18n.translate(context, 'profiles.createProfile.versionError');
+                                versionError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.createProfile.versionError');
                               });
                               return;
                             }
@@ -166,10 +166,10 @@ class _ProfilesState extends State<Profiles> {
               if (profiles.profiles.profiles.isEmpty)
                 Expanded(
                     child: Container(
-                        margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'profiles.title'), style: theme.textTheme.headlineLarge)))
+                        margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.title'), style: theme.textTheme.headlineLarge)))
               else
                 Container(
-                    margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'profiles.title'), style: theme.textTheme.headlineLarge)),
+                    margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.title'), style: theme.textTheme.headlineLarge)),
               GridView.count(crossAxisCount: 3, shrinkWrap: true, childAspectRatio: 20 / 19, children: [
                 for (Profile profile in sortedProfiles)
                   ProfileWidget(
@@ -252,14 +252,14 @@ class ProfileWidget extends StatelessWidget {
                   context,
                   (context) => [
                         ListTile(
-                            title: Text(FlutterI18n.translate(context, 'profiles.contextEdit'), style: theme.textTheme.titleMedium),
+                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.contextEdit'), style: theme.textTheme.titleMedium),
                             leading: const Icon(Icons.edit),
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileEdit(profile: profile)));
                             }),
                         ListTile(
-                            title: Text(FlutterI18n.translate(context, 'profiles.contextDelete'), style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
+                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.contextDelete'), style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
                             leading: Icon(Icons.delete, color: theme.colorScheme.error),
                             hoverColor: theme.colorScheme.error.withAlpha(20),
                             focusColor: theme.colorScheme.error.withAlpha(30),
@@ -292,8 +292,8 @@ class ProfileWidget extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 8),
                         child: Text(
                             profile.addon == null
-                                ? FlutterI18n.translate(context, 'profiles.vanillaProfileDescription', translationParams: {'version': profile.version})
-                                : FlutterI18n.translate(context, 'profiles.moddedProfileDescription', translationParams: {'version': profile.version, 'addonName': profile.addon!.name, 'addonVersion': profile.addonVersion!}),
+                                ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.vanillaProfileDescription', translationParams: {'version': profile.version})
+                                : FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profiles.moddedProfileDescription', translationParams: {'version': profile.version, 'addonName': profile.addon!.name, 'addonVersion': profile.addonVersion!}),
                             style: theme.textTheme.bodySmall)),
                     Align(
                         alignment: Alignment.bottomRight,
@@ -303,7 +303,7 @@ class ProfileWidget extends StatelessWidget {
                                 : () {
                                     profile.play(kBaseNavigatorKey.currentContext!, false);
                                   },
-                            child: Text(profile.launching ? '...' : FlutterI18n.translate(context, 'generic.play'))))
+                            child: Text(profile.launching ? '...' : FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.play'))))
                   ]))
             ])));
   }

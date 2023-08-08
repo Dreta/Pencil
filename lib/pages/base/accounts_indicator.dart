@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/account/account.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class AccountsIndicator extends StatelessWidget {
                               backgroundColor: theme.colorScheme.inversePrimary,
                               child: Text(accounts.accounts.accounts[currentAccount.uuid]!.characterName.characters.first
                                   .toUpperCase())))),
-              tooltip: FlutterI18n.translate(context, 'accounts.switchAccount'),
+              tooltip: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.switchAccount'),
               onSelected: (uuid) {
                 accounts.accounts.currentAccount = uuid;
                 accounts.save();

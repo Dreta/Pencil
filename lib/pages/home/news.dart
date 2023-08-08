@@ -23,7 +23,7 @@ class _NewsState extends State<News> {
     http.Response response =
         await http.get(Uri.parse('https://launchercontent.mojang.com/news.json'), headers: {'User-Agent': kUserAgent});
     if (response.statusCode != 200) {
-      throw Exception(FlutterI18n.translate(context, 'home.news.errorDescription',
+      throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'home.news.errorDescription',
           translationParams: {'code': response.statusCode.toString()}));
     }
     return MinecraftNews.fromJson(json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);

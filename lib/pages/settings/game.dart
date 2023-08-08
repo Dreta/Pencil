@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:pencil/pages/settings/tiles.dart';
 import 'package:provider/provider.dart';
@@ -16,28 +17,28 @@ class SettingsGame extends StatelessWidget {
         child: Container(
             padding: const EdgeInsets.all(56),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(margin: const EdgeInsets.only(bottom: 24), child: Text(FlutterI18n.translate(context, 'settings.game.title'), style: theme.textTheme.headlineLarge)),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(context, 'settings.game.storage.title'), style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(bottom: 24), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.title'), style: theme.textTheme.headlineLarge)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.title'), style: theme.textTheme.headlineSmall)),
               DirectoryTile(
                   icon: const Icon(Icons.gamepad),
-                  title: FlutterI18n.translate(context, 'settings.game.storage.versionsDir'),
-                  dialogTitle: FlutterI18n.translate(context, 'settings.game.storage.chooseVersionsDir'),
+                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.versionsDir'),
+                  dialogTitle: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.chooseVersionsDir'),
                   subtitle: settings.data.game!.versionsDirectory!,
                   onChanged: (directory) {
                     settings.data.game!.versionsDirectory = directory;
                   }),
               DirectoryTile(
                   icon: const Icon(Icons.music_note),
-                  title: FlutterI18n.translate(context, 'settings.game.storage.assetsDir'),
-                  dialogTitle: FlutterI18n.translate(context, 'settings.game.storage.chooseAssetsDir'),
+                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.assetsDir'),
+                  dialogTitle: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.chooseAssetsDir'),
                   subtitle: settings.data.game!.assetsDirectory!,
                   onChanged: (directory) {
                     settings.data.game!.assetsDirectory = directory;
                   }),
               DirectoryTile(
                   icon: const Icon(Icons.book),
-                  title: FlutterI18n.translate(context, 'settings.game.storage.librariesDir'),
-                  dialogTitle: FlutterI18n.translate(context, 'settings.game.storage.chooseLibrariesDir'),
+                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.librariesDir'),
+                  dialogTitle: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.game.storage.chooseLibrariesDir'),
                   subtitle: settings.data.game!.librariesDirectory!,
                   onChanged: (directory) {
                     settings.data.game!.librariesDirectory = directory;

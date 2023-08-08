@@ -39,7 +39,7 @@ class AccountsProvider extends ChangeNotifier {
       return null;
     }
     Task task = Task(
-        name: FlutterI18n.translate(context, 'auth.reAuth', translationParams: {'name': account.characterName}),
+        name: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.reAuth', translationParams: {'name': account.characterName}),
         type: TaskType.microsoftAuth);
     tasks.addTask(task);
     List<dynamic> tokens = await _refreshMSToken(context, account.msRefreshToken!, task, tasks);
@@ -79,7 +79,7 @@ class AccountsProvider extends ChangeNotifier {
     int msExpiresIn = tokens[2] as int;
     Account account = await _authenticateMicrosoftAccount(context, msAccessToken, msRefreshToken, msExpiresIn, task, tasks);
     if (accounts.accounts.containsKey(account.uuid)) {
-      throw Exception(FlutterI18n.translate(context, 'auth.ms.duplicate'));
+      throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.duplicate'));
     }
     accounts.accounts[account.uuid] = account;
     accounts.currentAccount = account.uuid;
@@ -89,7 +89,7 @@ class AccountsProvider extends ChangeNotifier {
 
   Future<List<dynamic> /* access, refresh, expiresIn */ > _obtainTokensFromMSCode(
       BuildContext context, String code, Task task, TasksProvider tasks) async {
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.codeExchange');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.codeExchange');
     tasks.notify();
     http.Response codeRp = await http.get(
         Uri.parse(
@@ -97,7 +97,7 @@ class AccountsProvider extends ChangeNotifier {
         headers: {'User-Agent': 'XAL Win32 2021.11.20220411.002'});
     if (codeRp.statusCode != 200) {
       throw Exception(
-          FlutterI18n.translate(context, 'auth.ms.codeExchangeFail', translationParams: {'code': codeRp.statusCode.toString()}));
+          FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.codeExchangeFail', translationParams: {'code': codeRp.statusCode.toString()}));
     }
     Map<String, dynamic> codeRpJ = jsonDecode(utf8.decode(codeRp.bodyBytes));
     if (codeRpJ.containsKey('error')) {
@@ -108,7 +108,7 @@ class AccountsProvider extends ChangeNotifier {
 
   Future<List<dynamic> /* access, refresh, expiresIn */ > _refreshMSToken(
       BuildContext context, String refreshToken, Task task, TasksProvider tasks) async {
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.refreshToken');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.refreshToken');
     tasks.notify();
     http.Response tokenRp = await http.get(
         Uri.parse(
@@ -128,7 +128,7 @@ class AccountsProvider extends ChangeNotifier {
       BuildContext context, String msAccessToken, String msRefreshToken, int msExpiresIn, Task task, TasksProvider tasks) async {
     DateTime now = DateTime.now();
 
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xblAuth');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xblAuth');
     tasks.notify();
     http.Response xblRp = await http.post(Uri.parse('https://user.auth.xboxlive.com/user/authenticate'),
         headers: {
@@ -157,18 +157,18 @@ class AccountsProvider extends ChangeNotifier {
             }));
         if (xblRp.statusCode != 200) {
           throw Exception(
-              FlutterI18n.translate(context, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
+              FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
         }
       } else {
         throw Exception(
-            FlutterI18n.translate(context, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
+            FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xblAuthFail', translationParams: {'code': xblRp.statusCode.toString()}));
       }
     }
     Map<String, dynamic> xblRpJ = jsonDecode(utf8.decode(xblRp.bodyBytes));
     String xboxToken = xblRpJ['Token'];
     String xboxUserHash = xblRpJ['DisplayClaims']['xui'][0]['uhs'];
 
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xstsAuth');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsAuth');
     tasks.notify();
     http.Response xstsRp = await http.post(Uri.parse('https://xsts.auth.xboxlive.com/xsts/authorize'),
         headers: {
@@ -186,27 +186,27 @@ class AccountsProvider extends ChangeNotifier {
         }));
     if (xstsRp.statusCode != 200 && xstsRp.statusCode != 401) {
       throw Exception(
-          FlutterI18n.translate(context, 'auth.ms.xstsAuthFail', translationParams: {'code': xstsRp.statusCode.toString()}));
+          FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsAuthFail', translationParams: {'code': xstsRp.statusCode.toString()}));
     }
     Map<String, dynamic> xstsRpJ = jsonDecode(utf8.decode(xstsRp.bodyBytes));
     if (xstsRp.statusCode == 401 && xstsRpJ.containsKey('XErr')) {
       switch (xstsRpJ['XErr']) {
         case 2148916233:
-          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsNoProfile'));
+          throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsNoProfile'));
         case 2148916235:
-          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsGeoBlocked'));
+          throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsGeoBlocked'));
         case 2148916236:
         case 2148916237:
-          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsChild'));
+          throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsChild'));
         case 2148916238:
-          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsFamily'));
+          throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsFamily'));
         default:
-          throw Exception(FlutterI18n.translate(context, 'auth.ms.xstsUnknown'));
+          throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xstsUnknown'));
       }
     }
     String xstsToken = xstsRpJ['Token'];
 
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.xblProfile');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xblProfile');
     tasks.notify();
     http.Response xstsProfRp = await http.post(Uri.parse('https://xsts.auth.xboxlive.com/xsts/authorize'),
         headers: {
@@ -224,37 +224,37 @@ class AccountsProvider extends ChangeNotifier {
           'TokenType': 'JWT'
         }));
     if (xstsProfRp.statusCode != 200) {
-      throw Exception(FlutterI18n.translate(context, 'auth.ms.xblProfileFail',
+      throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.xblProfileFail',
           translationParams: {'code': xstsProfRp.statusCode.toString()}));
     }
     Map<String, dynamic> xstsProfRpJ = jsonDecode(utf8.decode(xstsProfRp.bodyBytes));
     String xboxGamertag = xstsProfRpJ['DisplayClaims']['xui'][0]['gtg'];
     String xuid = xstsProfRpJ['DisplayClaims']['xui'][0]['xid'];
 
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.mc');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.mc');
     tasks.notify();
     http.Response minecraftRp = await http.post(Uri.parse('https://api.minecraftservices.com/authentication/login_with_xbox'),
         headers: {'User-Agent': 'XAL Win32 2021.11.20220411.002', 'Content-Type': 'application/json'},
         body: jsonEncode({'identityToken': 'XBL3.0 x=$xboxUserHash;$xstsToken'}));
     if (minecraftRp.statusCode != 200) {
       throw Exception(
-          FlutterI18n.translate(context, 'auth.ms.mcFail', translationParams: {'code': minecraftRp.statusCode.toString()}));
+          FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.mcFail', translationParams: {'code': minecraftRp.statusCode.toString()}));
     }
     Map<String, dynamic> minecraftRpJ = jsonDecode(utf8.decode(minecraftRp.bodyBytes));
     String mcToken = minecraftRpJ['access_token'];
     int mcExpiresIn = minecraftRpJ['expires_in'];
 
-    task.currentWork = FlutterI18n.translate(context, 'auth.ms.mcProfile');
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.mcProfile');
     tasks.notify();
     http.Response profileRp = await http.get(Uri.parse('https://api.minecraftservices.com/minecraft/profile'),
         headers: {'User-Agent': kUserAgent, 'Authorization': 'Bearer $mcToken'});
     if (profileRp.statusCode != 200 && profileRp.statusCode != 404) {
       throw Exception(
-          FlutterI18n.translate(context, 'auth.ms.mcProfileFail', translationParams: {'code': profileRp.statusCode.toString()}));
+          FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.mcProfileFail', translationParams: {'code': profileRp.statusCode.toString()}));
     }
     Map<String, dynamic> profileRpJ = jsonDecode(utf8.decode(profileRp.bodyBytes));
     if (profileRpJ['error'] == 'NOT_FOUND') {
-      throw Exception(FlutterI18n.translate(context, 'auth.ms.mcNoProfile'));
+      throw Exception(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'auth.ms.mcNoProfile'));
     }
     String username = profileRpJ['name'];
     String unhyphenedUUID = profileRpJ['id'];

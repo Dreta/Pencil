@@ -199,11 +199,11 @@
     "welcome": {
       "featuredProfile": {
         "title": "Hop right back into the game",
-        "content": "Continue playing on the profile {profile}"
+        "content": "Continue playing on the profile {profile}."
       },
       "featuredTutorial": {
         "title": "Welcome to Pencil",
-        "content": "Learn more about how to easily get started"
+        "content": "Learn more about how to easily get started."
       }
     }
   },

@@ -43,13 +43,13 @@ class _AccountsState extends State<Accounts> {
                           Container(margin: const EdgeInsets.only(bottom: 4), child: I18nText('accounts.addOffline.content')),
                           TextField(
                             decoration: InputDecoration(
-                                labelText: FlutterI18n.translate(context, 'accounts.addOffline.fieldName'),
+                                labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addOffline.fieldName'),
                                 errorText: usernameError),
                             controller: username,
                           ),
                           TextField(
                             decoration: InputDecoration(
-                                labelText: FlutterI18n.translate(context, 'accounts.addOffline.fieldUUID'), errorText: uuidError),
+                                labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addOffline.fieldUUID'), errorText: uuidError),
                             controller: uuid,
                           )
                         ]),
@@ -69,14 +69,14 @@ class _AccountsState extends State<Accounts> {
                               });
                               if (username.text.length > 16 || username.text.length < 4) {
                                 setState(() {
-                                  usernameError = FlutterI18n.translate(context, 'accounts.addOffline.lengthError');
+                                  usernameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addOffline.lengthError');
                                 });
                                 return;
                               }
                               for (String character in username.text.characters) {
                                 if (!('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.contains(character))) {
                                   setState(() {
-                                    usernameError = FlutterI18n.translate(context, 'accounts.addOffline.charError');
+                                    usernameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addOffline.charError');
                                   });
                                   return;
                                 }
@@ -108,7 +108,7 @@ class _AccountsState extends State<Accounts> {
                                 }
                               } catch (e) {
                                 setState(() {
-                                  uuidError = FlutterI18n.translate(context, 'accounts.addOffline.uuidError');
+                                  uuidError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addOffline.uuidError');
                                 });
                               }
                             },
@@ -123,7 +123,7 @@ class _AccountsState extends State<Accounts> {
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
 
     Webview window = await WebviewWindow.create(
-        configuration: CreateConfiguration(title: FlutterI18n.translate(context, 'accounts.addMicrosoft.title')));
+        configuration: CreateConfiguration(title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addMicrosoft.title')));
     window.launch(
         'https://login.live.com/oauth20_authorize.srf?lw=1&fl=dob,easi2&xsup=1&prompt=select_account&client_id=00000000402B5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&nopa=2');
     window.addOnUrlRequestCallback((url) async {
@@ -134,9 +134,9 @@ class _AccountsState extends State<Accounts> {
           ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
               .showSnackBar(SnackBar(content: I18nText('accounts.addMicrosoft.webviewFinished')));
           Task task = Task(
-              name: FlutterI18n.translate(context, 'accounts.addMicrosoft.mainTaskName'),
+              name: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addMicrosoft.mainTaskName'),
               type: TaskType.microsoftAuth,
-              currentWork: FlutterI18n.translate(context, 'accounts.addMicrosoft.begin'));
+              currentWork: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.addMicrosoft.begin'));
           tasks.addTask(task);
           try {
             Account account = await accounts.createMicrosoftAccount(context, uri.queryParameters['code']!, task, tasks);
@@ -168,7 +168,7 @@ class _AccountsState extends State<Accounts> {
                         insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                         title: I18nText('accounts.authError'),
                         content: Text(uri.queryParameters['error_description'] ??
-                            FlutterI18n.translate(context, 'accounts.unknownError',
+                            FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.unknownError',
                                 translationParams: {'error': uri.queryParameters['error'] ?? 'null'})),
                         actions: [
                           TextButton(
@@ -211,7 +211,7 @@ class _AccountsState extends State<Accounts> {
           children: [
             Padding(
                 padding: const EdgeInsets.fromLTRB(28, 16, 16, 16),
-                child: Text(FlutterI18n.translate(context, 'accounts.accounts'), style: theme.textTheme.headlineMedium)),
+                child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accounts.accounts'), style: theme.textTheme.headlineMedium)),
             if (accounts.accounts.accounts.isEmpty)
               NavigationDrawerDestination(icon: Icon(Icons.person), label: I18nText('accounts.noAccounts')),
             for (String uuid in indexToUUID)

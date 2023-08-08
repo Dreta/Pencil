@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/data/pencil/task/task.dart';
 import 'package:pencil/data/pencil/task/tasks_provider.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +30,10 @@ class _TasksState extends State<Tasks> {
                 if (tasksList.isEmpty)
                   Expanded(
                       child: Container(
-                          margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'tasks.title'), style: theme.textTheme.headlineLarge)))
+                          margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'tasks.title'), style: theme.textTheme.headlineLarge)))
                 else
                   Container(
-                      margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(context, 'tasks.title'), style: theme.textTheme.headlineLarge)),
+                      margin: const EdgeInsets.only(bottom: 16), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'tasks.title'), style: theme.textTheme.headlineLarge)),
                 for (Task task in tasksList) Container(margin: const EdgeInsets.only(bottom: 16), child: TaskWidget(task: task)),
                 if (tasksList.isEmpty)
                   Expanded(

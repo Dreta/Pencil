@@ -42,10 +42,10 @@ abstract class LaunchUtils {
   static Future<String?> _checkLaunchReady(BuildContext context, Profile profile) async {
     TasksProvider tasks = Provider.of<TasksProvider>(context, listen: false);
     if (tasks.tasks.containsKey(TaskType.javaDownload) && tasks.tasks[TaskType.javaDownload]!.isNotEmpty) {
-      return FlutterI18n.translate(context, 'launch.notReady.java');
+      return FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.notReady.java');
     }
     if (tasks.tasks.containsKey(TaskType.gameDownload) && tasks.tasks[TaskType.gameDownload]!.isNotEmpty) {
-      return FlutterI18n.translate(context, 'launch.notReady.downloading');
+      return FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.notReady.downloading');
     }
     return null;
   }
@@ -145,7 +145,7 @@ abstract class LaunchUtils {
       Isolate.spawn(_extractIsolate, [receivePort.sendPort, toExtract, nativeDir.path]);
       await for (dynamic msg in receivePort) {
         if (msg['type'] == 'progress') {
-          task.currentWork = FlutterI18n.translate(context, 'launch.nativeExtractFile', translationParams: {'file': msg['progress']});
+          task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.nativeExtractFile', translationParams: {'file': msg['progress']});
           tasks.notify();
         }
         if (msg['type'] == 'complete') {
@@ -252,7 +252,7 @@ abstract class LaunchUtils {
     profiles.notify();
 
     try {
-      Task task = Task(name: FlutterI18n.translate(context, 'launch.mainTaskName', translationParams: {'version': profile.version}), type: TaskType.gameLaunch);
+      Task task = Task(name: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.mainTaskName', translationParams: {'version': profile.version}), type: TaskType.gameLaunch);
       tasks.addTask(task);
 
       String? launchReady = await _checkLaunchReady(context, profile);
@@ -262,27 +262,27 @@ abstract class LaunchUtils {
         return;
       }
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.initProfileDir');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.initProfileDir');
       tasks.notify();
       await _initProfile(context, profile);
 
       List<String> gameArguments = [];
       List<String> jvmArguments = [];
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.readVersion');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.readVersion');
       tasks.notify();
       File versionFile = File(path.join(settings.data.game!.versionsDirectory!, profile.version, '${profile.version}.json'));
       Version version = Version.fromJson(jsonDecode(await versionFile.readAsString()));
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.extractingNatives');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.extractingNatives');
       tasks.notify();
       String nativeDirectory = await _initializeNatives(context, profile, version, task, tasks);
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.classpath');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.classpath');
       tasks.notify();
       String classpath = await _buildClasspath(context, profile, settings.data.launcher!.host!, version);
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.arguments');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.arguments');
       tasks.notify();
       if (version.arguments != null) {
         for (dynamic argument in version.arguments!.game) {
@@ -368,7 +368,7 @@ abstract class LaunchUtils {
         jvmArguments.addAll(await profile.addon!.modJVMArguments(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
       }
 
-      task.currentWork = FlutterI18n.translate(context, 'launch.launching');
+      task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'launch.launching');
       tasks.notify();
 
       String? javaExecutable;

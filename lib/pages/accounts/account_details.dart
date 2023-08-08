@@ -47,7 +47,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                       title: I18nText('accountDetails.nameChange.title'),
                       content: TextField(
                         decoration: InputDecoration(
-                            labelText: FlutterI18n.translate(context, 'accountDetails.nameChange.field'),
+                            labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.nameChange.field'),
                             errorText: usernameError),
                         controller: username,
                       ),
@@ -65,14 +65,14 @@ class _AccountDetailsState extends State<AccountDetails> {
                               });
                               if (username.text.length > 16 || username.text.length < 4) {
                                 setState(() {
-                                  usernameError = FlutterI18n.translate(context, 'accountDetails.nameChange.lengthError');
+                                  usernameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.nameChange.lengthError');
                                 });
                                 return;
                               }
                               for (String character in username.text.characters) {
                                 if (!('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.contains(character))) {
                                   setState(() {
-                                    usernameError = FlutterI18n.translate(context, 'accountDetails.nameChange.charError');
+                                    usernameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.nameChange.charError');
                                   });
                                   return;
                                 }
@@ -145,14 +145,14 @@ class _AccountDetailsState extends State<AccountDetails> {
                     Container(margin: const EdgeInsets.only(bottom: 4), child: I18nText('accountDetails.reauthRequired')),
                   ListTile(
                       leading: const Icon(Icons.person),
-                      title: Text(FlutterI18n.translate(context, 'accountDetails.name'),
+                      title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.name'),
                           style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(widget.account.characterName,
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       trailing: widget.account.type == AccountType.microsoft ? const Icon(Icons.open_in_new) : null,
                       onTap: () {
                         if (widget.account.type == AccountType.microsoft) {
-                          launchUrl(Uri.parse('https://www.minecraft.net/en-us/msaprofile'));
+                          launchUrl(Uri.parse('https://www.minecraft.net/msaprofile'));
                         } else {
                           changeOfflineUsername();
                         }
@@ -161,7 +161,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   if (widget.account.xboxGamertag != null)
                     ListTile(
                         leading: const Icon(Icons.person),
-                        title: Text(FlutterI18n.translate(context, 'accountDetails.xblName'),
+                        title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.xblName'),
                             style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xboxGamertag!,
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
@@ -173,7 +173,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   ListTile(
                       leading: const Icon(Icons.numbers),
                       onTap: copyUUID,
-                      title: Text(FlutterI18n.translate(context, 'accountDetails.uuid'),
+                      title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.uuid'),
                           style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(widget.account.uuid,
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
@@ -182,7 +182,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     ListTile(
                         leading: const Icon(Icons.numbers),
                         onTap: copyXUID,
-                        title: Text(FlutterI18n.translate(context, 'accountDetails.xuid'),
+                        title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.xuid'),
                             style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                         subtitle: Text(widget.account.xuid!,
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
@@ -191,19 +191,19 @@ class _AccountDetailsState extends State<AccountDetails> {
                     ListTile(
                         leading: const Icon(Icons.key),
                         onTap: copyAccessToken,
-                        title: Text(FlutterI18n.translate(context, 'accountDetails.accessToken'),
+                        title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.accessToken'),
                             style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                        subtitle: Text(FlutterI18n.translate(context, 'accountDetails.copyAction'),
+                        subtitle: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.copyAction'),
                             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
                       leading: const Icon(Icons.coffee),
-                      title: Text(FlutterI18n.translate(context, 'accountDetails.accountType'),
+                      title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.accountType'),
                           style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                       subtitle: Text(
                           widget.account.type == AccountType.microsoft
-                              ? FlutterI18n.translate(context, 'generic.accountTypes.microsoft')
-                              : FlutterI18n.translate(context, 'generic.accountTypes.offline'),
+                              ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.accountTypes.microsoft')
+                              : FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.accountTypes.offline'),
                           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                   ListTile(
@@ -212,7 +212,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     focusColor: theme.colorScheme.error.withAlpha(30),
                     splashColor: theme.colorScheme.error.withAlpha(30),
                     onTap: removeAccount,
-                    title: Text(FlutterI18n.translate(context, 'accountDetails.remove'),
+                    title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'accountDetails.remove'),
                         style:
                             theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400, color: theme.colorScheme.error)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

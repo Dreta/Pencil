@@ -52,7 +52,7 @@ abstract class JavaUtils {
       throw Exception('Unsupported Platform');
     }
 
-    Task task = Task(name: FlutterI18n.translate(context, 'java.mainTaskName'), type: TaskType.javaDownload)..progress = 0;
+    Task task = Task(name: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'java.mainTaskName'), type: TaskType.javaDownload)..progress = 0;
     tasks.addTask(task);
 
     try {
@@ -111,7 +111,7 @@ abstract class JavaUtils {
 
   static Future<void> _downloadJavaTo(BuildContext context,
       String directory, Map<String, dynamic> verInfo, String javaArch, String javaOS, Task task, TasksProvider tasks) async {
-    task.currentWork = FlutterI18n.translate(context, 'java.download.work', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'java.download.work', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
     task.progress = 0;
     tasks.notify();
     File tmpZip = File(path.join(directory, '..', 'jre-${verInfo['version']['openjdk_version']}-$javaOS-$javaArch'));
@@ -142,12 +142,12 @@ abstract class JavaUtils {
       })
       ..onDone(() async {
         if (sha256Hash != sha256.convert(bodyBytes).toString()) {
-          completer.completeError(FlutterI18n.translate(context, 'java.download.errorChecksum', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch}));
+          completer.completeError(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'java.download.errorChecksum', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch}));
           return;
         }
         task
           ..progress = -1
-          ..currentWork = FlutterI18n.translate(context, 'java.download.extractWork', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
+          ..currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'java.download.extractWork', translationParams: {'version': verInfo['version']['openjdk_version'], 'os': javaOS, 'arch': javaArch});
         tasks.notify();
 
         await tmpZip.writeAsBytes(bodyBytes, flush: true);

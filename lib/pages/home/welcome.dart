@@ -64,11 +64,11 @@ class _WelcomeState extends State<Welcome> {
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                               Container(
                                                   margin: const EdgeInsets.only(bottom: 5),
-                                                  child: Text(FlutterI18n.translate(context, 'home.welcome.featuredProfile.title'),
+                                                  child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'home.welcome.featuredProfile.title'),
                                                       style: theme.textTheme.titleMedium!.copyWith(fontSize: 18, height: 1.1))),
                                               Container(
                                                   margin: const EdgeInsets.only(bottom: 8),
-                                                  child: Text(FlutterI18n.translate(context, 'home.welcome.featuredProfile.content', translationParams: {'profile': selected.name}),
+                                                  child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'home.welcome.featuredProfile.content', translationParams: {'profile': selected.name}),
                                                       style: theme.textTheme.bodySmall)),
                                               Align(
                                                   alignment: Alignment.bottomRight,
@@ -83,8 +83,8 @@ class _WelcomeState extends State<Welcome> {
                                       ])))),
                     WelcomeWidget(
                         url: 'https://example.org',
-                        title: FlutterI18n.translate(context, 'home.welcome.featuredTutorial.title'),
-                        subtitle: FlutterI18n.translate(context, 'home.welcome.featuredTutorial.content'),
+                        title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'home.welcome.featuredTutorial.title'),
+                        subtitle: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'home.welcome.featuredTutorial.content'),
                         image: 'assets/images/styles/style-1.png')
                   ])))
         ]));

@@ -23,7 +23,7 @@ class VersionManifestProvider extends ChangeNotifier {
     if (!(await _manifestFile.exists())) {
       await _manifestFile.create(recursive: true);
     }
-    Task task = Task(name: FlutterI18n.translate(context, 'download.versionManifest.mainTaskName'), type: TaskType.gameDownload);
+    Task task = Task(name: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'download.versionManifest.mainTaskName'), type: TaskType.gameDownload);
     tasks.addTask(task);
     await download(context);
     tasks.removeTask(task);

@@ -48,7 +48,7 @@ abstract class StartupTasks {
                           child: I18nText('startupTasks.webviewUnavailable.windowsInstall'),
                           onPressed: () async {
                             await launchUrl(
-                                Uri.parse('https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section'));
+                                Uri.parse('https://developer.microsoft.com/microsoft-edge/webview2/#download-section'));
                           }),
                     if (Platform.isMacOS)
                       TextButton(

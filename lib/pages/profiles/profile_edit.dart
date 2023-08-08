@@ -44,7 +44,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       title: I18nText('profileEdit.changeName.title'),
                       content: TextField(
                         decoration: InputDecoration(
-                            labelText: FlutterI18n.translate(context, 'profileEdit.changeName.field'), errorText: nameError),
+                            labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeName.field'), errorText: nameError),
                         controller: name,
                       ),
                       actions: [
@@ -61,7 +61,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               });
                               if (name.text.length > 20 || name.text.isEmpty) {
                                 setState(() {
-                                  nameError = FlutterI18n.translate(context, 'profileEdit.changeName.lengthError');
+                                  nameError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeName.lengthError');
                                 });
                                 return;
                               }
@@ -155,7 +155,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             });
                             if (!available.contains(version.text)) {
                               setState(() {
-                                versionError = FlutterI18n.translate(context, 'profileEdit.changeVersion.versionError');
+                                versionError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeVersion.versionError');
                               });
                               return;
                             }
@@ -176,7 +176,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
     FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.image, dialogTitle: FlutterI18n.translate(context, 'profileEdit.changeProfileImage.title'));
+        .pickFiles(type: FileType.image, dialogTitle: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeProfileImage.title'));
     if (result == null) {
       return;
     }
@@ -204,7 +204,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       insetPadding: const EdgeInsets.symmetric(horizontal: 200),
                       title: I18nText('profileEdit.changeJVMArgs.title'),
                       content: TextField(
-                        decoration: InputDecoration(labelText: FlutterI18n.translate(context, 'profileEdit.changeJVMArgs.field')),
+                        decoration: InputDecoration(labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeJVMArgs.field')),
                         controller: args,
                       ),
                       actions: [
@@ -238,7 +238,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       title: I18nText('profileEdit.changeGameArgs.title'),
                       content: TextField(
                         decoration:
-                            InputDecoration(labelText: FlutterI18n.translate(context, 'profileEdit.changeGameArgs.field')),
+                            InputDecoration(labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeGameArgs.field')),
                         controller: args,
                       ),
                       actions: [
@@ -320,13 +320,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                           inputDecorationTheme: const InputDecorationTheme(border: UnderlineInputBorder()),
                           dropdownMenuEntries: [
                             DropdownMenuEntry(
-                                value: AddonType.disabled, label: FlutterI18n.translate(context, 'generic.addonTypes.disabled')),
+                                value: AddonType.disabled, label: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.addonTypes.disabled')),
                             DropdownMenuEntry(
-                                value: AddonType.quilt, label: FlutterI18n.translate(context, 'generic.addonTypes.quilt')),
+                                value: AddonType.quilt, label: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.addonTypes.quilt')),
                             DropdownMenuEntry(
-                                value: AddonType.fabric, label: FlutterI18n.translate(context, 'generic.addonTypes.fabric')),
+                                value: AddonType.fabric, label: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.addonTypes.fabric')),
                             DropdownMenuEntry(
-                                value: AddonType.forge, label: FlutterI18n.translate(context, 'generic.addonTypes.forge'))
+                                value: AddonType.forge, label: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.addonTypes.forge'))
                           ]),
                       if (type != AddonType.disabled)
                         if (addonVersionLoading)
@@ -374,7 +374,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                         }
                         if (!addonVersions!.contains(version.text)) {
                           setState(() {
-                            versionError = FlutterI18n.translate(context, 'profileEdit.changeAddon.errorVersion');
+                            versionError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeAddon.errorVersion');
                           });
                           return;
                         }
@@ -412,7 +412,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             margin: const EdgeInsets.only(right: 16),
                             child: TextField(
                               decoration: InputDecoration(
-                                  labelText: FlutterI18n.translate(context, 'profileEdit.changeResolution.fieldWidth'),
+                                  labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.fieldWidth'),
                                   errorText: widthError),
                               controller: width,
                             )),
@@ -422,7 +422,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             margin: const EdgeInsets.only(left: 16),
                             child: TextField(
                               decoration: InputDecoration(
-                                  labelText: FlutterI18n.translate(context, 'profileEdit.changeResolution.fieldHeight'),
+                                  labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.fieldHeight'),
                                   errorText: heightError),
                               controller: height,
                             ))
@@ -451,25 +451,25 @@ class _ProfileEditState extends State<ProfileEdit> {
                               }
                               if (int.tryParse(width.text) == null) {
                                 setState(() {
-                                  widthError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNumber');
+                                  widthError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.errorNumber');
                                 });
                                 return;
                               }
                               if (int.parse(width.text) <= 0) {
                                 setState(() {
-                                  widthError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNegative');
+                                  widthError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.errorNegative');
                                 });
                                 return;
                               }
                               if (int.tryParse(height.text) == null) {
                                 setState(() {
-                                  heightError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNumber');
+                                  heightError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.errorNumber');
                                 });
                                 return;
                               }
                               if (int.parse(height.text) <= 0) {
                                 setState(() {
-                                  heightError = FlutterI18n.translate(context, 'profileEdit.changeResolution.errorNegative');
+                                  heightError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeResolution.errorNegative');
                                 });
                                 return;
                               }
@@ -509,10 +509,10 @@ class _ProfileEditState extends State<ProfileEdit> {
         context: kBaseNavigatorKey.currentContext!,
         builder: (context) {
           Map<QuickPlayMode, String> quickPlayMode = {
-            QuickPlayMode.disabled: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.disabled'),
-            QuickPlayMode.singleplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.singleplayer'),
-            QuickPlayMode.multiplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.multiplayer'),
-            QuickPlayMode.realms: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.realms')
+            QuickPlayMode.disabled: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.disabled'),
+            QuickPlayMode.singleplayer: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.singleplayer'),
+            QuickPlayMode.multiplayer: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.multiplayer'),
+            QuickPlayMode.realms: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.realms')
           };
           QuickPlayMode mode = widget.profile.quickPlayMode;
           TextEditingController host = TextEditingController(
@@ -601,7 +601,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       if (mode == QuickPlayMode.multiplayer)
                         TextField(
                           decoration: InputDecoration(
-                              labelText: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.fieldServer'),
+                              labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.fieldServer'),
                               errorText: hostError),
                           controller: host,
                         ),
@@ -651,13 +651,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                         });
                         if (mode == QuickPlayMode.singleplayer && !saves.containsValue(host.text)) {
                           setState(() {
-                            hostError = FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.errorWorld');
+                            hostError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.errorWorld');
                           });
                           return;
                         }
                         if (mode == QuickPlayMode.realms && !(realmsAvailable ?? {}).containsValue(host.text)) {
                           setState(() {
-                            hostError = FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.errorRealms');
+                            hostError = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.errorRealms');
                           });
                           return;
                         }
@@ -701,7 +701,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               child: Text(widget.profile.name, style: theme.textTheme.headlineLarge)),
                           ListTile(
                               leading: const Icon(Icons.message),
-                              title: Text(FlutterI18n.translate(context, 'profileEdit.name'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                              title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.name'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.name,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
@@ -710,7 +710,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                           ListTile(
                               leading: const Icon(Icons.update),
-                              title: Text(FlutterI18n.translate(context, 'profileEdit.version'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                              title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.version'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.version,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
@@ -720,7 +720,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ListTile(
                               leading: const Icon(Icons.numbers),
                               title:
-                                  Text(FlutterI18n.translate(context, 'profileEdit.profileId'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                                  Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.profileId'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(widget.profile.uuid,
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
@@ -731,7 +731,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                           ListTile(
                               leading: const Icon(Icons.image),
-                              title: Text(FlutterI18n.translate(context, 'profileEdit.profileImage'),
+                              title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.profileImage'),
                                   style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               onTap: () {
                                 changeImage();
@@ -740,11 +740,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ListTile(
                               leading: const Icon(Icons.mode_standby),
                               title:
-                                  Text(FlutterI18n.translate(context, 'profileEdit.addon'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                                  Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.addon'), style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                               subtitle: Text(
                                   widget.profile.addon == null
-                                      ? FlutterI18n.translate(context, 'generic.unset')
-                                      : FlutterI18n.translate(context, 'profileEdit.addonVersion', translationParams: {'name': widget.profile.addon!.name, 'version': widget.profile.addonVersion!}),
+                                      ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.unset')
+                                      : FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.addonVersion', translationParams: {'name': widget.profile.addon!.name, 'version': widget.profile.addonVersion!}),
                                   style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                               onTap: () {
                                 changeAddon();
@@ -760,13 +760,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   color: Colors.transparent,
                                   child: ExpansionTile(
                                       leading: const Icon(Icons.settings),
-                                      title: Text(FlutterI18n.translate(context, 'profileEdit.advanced'),
+                                      title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.advanced'),
                                           style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                       children: [
                                         ListTile(
                                             leading: const Icon(Icons.code),
-                                            title: Text(FlutterI18n.translate(context, 'profileEdit.jvmArgs'),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.jvmArgs'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 widget.profile.jvmArguments.length > 64
@@ -779,10 +779,10 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.code),
-                                            title: Text(FlutterI18n.translate(context, 'profileEdit.gameArgs'),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.gameArgs'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
-                                                widget.profile.gameArguments.isEmpty ? FlutterI18n.translate(context, 'generic.unset') : widget.profile.gameArguments,
+                                                widget.profile.gameArguments.isEmpty ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.unset') : widget.profile.gameArguments,
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
                                               changeGameArguments();
@@ -790,13 +790,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.desktop_windows),
-                                            title: Text(FlutterI18n.translate(context, 'profileEdit.resolution'),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.resolution'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 (widget.profile.resolutionWidth != null &&
                                                         widget.profile.resolutionHeight != null)
                                                     ? '${widget.profile.resolutionWidth} × ${widget.profile.resolutionHeight}'
-                                                    : FlutterI18n.translate(context, 'generic.unset'),
+                                                    : FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.unset'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
                                               changeResolution();
@@ -809,22 +809,22 @@ class _ProfileEditState extends State<ProfileEdit> {
                                               widget.profile.enabledDemoMode = value;
                                               profiles.save();
                                             },
-                                            title: Text(FlutterI18n.translate(context, 'profileEdit.demoMode'),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.demoMode'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
-                                            subtitle: Text(FlutterI18n.translate(context, 'profileEdit.demoDescription'),
+                                            subtitle: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.demoDescription'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         ListTile(
                                             leading: const Icon(Icons.speed),
-                                            title: Text(FlutterI18n.translate(context, 'profileEdit.quickPlay'),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.quickPlay'),
                                                 style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
                                             subtitle: Text(
                                                 (widget.profile.quickPlayMode == QuickPlayMode.disabled
-                                                    ? FlutterI18n.translate(context, 'profileEdit.quickPlayDescription')
+                                                    ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.quickPlayDescription')
                                                     : '${{
-                                                        QuickPlayMode.singleplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.singleplayer'),
-                                                        QuickPlayMode.multiplayer: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.multiplayer'),
-                                                        QuickPlayMode.realms: FlutterI18n.translate(context, 'profileEdit.changeQuickPlay.modes.realms')
+                                                        QuickPlayMode.singleplayer: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.singleplayer'),
+                                                        QuickPlayMode.multiplayer: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.multiplayer'),
+                                                        QuickPlayMode.realms: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeQuickPlay.modes.realms')
                                                       }[widget.profile.quickPlayMode]}: ${widget.profile.quickPlayHost!.length > 64 ? '${widget.profile.quickPlayHost!.substring(0, 61)}…' : widget.profile.quickPlayHost}'),
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
