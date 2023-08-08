@@ -49,14 +49,14 @@ class LauncherSettings {
   void setDefaults() {
     if (Platform.isLinux) {
       profilesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'profiles');
-      imagesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'images');
+      imagesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'images');
     } else if (Platform.isWindows) {
       profilesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'profiles');
-      imagesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'images');
+      imagesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'images');
     } else if (Platform.isMacOS) {
       profilesDirectory ??=
           path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'profiles');
-      imagesDirectory ??= path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'images');
+      imagesDirectory ??= path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'images');
     } else {
       throw Exception('Unsupported Platform');
     }
@@ -90,22 +90,23 @@ class GameSettings {
 
   void setDefaults() {
     if (Platform.isLinux) {
-      versionsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'versions');
-      assetsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'assets');
-      librariesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'libraries');
-      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'mods');
+      versionsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'versions');
+      assetsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'assets');
+      librariesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'libraries');
+      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'mods');
     } else if (Platform.isWindows) {
-      versionsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'versions');
-      assetsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'assets');
-      librariesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'assets', 'libraries');
-      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'mods');
+      versionsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'versions');
+      assetsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'assets');
+      librariesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'libraries');
+      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'mods');
     } else if (Platform.isMacOS) {
       versionsDirectory ??=
-          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'versions');
-      assetsDirectory ??= path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'assets');
+          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'versions');
+      assetsDirectory ??= path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'assets');
       librariesDirectory ??=
-          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'libraries');
-      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'mods');
+          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'libraries');
+      librariesDirectory ??=
+          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'mods');
     } else {
       throw Exception('Unsupported Platform');
     }
@@ -126,16 +127,16 @@ class JavaSettings {
 
   void setDefaults() {
     if (Platform.isLinux) {
-      modernJavaHome ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'java', 'modern');
-      legacyJavaHome ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'java', 'legacy');
+      modernJavaHome ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'java', 'modern');
+      legacyJavaHome ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'java', 'legacy');
     } else if (Platform.isWindows) {
-      modernJavaHome ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'java', 'modern');
-      legacyJavaHome ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'java', 'legacy');
+      modernJavaHome ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'java', 'modern');
+      legacyJavaHome ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'java', 'legacy');
     } else if (Platform.isMacOS) {
       modernJavaHome ??=
-          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'java', 'modern');
+          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'java', 'modern');
       legacyJavaHome ??=
-          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'java', 'legacy');
+          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'java', 'legacy');
     } else {
       throw Exception('Unsupported Platform');
     }
