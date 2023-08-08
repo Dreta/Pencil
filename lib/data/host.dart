@@ -9,7 +9,7 @@ get kHostPresetOfficial {
       'https://piston-meta.mojang.com',
       'https://resources.download.minecraft.net',
       'https://libraries.minecraft.net',
-      'https://files.minecraftforge.net/maven',
+      'https://maven.neoforged.net',
       'https://meta.fabricmc.net',
       'https://maven.fabricmc.net',
       'https://meta.quiltmc.org',
@@ -52,7 +52,7 @@ class Host {
         .replaceAll('https://piston-meta.mojang.com', pistonMeta)
         .replaceAll('https://resources.download.minecraft.net', resources)
         .replaceAll('https://libraries.minecraft.net', libraries)
-        .replaceAll('https://files.minecraftforge.net/maven', forge)
+        .replaceAll('https://maven.neoforged.net', forge)
         .replaceAll('https://meta.fabricmc.net', fabricMeta)
         .replaceAll('https://maven.fabricmc.net', fabricMaven)
         .replaceAll('https://meta.quiltmc.org', quiltMeta)

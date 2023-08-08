@@ -67,7 +67,6 @@ GameSettings _$GameSettingsFromJson(Map<String, dynamic> json) => GameSettings(
       json['worldsDirectory'] as String?,
       json['resourcePacksDirectory'] as String?,
       json['shaderPacksDirectory'] as String?,
-      json['modsDirectory'] as String?,
     );
 
 Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
@@ -78,7 +77,6 @@ Map<String, dynamic> _$GameSettingsToJson(GameSettings instance) =>
       'worldsDirectory': instance.worldsDirectory,
       'resourcePacksDirectory': instance.resourcePacksDirectory,
       'shaderPacksDirectory': instance.shaderPacksDirectory,
-      'modsDirectory': instance.modsDirectory,
     };
 
 JavaSettings _$JavaSettingsFromJson(Map<String, dynamic> json) => JavaSettings(

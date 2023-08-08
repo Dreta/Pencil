@@ -78,7 +78,7 @@ class LauncherSettings {
 @JsonSerializable()
 class GameSettings {
   GameSettings(this.versionsDirectory, this.assetsDirectory, this.librariesDirectory, this.worldsDirectory,
-      this.resourcePacksDirectory, this.shaderPacksDirectory, this.modsDirectory);
+      this.resourcePacksDirectory, this.shaderPacksDirectory);
 
   String? versionsDirectory;
   String? assetsDirectory;
@@ -86,27 +86,22 @@ class GameSettings {
   String? worldsDirectory;
   String? resourcePacksDirectory;
   String? shaderPacksDirectory;
-  String? modsDirectory;
 
   void setDefaults() {
     if (Platform.isLinux) {
       versionsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'versions');
       assetsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'assets');
       librariesDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'libraries');
-      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'mods');
     } else if (Platform.isWindows) {
       versionsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'versions');
       assetsDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'assets');
       librariesDirectory ??= path.join(Platform.environment['APPDATA']!, 'Pencil', 'data', 'meta', 'libraries');
-      modsDirectory ??= path.join(Platform.environment['HOME']!, '.local', 'share', 'Pencil', 'meta', 'mods');
     } else if (Platform.isMacOS) {
       versionsDirectory ??=
           path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'versions');
       assetsDirectory ??= path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'assets');
       librariesDirectory ??=
           path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'libraries');
-      librariesDirectory ??=
-          path.join(Platform.environment['HOME']!, 'Library', 'Application Support', 'Pencil', 'data', 'meta', 'mods');
     } else {
       throw Exception('Unsupported Platform');
     }

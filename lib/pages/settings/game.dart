@@ -40,14 +40,6 @@ class SettingsGame extends StatelessWidget {
                   subtitle: settings.data.game!.librariesDirectory!,
                   onChanged: (directory) {
                     settings.data.game!.librariesDirectory = directory;
-                  }),
-              DirectoryTile(
-                  icon: const Icon(Icons.mode_standby),
-                  title: 'Mods Directory',
-                  dialogTitle: 'Choose Mods Directory',
-                  subtitle: settings.data.game!.modsDirectory!,
-                  onChanged: (directory) {
-                    settings.data.game!.modsDirectory = directory;
                   })
             ])));
   }

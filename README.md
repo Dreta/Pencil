@@ -6,8 +6,10 @@ Pencil is an in-development Material Design Minecraft launcher based on Flutter.
 * [x] Material Design looks really good
 * [x] Microsoft authentication
 * [x] Isolated profiles
-* [x] Launches the vanilla, Fabric and Quilt client (Forge support in progress)
-* [ ] Mod management
+* [x] Launches the vanilla, Fabric and Quilt client
+  * Forge support has been postponed considering its current instability. For details, see [What is happening?](https://neoforged.net/news/theproject/). Forge support will be implemented after NeoForge is released.
+* [ ] Mod management with Modrinth
+  * Due to the closed nature of the CurseForge API, it's difficult to provide support for CurseForge.
 
 ## Screenshots
 
