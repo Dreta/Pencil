@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/versions/manifest/latest.dart';
-import 'package:pencil/data/versions/manifest/manifest_version.dart';
+import 'package:pencil/data/minecraft/manifest/latest.dart';
+import 'package:pencil/data/minecraft/manifest/manifest_version.dart';
 
 part 'version_manifest.g.dart';
 

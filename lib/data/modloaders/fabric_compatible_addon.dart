@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/host.dart';
+import 'package:pencil/data/pencil/host.dart';
 import 'package:pencil/data/modloaders/addon.dart';
 import 'package:pencil/data/modloaders/fabric.dart';
-import 'package:pencil/data/settings/settings_provider.dart';
-import 'package:pencil/data/task/task.dart';
-import 'package:pencil/data/task/tasks_provider.dart';
+import 'package:pencil/data/pencil/settings/settings_provider.dart';
+import 'package:pencil/data/pencil/task/task.dart';
+import 'package:pencil/data/pencil/task/tasks_provider.dart';
 import 'package:provider/provider.dart';
 
 // Usable for both Fabric and Quilt

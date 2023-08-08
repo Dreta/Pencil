@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/account/account.dart';
-import 'package:pencil/data/task/task.dart';
-import 'package:pencil/data/task/tasks_provider.dart';
+import 'package:pencil/data/pencil/account/account.dart';
+import 'package:pencil/data/pencil/task/task.dart';
+import 'package:pencil/data/pencil/task/tasks_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AccountsProvider extends ChangeNotifier {

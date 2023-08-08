@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pencil/data/task/tasks_provider.dart';
+import 'package:pencil/data/pencil/task/tasks_provider.dart';
 import 'package:provider/provider.dart';
 
 class TasksIndicator extends StatelessWidget {

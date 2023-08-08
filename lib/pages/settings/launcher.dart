@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pencil/data/host.dart';
-import 'package:pencil/data/settings/settings_data.dart';
-import 'package:pencil/data/settings/settings_provider.dart';
+import 'package:pencil/data/pencil/host.dart';
+import 'package:pencil/data/pencil/settings/settings_data.dart';
+import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:pencil/pages/settings/tiles.dart';
 import 'package:provider/provider.dart';
 

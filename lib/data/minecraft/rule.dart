@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/profile/profile.dart';
+import 'package:pencil/data/pencil/profile/profile.dart';
 
 part 'rule.g.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/account/account.dart';
-import 'package:pencil/data/account/accounts_provider.dart';
+import 'package:pencil/data/pencil/account/account.dart';
+import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';

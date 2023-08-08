@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
-import 'package:pencil/data/settings/settings_data.dart';
+import 'package:pencil/data/pencil/settings/settings_data.dart';
 
 class SettingsProvider extends ChangeNotifier {
   final File _settingsFile;

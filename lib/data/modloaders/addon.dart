@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pencil/data/host.dart';
-import 'package:pencil/data/task/task.dart';
-import 'package:pencil/data/task/tasks_provider.dart';
+import 'package:pencil/data/pencil/host.dart';
+import 'package:pencil/data/pencil/task/task.dart';
+import 'package:pencil/data/pencil/task/tasks_provider.dart';
 
 abstract class Addon {
   Future<List<String>> listAvailableAddonVersions(BuildContext context, String version, Host host);

@@ -8,16 +8,16 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/account/account.dart';
-import 'package:pencil/data/account/accounts_provider.dart';
+import 'package:pencil/data/pencil/account/account.dart';
+import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:pencil/data/modloaders/addon.dart';
 import 'package:pencil/data/modloaders/fabric_compatible_addon.dart';
-import 'package:pencil/data/profile/profile.dart';
-import 'package:pencil/data/profile/profiles_provider.dart';
-import 'package:pencil/data/settings/settings_provider.dart';
-import 'package:pencil/data/versions/manifest/manifest_version.dart';
-import 'package:pencil/data/versions/manifest/version_manifest_provider.dart';
-import 'package:pencil/data/versions/version_type.dart';
+import 'package:pencil/data/pencil/profile/profile.dart';
+import 'package:pencil/data/pencil/profile/profiles_provider.dart';
+import 'package:pencil/data/pencil/settings/settings_provider.dart';
+import 'package:pencil/data/minecraft/manifest/manifest_version.dart';
+import 'package:pencil/data/minecraft/manifest/version_manifest_provider.dart';
+import 'package:pencil/data/minecraft/version_type.dart';
 import 'package:provider/provider.dart';
 
 class ProfileEdit extends StatefulWidget {

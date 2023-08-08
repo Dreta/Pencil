@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/settings/settings_provider.dart';
+import 'package:pencil/data/pencil/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 class BooleanTile extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
-import 'package:pencil/data/host.dart';
+import 'package:pencil/data/pencil/host.dart';
 
 part 'settings_data.g.dart';
 

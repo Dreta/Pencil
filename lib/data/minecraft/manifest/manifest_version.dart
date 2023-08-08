@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/versions/version_type.dart';
+import 'package:pencil/data/minecraft/version_type.dart';
 
 part 'manifest_version.g.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pencil/data/task/task.dart';
+import 'package:pencil/data/pencil/task/task.dart';
 
 class TasksProvider extends ChangeNotifier {
   final Map<TaskType, Map<String, Task>> tasks = {};

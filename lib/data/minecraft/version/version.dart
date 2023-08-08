@@ -1,11 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/versions/version/arguments.dart';
-import 'package:pencil/data/versions/version/asset_index.dart';
-import 'package:pencil/data/versions/version/downloads.dart';
-import 'package:pencil/data/versions/version/java_version.dart';
-import 'package:pencil/data/versions/version/library.dart';
-import 'package:pencil/data/versions/version/logging.dart';
-import 'package:pencil/data/versions/version_type.dart';
+import 'package:pencil/data/minecraft/version/arguments.dart';
+import 'package:pencil/data/minecraft/version/asset_index.dart';
+import 'package:pencil/data/minecraft/version/downloads.dart';
+import 'package:pencil/data/minecraft/version/java_version.dart';
+import 'package:pencil/data/minecraft/version/library.dart';
+import 'package:pencil/data/minecraft/version/logging.dart';
+import 'package:pencil/data/minecraft/version_type.dart';
 
 part 'version.g.dart';
 

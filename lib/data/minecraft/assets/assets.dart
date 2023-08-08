@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/versions/assets/asset.dart';
+import 'package:pencil/data/minecraft/assets/asset.dart';
 
 part 'assets.g.dart';
 

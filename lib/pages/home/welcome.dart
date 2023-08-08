@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/profile/profile.dart';
-import 'package:pencil/data/profile/profiles_provider.dart';
+import 'package:pencil/data/pencil/profile/profile.dart';
+import 'package:pencil/data/pencil/profile/profiles_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

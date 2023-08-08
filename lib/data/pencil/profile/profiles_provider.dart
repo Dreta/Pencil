@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
-import 'package:pencil/data/profile/profile.dart';
+import 'package:pencil/data/pencil/profile/profile.dart';
 
 class ProfilesProvider extends ChangeNotifier {
   final File _profilesFile;

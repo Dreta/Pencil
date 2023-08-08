@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pencil/data/versions/rule.dart';
+import 'package:pencil/data/minecraft/rule.dart';
 
 part 'arguments.g.dart';
 

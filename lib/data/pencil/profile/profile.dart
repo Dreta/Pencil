@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/account/accounts_provider.dart';
+import 'package:pencil/data/pencil/account/accounts_provider.dart';
 import 'package:pencil/data/modloaders/addon.dart';
 import 'package:pencil/data/modloaders/fabric_compatible_addon.dart';
-import 'package:pencil/data/profile/profiles_provider.dart';
+import 'package:pencil/data/pencil/profile/profiles_provider.dart';
 import 'package:pencil/launch/download_utils.dart';
 import 'package:pencil/launch/launch_utils.dart';
 import 'package:provider/provider.dart';

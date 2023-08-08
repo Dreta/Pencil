@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pencil/constants.dart';
-import 'package:pencil/data/news/mojang_news.dart';
+import 'package:pencil/data/pencil/news/mojang_news.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
