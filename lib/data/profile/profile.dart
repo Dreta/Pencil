@@ -116,14 +116,9 @@ class Profile {
                   content: const Text('You must select an account before starting the game.'),
                   actions: [
                     TextButton(
-                        child: const Text('Cancel'),
+                        child: const Text('Confirm'),
                         onPressed: () {
                           Navigator.of(context).pop();
-                        }),
-                    TextButton(
-                        child: const Text('Continue'),
-                        onPressed: () {
-                          play(context, true);
                         })
                   ]));
       return;
