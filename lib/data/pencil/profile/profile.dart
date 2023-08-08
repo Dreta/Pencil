@@ -76,8 +76,8 @@ class Profile {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: const Text('Already running'),
-                  content: const Text('You can\'t run the same profile at the same time.'),
+                  title: I18nText('launch.noLaunch.alreadyRunning.title'),
+                  content: I18nText('launch.noLaunch.alreadyRunning.content'),
                   actions: [
                     TextButton(
                         child: I18nText('generic.confirm'),
@@ -92,8 +92,8 @@ class Profile {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: const Text('Another game is already running'),
-                  content: const Text('Running multiple games simultaneously may cause conflicts. Do you wish to continue?'),
+                  title: I18nText('launch.noLaunch.anotherGame.title'),
+                  content: I18nText('launch.noLaunch.anotherGame.content'),
                   actions: [
                     TextButton(
                         child: I18nText('generic.cancel'),
@@ -101,7 +101,7 @@ class Profile {
                           Navigator.of(context).pop();
                         }),
                     TextButton(
-                        child: const Text('Continue Anyways'),
+                        child: I18nText('generic.continueAnyways'),
                         onPressed: () {
                           play(context, true);
                         })
@@ -113,8 +113,8 @@ class Profile {
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
                   insetPadding: const EdgeInsets.symmetric(horizontal: 200),
-                  title: const Text('No Account Selected'),
-                  content: const Text('You must select an account before starting the game.'),
+                  title: I18nText('launch.noLaunch.noAccount.title'),
+                  content: I18nText('launch.noLaunch.noAccount.content'),
                   actions: [
                     TextButton(
                         child: I18nText('generic.confirm'),

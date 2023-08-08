@@ -92,6 +92,20 @@
       "java": "Can't start game when downloading Java",
       "downloading": "Can't start game when a download task is running"
     },
+    "noLaunch": {
+      "alreadyRunning": {
+        "title": "Already Running",
+        "content": "You can't run the same profile at the same time."
+      },
+      "anotherGame": {
+        "title": "Another game is already running",
+        "content": "Running multiple games simultaneously may cause conflicts. Do you wish to continue?"
+      },
+      "noAccount": {
+        "title": "No Account Selected",
+        "content": "You must select an account before starting the game."
+      }
+    },
     "nativeExtractFile": "Extracting {file}",
     "initProfileDir": "Initializing profile directories",
     "readVersion": "Reading version manifest",
