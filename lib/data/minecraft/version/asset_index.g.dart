@@ -14,7 +14,8 @@ AssetIndex _$AssetIndexFromJson(Map<String, dynamic> json) => AssetIndex(
       json['url'] as String,
     );
 
-Map<String, dynamic> _$AssetIndexToJson(AssetIndex instance) => <String, dynamic>{
+Map<String, dynamic> _$AssetIndexToJson(AssetIndex instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'sha1': instance.sha1,
       'size': instance.size,

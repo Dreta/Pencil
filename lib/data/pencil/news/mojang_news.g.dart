@@ -6,12 +6,16 @@ part of 'mojang_news.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MinecraftNews _$MinecraftNewsFromJson(Map<String, dynamic> json) => MinecraftNews(
+MinecraftNews _$MinecraftNewsFromJson(Map<String, dynamic> json) =>
+    MinecraftNews(
       json['version'] as int,
-      (json['entries'] as List<dynamic>).map((e) => MojangNews.fromJson(e as Map<String, dynamic>)).toList(),
+      (json['entries'] as List<dynamic>)
+          .map((e) => MojangNews.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
-Map<String, dynamic> _$MinecraftNewsToJson(MinecraftNews instance) => <String, dynamic>{
+Map<String, dynamic> _$MinecraftNewsToJson(MinecraftNews instance) =>
+    <String, dynamic>{
       'version': instance.version,
       'entries': instance.entries,
     };
@@ -30,7 +34,8 @@ MojangNews _$MojangNewsFromJson(Map<String, dynamic> json) => MojangNews(
       json['id'] as String,
     );
 
-Map<String, dynamic> _$MojangNewsToJson(MojangNews instance) => <String, dynamic>{
+Map<String, dynamic> _$MojangNewsToJson(MojangNews instance) =>
+    <String, dynamic>{
       'title': instance.title,
       'tag': instance.tag,
       'category': instance.category,
@@ -44,24 +49,32 @@ Map<String, dynamic> _$MojangNewsToJson(MojangNews instance) => <String, dynamic
       'id': instance.id,
     };
 
-MojangNewsImage _$MojangNewsImageFromJson(Map<String, dynamic> json) => MojangNewsImage(
+MojangNewsImage _$MojangNewsImageFromJson(Map<String, dynamic> json) =>
+    MojangNewsImage(
       json['title'] as String?,
       json['url'] as String,
-      json['dimensions'] == null ? null : NewsImageDimensions.fromJson(json['dimensions'] as Map<String, dynamic>),
+      json['dimensions'] == null
+          ? null
+          : NewsImageDimensions.fromJson(
+              json['dimensions'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$MojangNewsImageToJson(MojangNewsImage instance) => <String, dynamic>{
+Map<String, dynamic> _$MojangNewsImageToJson(MojangNewsImage instance) =>
+    <String, dynamic>{
       'title': instance.title,
       'url': instance.url,
       'dimensions': instance.dimensions,
     };
 
-NewsImageDimensions _$NewsImageDimensionsFromJson(Map<String, dynamic> json) => NewsImageDimensions(
+NewsImageDimensions _$NewsImageDimensionsFromJson(Map<String, dynamic> json) =>
+    NewsImageDimensions(
       json['width'] as int,
       json['height'] as int,
     );
 
-Map<String, dynamic> _$NewsImageDimensionsToJson(NewsImageDimensions instance) => <String, dynamic>{
+Map<String, dynamic> _$NewsImageDimensionsToJson(
+        NewsImageDimensions instance) =>
+    <String, dynamic>{
       'width': instance.width,
       'height': instance.height,
     };
