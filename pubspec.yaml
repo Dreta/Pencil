@@ -51,6 +51,7 @@ flutter:
 
   assets:
     - assets/flutter_i18n/
+    - assets/icons/
     - assets/images/profiles/
     - assets/images/styles/
 

@@ -11,10 +11,19 @@ class SettingsAbout extends StatelessWidget {
 
     return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(margin: const EdgeInsets.only(bottom: 16), child: const Icon(Icons.circle, size: 64)),
-      Container(margin: const EdgeInsets.only(bottom: 8), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.about.name'), style: theme.textTheme.headlineMedium)),
+      Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          height: 96,
+          width: 96,
+          child: Image.asset('assets/icons/icon-circle.png',
+              fit: BoxFit.contain, isAntiAlias: true, filterQuality: FilterQuality.medium)),
+      Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.about.name'),
+              style: theme.textTheme.headlineMedium)),
       Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.about.title'), style: theme.textTheme.bodyMedium),
-      Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.about.disclaimer'), style: theme.textTheme.bodyMedium)
+      Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.about.disclaimer'),
+          style: theme.textTheme.bodyMedium)
     ]));
   }
 }
