@@ -33,7 +33,7 @@ enum ProfileSortType { lastPlayed, name }
 @JsonSerializable()
 class LauncherSettings {
   LauncherSettings(this.profilesDirectory, this.imagesDirectory, this.showReleases, this.showSnapshots, this.showHistorical,
-      this.profileSort, this.hideLauncherAfterStart, this.checkUpdates, this.telemetry, this.host);
+      this.profileSort, this.hideLauncherAfterStart, this.checkUpdates, this.language, this.host);
 
   String? profilesDirectory;
   String? imagesDirectory;
@@ -43,7 +43,7 @@ class LauncherSettings {
   ProfileSortType? profileSort;
   bool? hideLauncherAfterStart;
   bool? checkUpdates;
-  bool? telemetry;
+  String? language;
   Host? host;
 
   void setDefaults() {
@@ -65,7 +65,7 @@ class LauncherSettings {
     showHistorical ??= false;
     profileSort ??= ProfileSortType.lastPlayed;
     checkUpdates ??= true;
-    telemetry ??= true;
+    language ??= 'default';
     hideLauncherAfterStart ??= true;
     host ??= kHostPresetOfficial;
   }

@@ -4,6 +4,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/locale.dart' as intl;
 import 'package:pencil/constants.dart';
 import 'package:pencil/data/minecraft/manifest/version_manifest_provider.dart';
 import 'package:pencil/data/pencil/account/accounts_provider.dart';
@@ -62,6 +63,10 @@ class PencilBaseApp extends StatelessWidget {
         ],
         child: Consumer(
             builder: (context, provider, child) => DynamicColorBuilder(builder: (light, dark) {
+                  SettingsProvider settings = Provider.of<SettingsProvider>(context);
+                  intl.Locale? parsedLocale = settings.data.launcher!.language! == 'default'
+                      ? null
+                      : intl.Locale.tryParse(settings.data.launcher!.language!);
                   return MaterialApp(
                       title: 'Pencil',
                       debugShowCheckedModeBanner: false,
@@ -76,7 +81,15 @@ class PencilBaseApp extends StatelessWidget {
                           textTheme: textTheme),
                       localizationsDelegates: [
                         FlutterI18nDelegate(
-                            translationLoader: FileTranslationLoader(useCountryCode: true, fallbackFile: 'en_US')),
+                            translationLoader: FileTranslationLoader(
+                                useCountryCode: true,
+                                fallbackFile: 'en_US',
+                                forcedLocale: parsedLocale != null
+                                    ? Locale.fromSubtags(
+                                        languageCode: parsedLocale.languageCode,
+                                        countryCode: parsedLocale.countryCode,
+                                        scriptCode: parsedLocale.scriptCode)
+                                    : null)),
                         GlobalMaterialLocalizations.delegate,
                         GlobalWidgetsLocalizations.delegate
                       ],

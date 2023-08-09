@@ -1,4 +1,8 @@
 {
+  "languages": {
+    "en_US": "English (United States)",
+    "zh_CN": "中文 (简体, 中国大陆)"
+  },
   "generic": {
     "confirm": "确认",
     "cancel": "取消",
@@ -316,6 +320,7 @@
   "settings": {
     "title": "设置",
     "about": {
+      "entry": "关于",
       "name": "Pencil",
       "title": "Pencil 是一个现代的 Material Design Minecraft 启动器。",
       "disclaimer": "Pencil 不受 Microsoft, Mojang 或 Minecraft 的支持。"
@@ -365,37 +370,37 @@
         "title": "下载源",
         "preset": "预设下载源",
         "presetOfficial": "官方",
-        "presetBMCL": "BMCLAPI (为中国内地 (大陆) 用户准备)",
+        "presetBMCL": "BMCLAPI (为中国大陆用户准备)",
         "presetCustom": "自定义",
-        "launcherMeta": "Launcher Meta 源",
-        "setLauncherMeta": "设置 Launcher Meta 源",
-        "pistonMeta": "Piston Meta 源",
-        "setPistonMeta": "设置 Piston Meta 源",
-        "resources": "Resources 源",
-        "setResources": "设置 Resources 源",
-        "libraries": "Libraries 源",
-        "setLibraries": "设置 Libraries 源",
-        "forge": "Forge 源",
-        "setForge": "设置 Forge 源",
-        "fabricMeta": "Fabric Meta 源",
-        "setFabricMeta": "设置 Fabric Meta 源",
-        "fabricMaven": "Fabric Maven 源",
-        "setFabricMaven": "设置 Fabric Maven 源",
-        "quiltMeta": "Quilt Meta 源",
-        "setQuiltMeta": "设置 Quilt Meta 源",
-        "quiltMaven": "Quilt Maven 源",
-        "setQuiltMaven": "设置 Quilt Maven 源",
+        "launcherMeta": "Launcher Meta 下载源",
+        "setLauncherMeta": "设置 Launcher Meta 下载源",
+        "pistonMeta": "Piston Meta 下载源",
+        "setPistonMeta": "设置 Piston Meta 下载源",
+        "resources": "资源下载源",
+        "setResources": "设置资源下载源",
+        "libraries": "依赖库下载源",
+        "setLibraries": "设置依赖库下载源",
+        "forge": "Forge 下载源",
+        "setForge": "设置 Forge 下载源",
+        "fabricMeta": "Fabric Meta 下载源",
+        "setFabricMeta": "设置 Fabric Meta 下载源",
+        "fabricMaven": "Fabric Maven 下载源",
+        "setFabricMaven": "设置 Fabric Maven 下载源",
+        "quiltMeta": "Quilt Meta 下载源",
+        "setQuiltMeta": "设置 Quilt Meta 下载源",
+        "quiltMaven": "Quilt Maven 下载源",
+        "setQuiltMaven": "设置 Quilt Maven 下载源",
         "urlErrors": {
           "valid": "必须是有效的链接",
           "slash": "结尾不能是斜杠",
           "https": "协议必须是 HTTPS"
         }
+      },
+      "others": {
+        "title": "其他",
+        "checkUpdates": "启动后自动检查更新",
+        "language": "语言"
       }
-    },
-    "others": {
-      "title": "其他",
-      "checkUpdates": "启动后自动检查更新",
-      "telemetry": "匿名地帮助改进 Pencil"
     }
   },
   "tasks": {

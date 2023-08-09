@@ -1,4 +1,8 @@
 {
+  "languages": {
+    "en_US": "English (United States)",
+    "zh_CN": "中文 (简体, 中国大陆)"
+  },
   "generic": {
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -316,6 +320,7 @@
   "settings": {
     "title": "Settings",
     "about": {
+      "entry": "About",
       "name": "Pencil",
       "title": "Pencil is a modern Material Design Minecraft launcher.",
       "disclaimer": "Pencil is not endorsed by or affiliated with Microsoft, Mojang or Minecraft."
@@ -390,12 +395,12 @@
           "slash": "Must not end with a slash",
           "https": "Protocol must be HTTPS"
         }
+      },
+      "others": {
+        "title": "Others",
+        "checkUpdates": "Check Updates on Startup",
+        "language": "Language"
       }
-    },
-    "others": {
-      "title": "Others",
-      "checkUpdates": "Check Updates on Startup",
-      "telemetry": "Enable Anonymous Telemetry"
     }
   },
   "tasks": {

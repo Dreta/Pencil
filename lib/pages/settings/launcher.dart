@@ -198,21 +198,26 @@ class _SettingsLauncherState extends State<SettingsLauncher> {
                     onChanged: (value) {
                       settings.data.launcher!.host!.quiltMaven = value;
                     }),
-              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.others.title'), style: theme.textTheme.headlineSmall)),
+              Container(margin: const EdgeInsets.only(top: 8), child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.launcher.others.title'), style: theme.textTheme.headlineSmall)),
               BooleanTile(
                   icon: const Icon(Icons.update),
-                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.others.checkUpdates'),
+                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.launcher.others.checkUpdates'),
                   value: settings.data.launcher!.checkUpdates!,
                   onChanged: (value) {
                     settings.data.launcher!.checkUpdates = value;
                   }),
-              BooleanTile(
-                  icon: const Icon(Icons.phone_in_talk),
-                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.others.telemetry'),
-                  value: settings.data.launcher!.telemetry!,
+              EnumTile(
+                  icon: const Icon(Icons.language),
+                  title: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.launcher.others.language'),
+                  value: settings.data.launcher!.language,
+                  mapping: {
+                    'default': 'System Language',
+                    for (String lang in kSupportedLanguages)
+                      lang: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'languages.$lang')
+                  },
                   onChanged: (value) {
-                    settings.data.launcher!.telemetry = value;
-                  })
+                    settings.data.launcher!.language = value;
+                  }),
             ])));
   }
 

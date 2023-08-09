@@ -35,7 +35,7 @@ LauncherSettings _$LauncherSettingsFromJson(Map<String, dynamic> json) =>
       $enumDecodeNullable(_$ProfileSortTypeEnumMap, json['profileSort']),
       json['hideLauncherAfterStart'] as bool?,
       json['checkUpdates'] as bool?,
-      json['telemetry'] as bool?,
+      json['language'] as String?,
       json['host'] == null
           ? null
           : Host.fromJson(json['host'] as Map<String, dynamic>),
@@ -51,7 +51,7 @@ Map<String, dynamic> _$LauncherSettingsToJson(LauncherSettings instance) =>
       'profileSort': _$ProfileSortTypeEnumMap[instance.profileSort],
       'hideLauncherAfterStart': instance.hideLauncherAfterStart,
       'checkUpdates': instance.checkUpdates,
-      'telemetry': instance.telemetry,
+      'language': instance.language,
       'host': instance.host,
     };
 

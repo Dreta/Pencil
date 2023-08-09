@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pencil/constants.dart';
 import 'package:pencil/pages/settings/about.dart';
 import 'package:pencil/pages/settings/game.dart';
 import 'package:pencil/pages/settings/java.dart';
@@ -29,11 +31,11 @@ class _SettingsState extends State<Settings> {
           children: [
             Padding(
                 padding: const EdgeInsets.fromLTRB(28, 16, 16, 16),
-                child: Text('Settings', style: theme.textTheme.headlineMedium)),
-            const NavigationDrawerDestination(icon: Icon(Icons.airplanemode_active), label: Text('Launcher')),
-            const NavigationDrawerDestination(icon: Icon(Icons.gamepad), label: Text('Game')),
-            const NavigationDrawerDestination(icon: Icon(Icons.coffee), label: Text('Java')),
-            const NavigationDrawerDestination(icon: Icon(Icons.book), label: Text('About'))
+                child: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'settings.title'), style: theme.textTheme.headlineMedium)),
+            NavigationDrawerDestination(icon: const Icon(Icons.airplanemode_active), label: I18nText('settings.launcher.title')),
+            NavigationDrawerDestination(icon: const Icon(Icons.gamepad), label: I18nText('settings.game.title')),
+            NavigationDrawerDestination(icon: const Icon(Icons.coffee), label: I18nText('settings.java.title')),
+            NavigationDrawerDestination(icon: const Icon(Icons.book), label: I18nText('settings.about.entry'))
           ]),
       Expanded(child: const [SettingsLauncher(), SettingsGame(), SettingsJava(), SettingsAbout()][_settingsIndex])
     ]);
