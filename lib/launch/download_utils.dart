@@ -45,18 +45,39 @@ abstract class DownloadUtils {
     Host host = settings.data.launcher!.host!;
     try {
       http.Client client = http.Client();
-      Version version = await _downloadVersion(context, client, profile.version, host, manifest.manifest!, tasks, task);
+      Version version = await _downloadVersion(
+          context,
+          client,
+          profile.version,
+          host,
+          manifest.manifest!,
+          tasks,
+          task);
       Assets assets = await _downloadAssetIndex(context, client, version, host, tasks, task);
       await _downloadLoggingConfig(context, client, version, host, tasks, task);
-      await _downloadAssets(context, client, assets, version.assetIndex.totalSize, host, tasks, task);
-      await _downloadLibraries(context, client, version, profile, host, tasks, task);
+      await _downloadAssets(
+          context,
+          client,
+          assets,
+          version.assetIndex.totalSize,
+          host,
+          tasks,
+          task);
+      await _downloadLibraries(
+          context,
+          client,
+          version,
+          profile,
+          host,
+          tasks,
+          task);
       await _downloadAddon(context, version, profile, host, tasks, task);
       await _downloadGame(context, client, version, host, task, tasks);
 
       profile.lastDownloaded = DateTime.now();
       profiles.save();
       return true;
-    } catch (e) {
+    }/* catch (e) {
       showDialog(
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
@@ -70,7 +91,7 @@ abstract class DownloadUtils {
                           Navigator.pop(context);
                         })
                   ]));
-    } finally {
+    }*/ finally {
       tasks.removeTask(task);
     }
     return false;
@@ -212,13 +233,13 @@ abstract class DownloadUtils {
       BuildContext context, http.Client client, Version version, Host host, TasksProvider tasks, Task task) async {
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
 
-    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'download.loggingConfig', translationParams: {'loggingConfig': version.logging!.client.file.id});
-    task.progress = -1;
-    tasks.notify();
-
     if (version.logging == null) {
       return;
     }
+
+    task.currentWork = FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'download.loggingConfig', translationParams: {'loggingConfig': version.logging!.client.file.id});
+    task.progress = -1;
+    tasks.notify();
 
     File file = File(path.join(settings.data.game!.assetsDirectory!, 'log_configs', version.logging!.client.file.id));
     if (!(await file.exists())) {

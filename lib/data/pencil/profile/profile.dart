@@ -128,15 +128,20 @@ class Profile {
     launching = true;
     profiles.notify();
 
-    if ((lastDownloaded != null && DateTime.now().difference(lastDownloaded!).inDays < 3) ||
-        await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this)) {
-      await Future.delayed(const Duration(seconds: 2)); // Magic, do not remove (for Linux at least)
-      await LaunchUtils.launchGame(
-          kBaseNavigatorKey.currentContext!, this, accounts.accounts.accounts[accounts.accounts.currentAccount!]!);
+    try {
+      if ((lastDownloaded != null && DateTime
+          .now()
+          .difference(lastDownloaded!)
+          .inDays < 3) ||
+          await DownloadUtils.downloadProfile(kBaseNavigatorKey.currentContext!, this)) {
+        await Future.delayed(const Duration(seconds: 2)); // Magic, do not remove (for Linux at least)
+        await LaunchUtils.launchGame(
+            kBaseNavigatorKey.currentContext!, this, accounts.accounts.accounts[accounts.accounts.currentAccount!]!);
+      }
+    } finally {
+      launching = false;
+      profiles.notify();
     }
-
-    launching = false;
-    profiles.notify();
   }
 
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
