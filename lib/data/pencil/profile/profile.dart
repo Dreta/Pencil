@@ -28,6 +28,7 @@ class Profile {
       this.enabledDemoMode,
       this.jvmArguments,
       this.gameArguments,
+      this.environment,
       this.addonType,
       this.addonVersion)
       : addon = addonType == AddonType.disabled ? null : addonType.addon;
@@ -57,6 +58,9 @@ class Profile {
   String jvmArguments;
   @JsonKey(defaultValue: '')
   String gameArguments;
+
+  @JsonKey(defaultValue: '')
+  String environment;
 
   @JsonKey(defaultValue: AddonType.disabled)
   AddonType addonType;

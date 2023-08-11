@@ -388,13 +388,22 @@ abstract class LaunchUtils {
           ? version.mainClass
           : (await profile.addon!.modMainClass(context, version.id, profile.addonVersion!, settings.data.launcher!.host!));
 
+      Map<String, String> environment = {
+        'JAVA_HOME': Platform.isMacOS ? path.join(javaHome, 'Contents', 'Home') : javaHome,
+        'MINECRAFT_LAUNCHER': 'Dreta/pencil',
+        'USING_PENCIL': 'true'
+      };
+
+      for (String entry in profile.environment.split(' ')) {
+        if (entry.contains('=')) {
+          int sep = entry.indexOf('=');
+          environment[entry.substring(0, sep)] = entry.substring(sep + 1);
+        }
+      }
+
       Process process = await Process.start(javaExecutable, [...jvmArguments, mainClass, ...gameArguments],
           workingDirectory: path.join(settings.data.launcher!.profilesDirectory!, profile.uuid.toString()),
-          environment: {
-            'JAVA_HOME': Platform.isMacOS ? path.join(javaHome, 'Contents', 'Home') : javaHome,
-            'MINECRAFT_LAUNCHER': 'Dreta/pencil',
-            'USING_PENCIL': 'true'
-          });
+          environment: environment);
       process.stdout.transform(utf8.decoder).forEach(print);
 
       if (settings.data.launcher!.hideLauncherAfterStart!) {

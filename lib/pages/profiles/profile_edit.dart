@@ -260,6 +260,44 @@ class _ProfileEditState extends State<ProfileEdit> {
         });
   }
 
+  void changeEnvironment() {
+    ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
+    showDialog(
+        context: kBaseNavigatorKey.currentContext!,
+        builder: (context) {
+          TextEditingController args = TextEditingController(text: widget.profile.environment);
+          return StatefulBuilder(
+              builder: (context, setState) => AlertDialog(
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 200),
+                  title: I18nText('profileEdit.changeEnvironment.title'),
+                  content: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                        margin: const EdgeInsets.only(bottom: 4), child: I18nText('profileEdit.changeEnvironment.description')),
+                    TextField(
+                      decoration:
+                      InputDecoration(labelText: FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.changeEnvironment.field')),
+                      controller: args,
+                    )
+                  ]),
+                  actions: [
+                    TextButton(
+                        child: I18nText('generic.cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    TextButton(
+                        child: I18nText('generic.confirm'),
+                        onPressed: () {
+                          widget.profile.environment = args.text;
+                          profiles.save();
+                          ScaffoldMessenger.of(kBaseScaffoldKey.currentContext!)
+                              .showSnackBar(SnackBar(content: I18nText('profileEdit.changeEnvironment.success')));
+                          Navigator.pop(context);
+                        })
+                  ]));
+        });
+  }
+
   void changeAddon() {
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
     SettingsProvider settings = Provider.of<SettingsProvider>(context, listen: false);
@@ -800,6 +838,17 @@ class _ProfileEditState extends State<ProfileEdit> {
                                                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
                                             onTap: () {
                                               changeResolution();
+                                            },
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                                        ListTile(
+                                            leading: const Icon(Icons.abc),
+                                            title: Text(FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'profileEdit.environment'),
+                                                style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400)),
+                                            subtitle: Text(
+                                                widget.profile.environment.isEmpty ? FlutterI18n.translate(kBaseNavigatorKey.currentContext!, 'generic.unset') : widget.profile.environment,
+                                                style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.secondary)),
+                                            onTap: () {
+                                              changeEnvironment();
                                             },
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
                                         SwitchListTile(
