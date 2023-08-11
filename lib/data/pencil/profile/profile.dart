@@ -75,6 +75,10 @@ class Profile {
   Future<void> play(BuildContext context, bool confirm) async {
     ProfilesProvider profiles = Provider.of<ProfilesProvider>(context, listen: false);
     AccountsProvider accounts = Provider.of<AccountsProvider>(context, listen: false);
+
+    lastUsed = DateTime.now();
+    profiles.save();
+
     if (launching) {
       showDialog(
           context: kBaseNavigatorKey.currentContext!,
