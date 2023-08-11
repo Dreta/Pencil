@@ -66,7 +66,13 @@ class TaskWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: theme.colorScheme.inversePrimary.withAlpha(30)),
         child: Row(children: [
-          Container(margin: const EdgeInsets.only(right: 12), child: const Icon(Icons.person)),
+          Container(margin: const EdgeInsets.only(right: 12), child: Icon({
+            TaskType.checkUpdate: Icons.update,
+            TaskType.gameDownload: Icons.download,
+            TaskType.gameLaunch: Icons.gamepad,
+            TaskType.javaDownload: Icons.download,
+            TaskType.microsoftAuth: Icons.person
+          }[task.type])),
           Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
