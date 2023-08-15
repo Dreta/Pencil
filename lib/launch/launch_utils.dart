@@ -349,10 +349,19 @@ abstract class LaunchUtils {
           '-cp',
           classpath,
           '-Djava.library.path=$nativeDirectory',
+          '-Djna.tmpdir=$nativeDirectory',
+          '-Dorg.lwjgl.system.SharedLibraryExtractPath=$nativeDirectory',
+          '-Dio.netty.native.workdir=$nativeDirectory',
           '-Dminecraft.launcher.brand=Pencil',
           '-Dminecraft.launcher.version=stable',
           '-Dminecraft.client.jar=${path.join(settings.data.game!.versionsDirectory!, version.id, '${version.id}.jar')}',
         ]);
+        if (Platform.isWindows) {
+          jvmArguments.add('-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump');
+        }
+        if (Platform.isMacOS) {
+          jvmArguments.add('-XstartOnFirstThread');
+        }
       }
       jvmArguments.add('-Dminecraft.pencil=true');
 
