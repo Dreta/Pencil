@@ -77,7 +77,7 @@ abstract class DownloadUtils {
       profile.lastDownloaded = DateTime.now();
       profiles.save();
       return true;
-    }/* catch (e) {
+    } catch (e) {
       showDialog(
           context: kBaseNavigatorKey.currentContext!,
           builder: (context) => AlertDialog(
@@ -91,7 +91,7 @@ abstract class DownloadUtils {
                           Navigator.pop(context);
                         })
                   ]));
-    }*/ finally {
+    } finally {
       tasks.removeTask(task);
     }
     return false;
